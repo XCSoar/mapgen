@@ -90,16 +90,14 @@ class Worker:
             self.__send_download_mail(job)
 
     def run(self):
-        print "Starting Worker ..."
         self.__run = True
-
         print "Monitoring " + self.__dir_jobs + " for new jobs ..."
         while self.__run:
-            job = Job.get_next(self.__dir_jobs)
-            if job == None:
-                time.sleep(0.5)
-                continue
             try:
+                job = Job.get_next(self.__dir_jobs)
+                if job == None:
+                    time.sleep(0.5)
+                    continue
                 self.__do_job(job)
             except Exception, e:
                 print 'Error: ' + str(e)

@@ -30,7 +30,7 @@ class Job:
             if not os.path.exists(self.dir):
                 os.makedirs(self.dir)
                 f = open(os.path.join(self.dir, 'timestamp'), 'w')
-                f.write(str(int(time.time())))
+                f.write(str(time.time()))
                 f.close()
 
     def enqueue(self):
@@ -91,20 +91,6 @@ class Job:
         return m.hexdigest()
 
     @staticmethod
-    def delete_expired(dir, max_age):
-        try:
-            ctime = int(file(os.path.join(dir, 'timestamp')).read())
-            if (time.time() - ctime > max_age):
-                print 'Delete expired job ' + dir
-                shutil.rmtree(dir)
-        except Exception, e:
-            print 'Could not read timestamp file for job ' + dir + "\n" + str(e)
-
-    @staticmethod
-    def load(dir):
-        return Job(dir, True)
-
-    @staticmethod
     def find(dir_jobs, uuid):
         base = os.path.join(dir_jobs, uuid)
         for suffix in ['', '.locked', '.queued', '.working', '.error']:
@@ -114,27 +100,45 @@ class Job:
 
     @staticmethod
     def get_next(dir_jobs):
-        if os.path.exists(dir_jobs):
-            for file in os.listdir(dir_jobs):
-                dir = os.path.join(dir_jobs, file)
+        if not os.path.exists(dir_jobs):
+            return None
 
-                # Only directories can be jobs
-                if not os.path.isdir(dir):
-                    continue
+        next_dir = None
+        next_ts = time.time()
+        for entry in os.listdir(dir_jobs):
+            dir = os.path.join(dir_jobs, entry)
 
-                # Check if the job is locked by the creator
-                # or if there is already a worker working on it
-                if dir.endswith('.locked') or dir.endswith('.working'):
-                    Job.delete_expired(dir, 60*60)
-                    continue
+            # Only directories can be jobs
+            if not os.path.isdir(dir):
+                continue
 
-                # Find an enqueued job
-                if dir.endswith('.queued'):
-                    job = Job(dir, True)
-                    job.__move('.working')
-                    return job
+            ts = None
+            try:
+                ts = float(file(os.path.join(dir, 'timestamp')).read())
+            except Exception, e:
+                print 'Could not read timestamp file for job ' + dir + "\n" + str(e)
+                continue
 
+            age = time.time() - ts
+
+            # Check if there is a running job which is expired
+            if (dir.endswith('.locked') or dir.endswith('.working')) and age > 60*60:
+                print 'Delete expired job ' + dir
+                shutil.rmtree(dir)
+                continue
+
+            # Find an enqueued job
+            if dir.endswith('.queued'):
+                if ts < next_ts:
+                    next_dir = dir
+                    next_ts = ts
+            elif age > 24*7*60*60:
                 # Delete if download is expired
-                Job.delete_expired(dir, 24*7*60*60)
+                print 'Delete expired job ' + dir
+                shutil.rmtree(dir)
 
+        if next_dir != None:
+            job = Job(next_dir, True)
+            job.__move('.working')
+            return job
         return None
