@@ -14,7 +14,7 @@
 	<li>Select the map bounds by drawing a rectangle (press ctrl and click).</li>
       </ol>
     </div>
-    <form action="/generate" method="post" enctype="multipart/form-data">
+    <form action="${url('/generate')}" method="post" enctype="multipart/form-data">
       <div>
 	<div py:if="defined('error')" class="error">${error}</div>
 	<label for="name">Map name:</label>

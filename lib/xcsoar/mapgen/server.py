@@ -94,7 +94,7 @@ class Server(object):
             return view.render(error='Waypoint file or bounds are required!') | HTMLFormFiller(data=dict(name=name, mail=mail))
 
         job.enqueue()
-        raise cherrypy.HTTPRedirect('/status?uuid=' + job.uuid)
+        raise cherrypy.HTTPRedirect(cherrypy.url('/status?uuid=' + job.uuid))
 
     @cherrypy.expose
     @view.output('status.html')
