@@ -1,0 +1,13 @@
+*~
+*.IGC
+*.dbf
+*.shp
+*.shx
+\#*#
+.#*
+*.orig
+*.rej
+*.log
+data
+jobs
+*.pyc
