@@ -9,10 +9,10 @@ from xcsoar.mapgen.generator import Generator
 from xcsoar.mapgen.georect import GeoRect
 
 def print_help():
-    print "Usage:   mapgen [Options] -wpf waypoint_file output_file"
-    print "         mapgen [Options] -b latmin latmax lonmin lonmax output_file"
-    print ""
-    print "Options: -r resolution (terrain resolution, arcseconds per pixel)"
+    print "Usage:   mapgen [Options] -wpf waypoint_file output_file\n" +\
+          "         mapgen [Options] -b latmin latmax lonmin lonmax output_file\n" +\
+          "\n" +\
+          "Options: -r resolution (terrain resolution, arcseconds per pixel)"
 
 def main():
     args = sys.argv[1:]
