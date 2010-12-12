@@ -29,6 +29,9 @@ class Job:
             self.dir = os.path.join(dir_jobs, self.uuid + '.locked')
             if not os.path.exists(self.dir):
                 os.makedirs(self.dir)
+                f = open(os.path.join(self.dir, 'timestamp'), 'w')
+                f.write(str(int(time.time())))
+                f.close()
 
     def enqueue(self):
         f = open(self.__job_file(), 'wb')
@@ -86,8 +89,13 @@ class Job:
 
     @staticmethod
     def delete_expired(dir, max_age):
-        if (time.time() - os.path.getctime(dir) > max_age):
-            shutil.rmtree(dir)
+        try:
+            ctime = int(file(os.path.join(dir, 'timestamp')).read())
+            if (time.time() - ctime > max_age):
+                print 'Delete expired job ' + dir
+                shutil.rmtree(dir)
+        except Exception, e:
+            print 'Could not read timestamp file for job ' + dir + "\n" + str(e)
 
     @staticmethod
     def load(dir):
