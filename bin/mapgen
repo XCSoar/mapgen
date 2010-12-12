@@ -45,7 +45,7 @@ def main():
         generator.set_bounds_by_waypoint_file(wp)
     if latmin != None:
         # left, right, top, bottom
-        generator.set_bounds(GeoRect(lonmin, lonmax, latmax, latmin))
+        generator.set_bounds(GeoRect(float(lonmin), float(lonmax), float(latmax), float(latmin)))
     generator.add_information_file(output_file)
     generator.add_topology()
     generator.add_terrain(res)

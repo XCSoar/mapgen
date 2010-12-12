@@ -26,7 +26,7 @@ class Generator:
         self.__bounds = None
         self.__files = FileList()
 
-    def add_information_file(self, name):
+    def add_information_file(self, name, author = 'unknown'):
         '''
         Adds an information file to the map
         '''
@@ -40,6 +40,8 @@ class Generator:
                 "\ncreation time: " + time.strftime("%d.%m.%Y %H:%M:%S") + " (" + str(time.time()) +\
                 ")\nlatitude range: " + str(self.__bounds.bottom) + " to " + str(self.__bounds.top) +\
                 "\nlongitude range: " + str(self.__bounds.left)   + " to " + str(self.__bounds.right) + "\n")
+	if author != None and author != '':
+		f.write('author: ' + author + "\n")
         f.close()
 
         self.__files.add(dst, True)
