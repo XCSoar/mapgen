@@ -52,6 +52,8 @@ class Worker:
             else:
                 generator.set_bounds_by_waypoint_file(job.file_path(description.waypoint_file))
 
+            generator.add_information_file(job.description.name)
+
             if description.use_topology:
                 job.update_status('Creating topology files...')
                 generator.add_topology()

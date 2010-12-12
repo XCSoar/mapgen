@@ -46,6 +46,7 @@ def main():
     if latmin != None:
         # left, right, top, bottom
         generator.set_bounds(GeoRect(lonmin, lonmax, latmax, latmin))
+    generator.add_information_file(output_file)
     generator.add_topology()
     generator.add_terrain(res)
     generator.create(output_file)

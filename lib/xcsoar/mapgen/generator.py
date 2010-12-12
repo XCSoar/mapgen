@@ -26,29 +26,20 @@ class Generator:
         self.__bounds = None
         self.__files = FileList()
 
-    def add_information_file(self, title, author = "Unknown", credits = []):
+    def add_information_file(self, name):
         '''
         Adds an information file to the map
         '''
-
         if self.__bounds == None:
             raise RuntimeError, "Please set bounds before calling add_information_file() !"
 
-        dst = os.path.abspath(self.__dir_temp + "/info.txt")
-
-        f = open(dst, "w")
-        f.write("map name: " + title + "\n")
-        f.write("author: " + author + "\n")
-        f.write("creation time: " + time.strftime("%d.%m.%Y %H:%M:%S") +
-                " (" + str(time.time()) + ")\n")
-        f.write("latitude range: " + str(self.__bounds.bottom) +
-                " to " + str(self.__bounds.top) + "\n")
-        f.write("longitude range: " + str(self.__bounds.left) +
-                " to " + str(self.__bounds.right) + "\n")
-
-        for credit in credits:
-            f.write("credits: " + credit + "\n")
-
+        dst = os.path.join(self.__dir_temp, "info.txt")
+        f = open(dst, 'w')
+        f.write("map name: " + name +\
+                "\ngenerator: XCSoar Map Generator" +\
+                "\ncreation time: " + time.strftime("%d.%m.%Y %H:%M:%S") + " (" + str(time.time()) +\
+                ")\nlatitude range: " + str(self.__bounds.bottom) + " to " + str(self.__bounds.top) +\
+                "\nlongitude range: " + str(self.__bounds.left)   + " to " + str(self.__bounds.right) + "\n")
         f.close()
 
         self.__files.add(dst, True)
@@ -62,7 +53,7 @@ class Generator:
         if not os.path.exists(filename):
             raise RuntimeError, "Waypoint file " + filename + " not found!"
 
-        dst = os.path.abspath(self.__dir_temp + "/waypoints.xcw")
+        dst = os.path.join(self.__dir_temp, "waypoints.xcw")
         shutil.copy(filename, dst)
         if not os.path.exists(dst):
             raise RuntimeError, "Copying " + os.path.basename(filename) + " to " + dst + " failed!"
@@ -78,7 +69,7 @@ class Generator:
         if not os.path.exists(filename):
             raise RuntimeError, "Waypoint details file " + filename + " not found!"
 
-        dst = os.path.abspath(self.__dir_temp + "/airfields.txt")
+        dst = os.path.join(self.__dir_temp, "airfields.txt")
         shutil.copy(filename, dst)
         if not os.path.exists(dst):
             raise RuntimeError, "Copying " + os.path.basename(filename) + " to " + dst + " failed!"
@@ -94,7 +85,7 @@ class Generator:
         if not os.path.exists(filename):
             raise RuntimeError, "Airspace file " + filename + " not found!"
 
-        dst = os.path.abspath(self.__dir_temp + "/airspace.txt")
+        dst = os.path.join(self.__dir_temp, "airspace.txt")
         shutil.copy(filename, dst)
         if not os.path.exists(dst):
             raise RuntimeError, "Copying " + os.path.basename(filename) + " to " + dst + " failed!"
