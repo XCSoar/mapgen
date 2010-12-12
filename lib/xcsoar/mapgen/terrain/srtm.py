@@ -25,7 +25,7 @@ def __get_tile_name(lat, lon):
 
 def __download_tile(path_tile_zip, filename):
     url = __server_path + filename + '.zip'
-    print "Downloading tile " + url + ".zip ..."
+    print "Downloading tile " + url + ' ...'
     socket.setdefaulttimeout(10)
     try:
         urllib.urlretrieve(url, path_tile_zip)
