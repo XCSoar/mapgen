@@ -53,7 +53,10 @@ class Job:
 
     def error(self):
         self.__move('.error')
-        os.unlink(self.__status_file())
+        try:
+            os.unlink(self.__status_file())
+        except:
+            pass
 
     def done(self):
         self.__move()

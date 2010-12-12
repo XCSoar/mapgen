@@ -77,6 +77,7 @@ class Worker:
             finally:
                 generator.cleanup()
 
+            os.rmdir(job.file_path('tmp'))
             job.done()
         except Exception, e:
             print 'Error: ' + str(e)
