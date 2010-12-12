@@ -20,12 +20,12 @@ class Worker:
 
             s = smtplib.SMTP(self.__mail_server)
             try:
-                msg = "From: no-replay@" + self.__mail_server +\
+                msg = "From: no-reply@xcsoar.org" +\
                     "\nTo: " + job.description.mail +\
-                    "\nSubject: Download ready (" + job.description.name + ".xcm)\n" +\
-                    "The map generator has finished your map.\n" +\
-                    "It can be downloaded at http://www.xcsoar.org:8037/download?uuid=" + job.uuid
-                s.sendmail("no-replay@" + self.__mail_server, job.description.mail, msg)
+                    "\nSubject: XCSoar Map Generator - Download ready (" + job.description.name + ".xcm)\n" +\
+                    "The XCSoar Map Generator has finished your map.\n" +\
+                    "It can be downloaded at http://www.xcsoar.org/mapgen/download?uuid=" + job.uuid
+                s.sendmail('no-reply@xcsoar.org', job.description.mail, msg)
             finally:
                 s.quit()
         except Exception, e:
