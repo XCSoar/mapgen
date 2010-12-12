@@ -3,13 +3,13 @@
 import sys, os
 
 app_dir = os.path.abspath(__file__ + '/../..')
-sys.path.append(app_dir + '/lib')
+sys.path.append(os.path.join(app_dir, 'lib'))
 
 from xcsoar.mapgen.worker import Worker
 
 def main():
-    worker = Worker(dir_jobs=app_dir + '/jobs',
-                    dir_data=app_dir + '/data',
+    worker = Worker(dir_jobs=os.path.join(app_dir, 'jobs'),
+                    dir_data=os.path.join(app_dir, 'data'),
 	            mail_server='localhost')
     worker.run()
 

@@ -3,20 +3,21 @@
 import sys, os
 
 app_dir = os.path.abspath(__file__ + '/../..')
-sys.path.append(app_dir + '/lib')
+sys.path.append(os.path.join(app_dir, 'lib'))
 
 import cherrypy
 from xcsoar.mapgen.server import Server
 
 def main():
-    cherrypy.quickstart(Server(dir_jobs=app_dir + '/jobs'), '/', {
+    static_dir = os.path.join(app_dir, 'lib', 'xcsoar', 'mapgen', 'static')
+    cherrypy.quickstart(Server(dir_jobs=os.path.join(app_dir, 'jobs')), '/', {
         '/static': {
             'tools.staticdir.on': True,
-            'tools.staticdir.dir': app_dir + '/lib/xcsoar/mapgen/static',
+            'tools.staticdir.dir': static_dir,
         },
         '/favicon.ico': {
             'tools.staticfile.on': True,
-            'tools.staticfile.filename': app_dir + '/lib/xcsoar/mapgen/static/favicon.ico',
+            'tools.staticfile.filename': os.path.join(static_dir, 'favicon.ico'),
         }
     })
 
