@@ -1,6 +1,10 @@
-import os
+import os, sys
 import shutil
 import cherrypy
+import shelve
+import time
+import traceback
+import fcntl
 from genshi.filters import HTMLFormFiller
 from xcsoar.mapgen.job import Job
 from xcsoar.mapgen import view
@@ -9,6 +13,44 @@ from xcsoar.mapgen.georect import GeoRect
 class Server(object):
     def __init__(self, dir_jobs):
         self.__dir_jobs = os.path.abspath(dir_jobs)
+
+    def too_many_requests(self):
+        db = None
+        lock = None
+        try:
+            if not os.path.exists(self.__dir_jobs):
+                os.makedirs(self.__dir_jobs)
+            lock = open(os.path.join(self.__dir_jobs, 'requests.db.lock'), 'a')
+            fcntl.flock(lock, fcntl.LOCK_EX)
+            db = shelve.open(os.path.join(self.__dir_jobs, 'requests.db'))
+            for ip in db.keys():
+                times = db[ip]
+                for t in times:
+                    if time.time() - t > 3600:
+                        times.remove(t)
+                if len(times) == 0:
+                    db.remove(ip)
+                else:
+                    db[ip] = times
+            ip = cherrypy.request.remote.ip
+            if db.has_key(ip):
+                if len(db[ip]) >= 3:
+                    return True
+                times = db[ip]
+                times.append(int(time.time()))
+                db[ip] = times
+            else:
+                db[ip] = [int(time.time())]
+            return False
+        except Exception, e:
+            print 'Error: ' + str(e)
+            traceback.print_exc(file=sys.stdout)
+            return False
+        finally:
+            if lock != None:
+                lock.close()
+            if db != None:
+                db.close()
 
     @cherrypy.expose
     @view.output('index.html')
@@ -24,6 +66,9 @@ class Server(object):
 
         if not waypoint_file.file:
             return view.render(error='Waypoint file could not be read!') | HTMLFormFiller(data=dict(name=name, mail=mail))
+
+        if self.too_many_requests():
+            return view.render(error='You can generate only three maps per hour.') | HTMLFormFiller(data=dict(name=name, mail=mail))
 
         job = Job(self.__dir_jobs)
         job.description.name = name
