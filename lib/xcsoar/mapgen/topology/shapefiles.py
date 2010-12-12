@@ -7,7 +7,7 @@ from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.filelist import FileList
 
 __cmd_ogr2ogr = "ogr2ogr"
-__cmd_7zip = "7za"
+__cmd_7zip = "7zr"
 __cmd_shptree = "shptree"
 __server_base_path = "http://download.xcsoar.org/mapgen/data/"
 
