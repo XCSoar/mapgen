@@ -31,7 +31,7 @@ __layers = [
     { 'name': 'city_area',       'datasets': __vmap0_datasets, 'layer': 'pop-built-up-a',       'label': 'nam',  'where': '',       'range':  50, 'color': '223,223,0'  },
     { 'name': 'water_line',      'datasets': __vmap0_datasets, 'layer': 'hydro-water-course-l', 'label': 'nam',  'where': 'hyc=8',  'range':   7, 'color': '85,160,255' },
     { 'name': 'water_area',      'datasets': __vmap0_datasets, 'layer': 'hydro-inland-water-a', 'label': 'nam',  'where': 'hyc=8',  'range': 100, 'color': '85,160,255' },
-    { 'name': 'railroad_line',   'datasets': __vmap0_datasets, 'layer': 'trans-railroad-l'    , 'label': 'fco',  'where': 'exs=28', 'range':  10, 'color': '64,64,64'   },
+    { 'name': 'railroad_line',   'datasets': __vmap0_datasets, 'layer': 'trans-railroad-l'    , 'label': '',     'where': 'exs=28', 'range':  10, 'color': '64,64,64'   },
     ]
 
 def __filter_datasets(bounds, datasets):
