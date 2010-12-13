@@ -11,6 +11,12 @@ class GeoRect:
                 "T: " + str(self.top) + ", " +
                 "B: " + str(self.bottom))
 
+    def height(self):
+        return self.top - self.bottom
+
+    def width(self):
+        return self.right - self.left
+
     def intersects(self, other):
         return (self.inside(other.top, other.left) or
                 self.inside(other.top, other.right) or

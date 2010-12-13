@@ -70,33 +70,38 @@ class Server(object):
         if not waypoint_file.file:
             return view.render(error='Waypoint file could not be read!') | filler
 
-        if self.too_many_requests():
-            return view.render(error='You can generate only three maps per hour.') | filler
-
         job = Job(self.__dir_jobs)
-        job.description.name = name
-        job.description.mail = mail
-        job.description.waypoint_file = 'waypoints.dat'
+        desc = job.description
+        desc.name = name
+        desc.mail = mail
+        desc.waypoint_file = 'waypoints.dat'
 
         try:
-            job.description.bounds = GeoRect(float(left.strip()), float(right.strip()), float(top.strip()), float(bottom.strip()))
+            desc.bounds = GeoRect(float(left.strip()), float(right.strip()), float(top.strip()), float(bottom.strip()))
         except:
             pass
 
-        waypoint_path = job.file_path(job.description.waypoint_file)
+        waypoint_path = job.file_path(desc.waypoint_file)
         f = open(waypoint_path, "w")
         shutil.copyfileobj(fsrc=waypoint_file.file, fdst=f, length=1024 * 64)
         f.close()
 
         if os.path.getsize(waypoint_path) == 0:
             os.unlink(waypoint_path)
-            job.description.waypoint_file = None
+            desc.waypoint_file = None
 
-        if job.description.bounds == None:
-            if job.description.waypoint_file == None:
+        if desc.bounds == None:
+            if desc.waypoint_file == None:
                 job.delete()
                 return view.render(error='Waypoint file or bounds are required!') | filler
-            job.description.bounds = WaypointList().parse_file(waypoint_path).get_bounds()
+            desc.bounds = WaypointList().parse_file(waypoint_path).get_bounds()
+
+        if desc.bounds.height() > 90 or desc.bounds.width() > 90:
+            return view.render(error='Selected area is too large.') | filler
+
+        if self.too_many_requests():
+            job.delete()
+            return view.render(error='You can generate only three maps per hour.') | filler
 
         job.enqueue()
         raise cherrypy.HTTPRedirect(cherrypy.url('/status?uuid=' + job.uuid))
