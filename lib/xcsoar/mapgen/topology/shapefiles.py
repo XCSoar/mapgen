@@ -28,7 +28,7 @@ __layers = [
     { 'name': 'roadbig_line',    'datasets': __osm_datasets,   'layer': 'roadbig_line',         'label': '',     'where': '',       'range':  15, 'color': '240,64,64'  },
     { 'name': 'roadmedium_line', 'datasets': __osm_datasets,   'layer': 'roadmedium_line',      'label': '',     'where': '',       'range':   8, 'color': '240,64,64'  },
     { 'name': 'roadsmall_line',  'datasets': __osm_datasets,   'layer': 'roadsmall_line',       'label': '',     'where': '',       'range':   3, 'color': '240,64,64'  },
-    { 'name': 'city_area',       'datasets': __vmap0_datasets, 'layer': 'pop-built-up-a',       'label': 'nam',  'where': '',       'range':  50, 'color': '223,223,0'  },
+    { 'name': 'city_area',       'datasets': __vmap0_datasets, 'layer': 'pop-built-up-a',       'label': '',     'where': '',       'range':  50, 'color': '223,223,0'  },
     { 'name': 'water_line',      'datasets': __vmap0_datasets, 'layer': 'hydro-water-course-l', 'label': 'nam',  'where': 'hyc=8',  'range':   7, 'color': '85,160,255' },
     { 'name': 'water_area',      'datasets': __vmap0_datasets, 'layer': 'hydro-inland-water-a', 'label': 'nam',  'where': 'hyc=8',  'range': 100, 'color': '85,160,255' },
     { 'name': 'railroad_line',   'datasets': __vmap0_datasets, 'layer': 'trans-railroad-l'    , 'label': '',     'where': 'exs=28', 'range':  10, 'color': '64,64,64'   },
