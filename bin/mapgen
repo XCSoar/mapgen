@@ -11,7 +11,7 @@ from xcsoar.mapgen.waypoint import WaypointList
 
 def print_help():
     print "Usage:   mapgen [Options] -wpf waypoint_file output_file\n" +\
-          "         mapgen [Options] -b latmin latmax lonmin lonmax output_file\n" +\
+          "         mapgen [Options] -b left right top bottom output_file\n" +\
           "\n" +\
           "Options: -r resolution (terrain resolution, arcseconds per pixel)"
 
@@ -19,7 +19,7 @@ def main():
     args = sys.argv[1:]
 
     wp = None
-    latmin = None
+    left = None
     output_file = None
     res = 9.0
     for i in range(len(args)):
@@ -29,13 +29,13 @@ def main():
             wp = args[i + 1]
             output_file = args[i + 2]
         if args[i] == "-b" and i + 5 < len(args):
-            latmin = args[i + 1]
-            latmax = args[i + 2]
-            lonmin = args[i + 3]
-            lonmax = args[i + 4]
+            left   = args[i + 1]
+            right  = args[i + 2]
+            top    = args[i + 3]
+            bottom = args[i + 4]
             output_file = args[i + 5]
 
-    if (wp == None and latmin == None) or output_file == None:
+    if (wp == None and left == None) or output_file == None:
         print_help()
         return
 
@@ -44,9 +44,8 @@ def main():
     if wp != None:
         generator.add_waypoint_file(wp)
         generator.set_bounds(WaypointList().parse_file(wp).get_bounds())
-    if latmin != None:
-        # left, right, top, bottom
-        generator.set_bounds(GeoRect(float(lonmin), float(lonmax), float(latmax), float(latmin)))
+    if left != None:
+        generator.set_bounds(GeoRect(float(left), float(right), float(top), float(bottom)))
     generator.add_information_file(output_file)
     generator.add_topology()
     generator.add_terrain(res)
