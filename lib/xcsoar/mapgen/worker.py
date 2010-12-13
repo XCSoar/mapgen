@@ -24,7 +24,8 @@ class Worker:
                     "\nTo: " + job.description.mail +\
                     "\nSubject: XCSoar Map Generator - Download ready (" + job.description.name + ".xcm)\n" +\
                     "The XCSoar Map Generator has finished your map.\n" +\
-                    "It can be downloaded at http://www.xcsoar.org/mapgen/download?uuid=" + job.uuid
+                    "It can be downloaded at http://www.xcsoar.org/mapgen/download?uuid=" + job.uuid +\
+                    "\nThis link is valid for 7 days.\n"
                 s.sendmail('no-reply@xcsoar.org', job.description.mail, msg)
             finally:
                 s.quit()
