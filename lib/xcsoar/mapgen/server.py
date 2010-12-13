@@ -9,6 +9,7 @@ from genshi.filters import HTMLFormFiller
 from xcsoar.mapgen.job import Job
 from xcsoar.mapgen import view
 from xcsoar.mapgen.georect import GeoRect
+from xcsoar.mapgen.waypoint import WaypointList
 
 class Server(object):
     def __init__(self, dir_jobs):
@@ -82,18 +83,20 @@ class Server(object):
         except:
             pass
 
-        path = job.file_path(job.description.waypoint_file)
-        f = open(path, "w")
+        waypoint_path = job.file_path(job.description.waypoint_file)
+        f = open(waypoint_path, "w")
         shutil.copyfileobj(fsrc=waypoint_file.file, fdst=f, length=1024 * 64)
         f.close()
 
-        if os.path.getsize(path) == 0:
-            os.unlink(path)
+        if os.path.getsize(waypoint_path) == 0:
+            os.unlink(waypoint_path)
             job.description.waypoint_file = None
 
-        if job.description.bounds == None and job.description.waypoint_file == None:
-            job.delete()
-            return view.render(error='Waypoint file or bounds are required!') | filler
+        if job.description.bounds == None:
+            if job.description.waypoint_file == None:
+                job.delete()
+                return view.render(error='Waypoint file or bounds are required!') | filler
+            job.description.bounds = WaypointList().parse_file(waypoint_path).get_bounds()
 
         job.enqueue()
         raise cherrypy.HTTPRedirect(cherrypy.url('/status?uuid=' + job.uuid))

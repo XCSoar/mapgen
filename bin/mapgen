@@ -7,6 +7,7 @@ sys.path.append(os.path.join(app_dir, 'lib'))
 
 from xcsoar.mapgen.generator import Generator
 from xcsoar.mapgen.georect import GeoRect
+from xcsoar.mapgen.waypoint import WaypointList
 
 def print_help():
     print "Usage:   mapgen [Options] -wpf waypoint_file output_file\n" +\
@@ -42,7 +43,7 @@ def main():
                           dir_temp='/tmp/mapgen-' + str(os.getpid()))
     if wp != None:
         generator.add_waypoint_file(wp)
-        generator.set_bounds_by_waypoint_file(wp)
+        generator.set_bounds(WaypointList().parse_file(wp).get_bounds())
     if latmin != None:
         # left, right, top, bottom
         generator.set_bounds(GeoRect(float(lonmin), float(lonmax), float(latmax), float(latmin)))

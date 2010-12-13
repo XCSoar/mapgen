@@ -1,3 +1,4 @@
+import os
 from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.geopoint import GeoPoint
 
@@ -10,8 +11,10 @@ class Waypoint(GeoPoint):
         return str(self.name) + ", " + super() + ", " + str(self.altitude)
 
 class WaypointList:
-    def __init__(self):
+    def __init__(self, filename = None):
         self.__list = []
+        if filename != None:
+            self.parse_file(filename)
 
     def __len__(self):
         return len(self.__list)
@@ -36,11 +39,19 @@ class WaypointList:
             rc.bottom = min(rc.bottom, wp.lat)
         return rc
 
-    def parse(self, lines, type = 'WinPilot'):
-        if type == 'WinPilot':
+    def parse_file(self, filename):
+        f = open(filename, 'f')
+        try:
+            return self.parse(f, os.path.splitext(filename)[1])
+        finally:
+            f.close()
+
+    def parse(self, lines, ext = 'dat'):
+        if ext == 'dat' or ext == 'xcw':
             self.__parse_winpilot(lines)
         else:
             raise RuntimeError, 'Waypoint format ' + type + ' is not supported'
+        return self
 
     def __parse_winpilot(self, lines):
         for line in lines:

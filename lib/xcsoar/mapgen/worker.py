@@ -43,15 +43,7 @@ class Worker:
 
             generator = Generator(self.__dir_data, job.file_path('tmp'))
 
-            if description.waypoint_file:
-                job.update_status('Adding waypoint file...')
-                generator.add_waypoint_file(job.file_path(description.waypoint_file))
-
-            if description.bounds != None:
-                generator.set_bounds(description.bounds)
-            else:
-                generator.set_bounds_by_waypoint_file(job.file_path(description.waypoint_file))
-
+            generator.set_bounds(description.bounds)
             generator.add_information_file(job.description.name, job.description.mail)
 
             if description.use_topology:
@@ -61,6 +53,10 @@ class Worker:
             if description.use_terrain:
                 job.update_status('Creating terrain files...')
                 generator.add_terrain(description.resolution)
+
+            if description.waypoint_file:
+                job.update_status('Adding waypoint file...')
+                generator.add_waypoint_file(job.file_path(description.waypoint_file))
 
             if description.waypoint_details_file:
                 job.update_status('Adding waypoint details file...')

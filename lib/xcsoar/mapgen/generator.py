@@ -5,7 +5,6 @@ import time
 from xcsoar.mapgen.terrain import srtm
 from xcsoar.mapgen.topology import shapefiles
 from xcsoar.mapgen.georect import GeoRect
-from xcsoar.mapgen.waypoint import WaypointList
 from xcsoar.mapgen.filelist import FileList
 
 class Generator:
@@ -123,25 +122,6 @@ class Generator:
 
         self.__bounds = bounds
         print self.__bounds
-
-    def set_bounds_by_waypoint_file(self, filename):
-        print "Setting map boundaries to match waypoint file contents..."
-
-        print "Reading waypoint file..."
-        if not isinstance(filename, basestring):
-            raise "String expected!"
-
-        if not os.path.exists(filename):
-            raise RuntimeError, "Waypoint file " + filename + " not found!"
-
-        f = open(filename, "r")
-        try:
-            wplist = WaypointList()
-            wplist.parse(f)
-        finally:
-            f.close()
-
-        self.set_bounds(wplist.get_bounds())
 
     def create(self, filename, attach = False):
         '''
