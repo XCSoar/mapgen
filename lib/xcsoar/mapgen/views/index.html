@@ -9,23 +9,41 @@
       <ol>
 	<li>Choose a name for the map.</li>
 	<li>Enter your E-Mail address if you want to be informed when the map is ready.</li>
-	<li>Upload a waypoints file (WinPilot/XCSoar format) which defines the map area or</li>
-	<li>Select the map bounds by drawing a rectangle (press ctrl and click).</li>
+	<li>Select the map options.</li>
+	<li>Select the map bounds and/or upload a waypoint file (WinPilot/XCSoar format).</li>
       </ol>
     </div>
     <form action="${url('/generate')}" method="post" enctype="multipart/form-data">
-      <div>
+      <div id="container">
 	<div py:if="defined('error')" class="error">${error}</div>
 	<label for="name">Map name:</label>
         <input id="name" type="text" name="name"/>
         <label for="mail">E-Mail:</label>
         <input id="mail" type="text" name="mail"/>
-        <label for="waypoint_file">Waypoint file:</label>
+	<label>Options:</label>
 	<div class="box">
-          <input id="waypoint_file" type="file" name="waypoint_file"/>
+	  <input type="checkbox" name="highres" id="highres" value="1"/>
+	  <label for="highres">High resolution terrain (3 arcseconds per pixel instead of 9)</label><br/>
+	  <input type="radio" name="selection" value="bounds" id="radio_bounds" checked="checked"/>
+	  <label for="radio_bounds">Select map bounds by hand.</label><br/>
+	  <input type="radio" name="selection" value="waypoint" id="radio_waypoint"/>
+	  <label for="radio_waypoint">Add waypoint file and compute map bounds automatically.</label><br/>
+	  <input type="radio" name="selection" value="waypoint_bounds" id="radio_waypoint_bounds"/>
+	  <label for="radio_waypoint_bounds">Add waypoint file and select map bounds by hand.</label><br/>
 	</div>
-        <label>Bounds:</label>
-	<div class="box"><div id="map"/></div>
+	<div id="waypoint_file_box">
+          <label for="waypoint_file">Waypoint file:</label>
+	  <div class="box">
+            <input id="waypoint_file" type="file" name="waypoint_file"/>
+	  </div>
+	</div>
+	<div id="bounds_box">
+          <label>Bounds:</label>
+	  <div class="box">
+	    <div id="map"/>
+	    <span class="small">Draw the map bounds rectangle by pressing ctrl and clicking. Ctrl + click on a rectangle to remove.</span>
+	  </div>
+	</div>
 	<button type="submit">Generate</button>
 	<input type="hidden" name="left"/>
 	<input type="hidden" name="right"/>
@@ -34,6 +52,7 @@
       </div>
     </form>
     <script type="text/javascript" src="http://www.openlayers.org/api/OpenLayers.js"/>
-    <script type="text/javascript" src="${url('/static/map.js')}"/>
+    <script type="text/javascript" src="${url('/static/jquery.js')}"/>
+    <script type="text/javascript" src="${url('/static/mapgen.js')}"/>
   </body>
 </html>

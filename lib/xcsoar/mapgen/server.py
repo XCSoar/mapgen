@@ -6,7 +6,7 @@ import time
 import traceback
 import fcntl
 from genshi.filters import HTMLFormFiller
-from xcsoar.mapgen.job import Job
+from xcsoar.mapgen.job import Job, JobDescription
 from xcsoar.mapgen import view
 from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.waypoint import WaypointList
@@ -60,48 +60,53 @@ class Server(object):
 
     @cherrypy.expose
     @view.output('index.html')
-    def generate(self, name, mail, waypoint_file, left, right, top, bottom):
-        filler = HTMLFormFiller(data=dict(name=name, mail=mail, left=left, right=right, top=top, bottom=bottom))
-
-        name = name.strip()
+    def generate(self, cancel=False, **params):
+        name = params['name'].strip()
         if name == "":
-            return view.render(error='No map name given!') | filler
+            return view.render(error='No map name given!') | HTMLFormFiller(data=params)
 
-        if not waypoint_file.file:
-            return view.render(error='Waypoint file could not be read!') | filler
-
-        job = Job(self.__dir_jobs)
-        desc = job.description
+        desc = JobDescription()
         desc.name = name
-        desc.mail = mail
-        desc.waypoint_file = 'waypoints.dat'
+        desc.mail = params['mail']
+        desc.resolution = 3.0 if params.has_key('highres') else 9.0
 
-        try:
-            desc.bounds = GeoRect(float(left.strip()), float(right.strip()), float(top.strip()), float(bottom.strip()))
-        except:
-            pass
+        selection = params['selection']
+        waypoint_file = params['waypoint_file']
+        if selection == 'waypoint' or selection == 'waypoint_bounds':
+            if not waypoint_file.file or not waypoint_file.filename:
+                return view.render(error='No waypoint file uploaded.') | HTMLFormFiller(data=params)
 
-        waypoint_path = job.file_path(desc.waypoint_file)
-        f = open(waypoint_path, "w")
-        shutil.copyfileobj(fsrc=waypoint_file.file, fdst=f, length=1024 * 64)
-        f.close()
+            try:
+                desc.bounds = WaypointList().parse(waypoint_file.file, waypoint_file.filename).get_bounds()
+                desc.waypoint_file = 'waypoints.dat'
+            except:
+                return view.render(error='Unsupported waypoint file ' + waypoint_file.filename) | HTMLFormFiller(data=params)
 
-        if os.path.getsize(waypoint_path) == 0:
-            os.unlink(waypoint_path)
-            desc.waypoint_file = None
+        if selection == 'bounds' or selection == 'waypoint_bounds':
+            try:
+                desc.bounds = GeoRect(float(params['left']),
+                                      float(params['right']),
+                                      float(params['top']),
+                                      float(params['bottom']))
+            except:
+                return view.render(error='Map bounds not set.') | HTMLFormFiller(data=params)
 
-        if desc.bounds == None:
-            if desc.waypoint_file == None:
-                job.delete()
-                return view.render(error='Waypoint file or bounds are required!') | filler
-            desc.bounds = WaypointList().parse_file(waypoint_path).get_bounds()
+        if desc.bounds.height() <= 0 or desc.bounds.width() <= 0:
+            return view.render(error='Bounds are invalid.') | HTMLFormFiller(data=params)
 
         if desc.bounds.height() > 90 or desc.bounds.width() > 90:
-            return view.render(error='Selected area is too large.') | filler
+            return view.render(error='Selected area is too large.') | HTMLFormFiller(data=params)
 
         if self.too_many_requests():
-            job.delete()
-            return view.render(error='You can generate only three maps per hour.') | filler
+            return view.render(error='You can generate only three maps per hour.') | HTMLFormFiller(data=params)
+
+        job = Job(self.__dir_jobs, desc)
+
+        if desc.waypoint_file:
+            f = open(job.file_path(desc.waypoint_file), 'w')
+            waypoint_file.file.seek(0)
+            shutil.copyfileobj(fsrc=waypoint_file.file, fdst=f, length=1024 * 64)
+            f.close()
 
         job.enqueue()
         raise cherrypy.HTTPRedirect(cherrypy.url('/status?uuid=' + job.uuid))

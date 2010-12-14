@@ -10,10 +10,8 @@ class Waypoint(GeoPoint):
         return str(self.name) + ", " + super() + ", " + str(self.altitude)
 
 class WaypointList:
-    def __init__(self, filename = None):
+    def __init__(self):
         self.__list = []
-        if filename != None:
-            self.parse_file(filename)
 
     def __len__(self):
         return len(self.__list)

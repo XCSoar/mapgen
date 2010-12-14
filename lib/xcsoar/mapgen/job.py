@@ -17,21 +17,20 @@ class JobDescription:
     resolution = 9.0
 
 class Job:
-    description = JobDescription()
-
-    def __init__(self, dir_jobs, load=False):
-        if load:
-            self.dir  = dir_jobs
-            self.uuid = os.path.basename(self.dir).split('.')[0]
-            self.description = pickle.load(file(self.__job_file()))
-        else:
+    def __init__(self, dir_jobs, desc=None):
+        if desc:
             self.uuid = self.__generate_uuid()
             self.dir = os.path.join(dir_jobs, self.uuid + '.locked')
+            self.description = desc
             if not os.path.exists(self.dir):
                 os.makedirs(self.dir)
                 f = open(os.path.join(self.dir, 'timestamp'), 'w')
                 f.write(str(time.time()))
                 f.close()
+        else:
+            self.dir  = dir_jobs
+            self.uuid = os.path.basename(self.dir).split('.')[0]
+            self.description = pickle.load(file(self.__job_file()))
 
     def enqueue(self):
         f = open(self.__job_file(), 'wb')
@@ -95,7 +94,7 @@ class Job:
         base = os.path.join(dir_jobs, uuid)
         for suffix in ['', '.locked', '.queued', '.working', '.error']:
             if os.path.exists(base + suffix):
-              return Job(base + suffix, True)
+              return Job(base + suffix)
         return None
 
     @staticmethod
@@ -138,7 +137,7 @@ class Job:
                 shutil.rmtree(dir)
 
         if next_dir != None:
-            job = Job(next_dir, True)
+            job = Job(next_dir)
             job.__move('.working')
             return job
         return None
