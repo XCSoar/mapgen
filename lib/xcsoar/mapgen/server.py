@@ -55,12 +55,10 @@ class Server(object):
 
     @cherrypy.expose
     @view.output('index.html')
-    def index(self):
-        return view.render()
+    def index(self, **params):
+        if cherrypy.request.method != 'POST':
+            return view.render()
 
-    @cherrypy.expose
-    @view.output('index.html')
-    def generate(self, cancel=False, **params):
         name = params['name'].strip()
         if name == "":
             return view.render(error='No map name given!') | HTMLFormFiller(data=params)

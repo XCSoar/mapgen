@@ -13,7 +13,7 @@
 	<li>Select the map bounds and/or upload a waypoint file (WinPilot/XCSoar format).</li>
       </ol>
     </div>
-    <form action="${url('/generate')}" method="post" enctype="multipart/form-data">
+    <form action="${url('/')}" method="post" enctype="multipart/form-data">
       <div id="container">
 	<div py:if="defined('error')" class="error">${error}</div>
 	<label for="name">Map name:</label>
