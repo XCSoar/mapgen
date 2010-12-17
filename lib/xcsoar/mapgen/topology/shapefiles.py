@@ -152,5 +152,5 @@ def create(bounds, dir_data, dir_temp):
     for layer in __layers:
         __create_layer(bounds, layer, dir_data, dir_temp, files, index)
 
-    files.add(__create_index_file(dir_temp, index), False)
+    files.add(__create_index_file(dir_temp, index), True)
     return files

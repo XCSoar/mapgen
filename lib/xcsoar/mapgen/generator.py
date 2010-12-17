@@ -141,7 +141,7 @@ class Generator:
         for file in self.__files:
             if os.path.isfile(file[0]):
                 # file[1] is the flag if we should compress the file
-                z.write(file[0], os.path.basename(file[0]), ZIP_STORED if file[1] else ZIP_DEFLATED)
+                z.write(file[0], os.path.basename(file[0]), ZIP_DEFLATED if file[1] else ZIP_STORED)
         z.close()
 
     def cleanup(self):
