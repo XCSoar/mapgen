@@ -1,15 +1,12 @@
 import urllib
 import os
 import subprocess
-import socket
 
 from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.filelist import FileList
 
 __cmd_ogr2ogr = "ogr2ogr"
-__cmd_7zip = "7zr"
 __cmd_shptree = "shptree"
-__server_base_path = "http://download.xcsoar.org/mapgen/data/"
 
 __vmap0_datasets = [
     { 'name': 'vmap0/eur', 'bounds': GeoRect( -35, 180, 90,  30) },
@@ -42,37 +39,11 @@ def __filter_datasets(bounds, datasets):
              filtered.append(dataset)
      return filtered
 
-def __gather_dataset(dir_data, dataset):
-    file_name = dataset['name'] + '.7z'
-    zip_file = os.path.join(dir_data, file_name)
-    if not os.path.exists(zip_file):
-        print "Downloading topology dataset " + __server_base_path + file_name + " ..."
-        if not os.path.exists(os.path.dirname(zip_file)):
-             os.makedirs(os.path.dirname(zip_file))
-        socket.setdefaulttimeout(10)
-        urllib.urlretrieve(__server_base_path + file_name, zip_file)
-
-    if not os.path.exists(zip_file):
-        raise RuntimeError, "Failed to download " + file_name
-
-    print "Decompressing map file " + file_name + " ..."
-    arg = [__cmd_7zip, 'x', '-y', '-o' + os.path.dirname(zip_file), zip_file]
-
-    try:
-        p = subprocess.Popen(arg)
-        p.wait()
-    except Exception, e:
-        print "Executing " + str(arg) + " failed"
-        raise
-
-    os.unlink(zip_file)
-
-def __create_layer_from_dataset(bounds, layer, dataset, overwrite, dir_data, dir_temp):
+def __create_layer_from_dataset(bounds, layer, dataset, overwrite, downloader, dir_temp):
     if not isinstance(bounds, GeoRect):
         raise TypeError
 
-    if not os.path.exists(os.path.join(dir_data, dataset['name'])):
-        __gather_dataset(dir_data, dataset)
+    data_dir = downloader.retrieve_extracted(dataset['name'] + '.7z')
 
     print "Reading dataset " + dataset['name']  + " ..."
     arg = [__cmd_ogr2ogr]
@@ -95,7 +66,7 @@ def __create_layer_from_dataset(bounds, layer, dataset, overwrite, dir_data, dir
                 str(bounds.top)])
 
     arg.append(dir_temp)
-    arg.append(os.path.join(dir_data, dataset['name']))
+    arg.append(data_dir)
 
     arg.append(layer['layer'])
     arg.extend(['-nln', layer['name']])
@@ -120,13 +91,13 @@ def __create_layer_index(layer, dir_temp):
         print "Executing " + str(arg) + " failed"
         raise
 
-def __create_layer(bounds, layer, dir_data, dir_temp, files, index):
+def __create_layer(bounds, layer, downloader, dir_temp, files, index):
     print "Creating topology layer " + layer['name'] + " ..."
 
     datasets = __filter_datasets(bounds, layer['datasets'])
     for i in range(len(datasets)):
         __create_layer_from_dataset(bounds, layer, datasets[i],
-                                    i == 0, dir_data, dir_temp)
+                                    i == 0, downloader, dir_temp)
 
     if os.path.exists(os.path.join(dir_temp, layer['name'] + '.shp')):
         __create_layer_index(layer, dir_temp)
@@ -147,11 +118,11 @@ def __create_index_file(dir_temp, index):
     file.close()
     return os.path.join(dir_temp, "topology.tpl")
 
-def create(bounds, dir_data, dir_temp):
+def create(bounds, downloader, dir_temp):
     files = FileList()
     index = []
     for layer in __layers:
-        __create_layer(bounds, layer, dir_data, dir_temp, files, index)
+        __create_layer(bounds, layer, downloader, dir_temp, files, index)
 
     files.add(__create_index_file(dir_temp, index), True)
     return files

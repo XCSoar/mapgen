@@ -1,95 +1,48 @@
 import os
 import math
 import subprocess
-import urllib
-import socket
 from zipfile import ZipFile, BadZipfile
 from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.filelist import FileList
 
 __cmd_gdal_warp = "gdalwarp"
 __cmd_geojasper = "geojasper"
-__server_path = "http://download.xcsoar.org/mapgen/data/srtm3/"
 __use_world_file = True
 
 '''
- 1) Gather tiles
+ 1) Retrieve tiles
 '''
 def __get_tile_name(lat, lon):
     col = ((lon + 180) / 5) + 1
     row = (60 - lat) / 5
     if col < 1 or col > 72 or row < 1 or row > 24:
         return None
-
     return "srtm_%02d_%02d" % (col, row)
 
-def __download_tile(path_tile_zip, filename):
-    url = __server_path + filename + '.zip'
-    print "Downloading tile " + url + ' ...'
-    socket.setdefaulttimeout(10)
+def __extract_tile(zip_file, dir_temp, filename):
     try:
-        urllib.urlretrieve(url, path_tile_zip)
-    except IOError:
-        print "Download of tile " + url + " failed!"
-
-def __extract_tile(path_tile_zip, dir_temp, filename):
-    try:
-        zip = ZipFile(path_tile_zip, "r")
+        zip = ZipFile(zip_file, "r")
     except BadZipfile:
-        print "Decompression of the file "+filename+".zip failed!"
-        return False
-
+        os.unlink(zip_file)
+        raise RuntimeError, "Decompression of the file "+zip_file+" failed!"
     zip.extract(filename + ".tif", dir_temp)
     zip.close()
-    return True
 
-def __gather_tile(dir_data, dir_temp, lat, lon):
-    # generate filename to search for
+def __retrieve_tile(downloader, dir_temp, lat, lon):
     filename = __get_tile_name(lat, lon)
     if filename == None:
         return None
 
-    # check if the GeoTIFF file already exists in the temporary folder
-    path_tile = os.path.join(dir_temp, filename + ".tif")
-    if os.path.exists(path_tile):
-        print "Tile " + filename + " found!"
-        return path_tile
+    zip_file = downloader.retrieve('srtm3/' + filename + '.zip')
 
-    # check if the GeoTIFF file exists in the data folder
-    path_tile = os.path.join(dir_data, filename + ".tif")
-    if os.path.exists(path_tile):
-        print "Tile " + filename + " found!"
-        return path_tile
+    print "Tile " + filename + " found inside zip file! -> Decompressing ..."
+    __extract_tile(zip_file, dir_temp, filename)
+    return os.path.join(dir_temp, filename + ".tif")
 
-    path_tile_zip = os.path.join(dir_data, filename + ".zip")
-    for i in range(1, 4):
-        # if the ZIP file doesn't exist in the data folder try to download it
-        if __server_path != None:
-            if not os.path.exists(path_tile_zip):
-                __download_tile(path_tile_zip, filename)
-
-        # check if the ZIP file exists in the data folder
-        if not os.path.exists(path_tile_zip):
-            print "Tile " + filename + " can not be found!"
-            return None
-
-        print "Tile " + filename + " found inside zip file! -> Decompressing ..."
-        if not __extract_tile(path_tile_zip, dir_temp, filename):
-            os.unlink(path_tile_zip)
-            continue
-
-        # check if the GeoTIFF file now exists in the temporary folder
-        path_tile = os.path.join(dir_temp, filename + ".tif")
-        if os.path.exists(path_tile):
-            return path_tile
-
-    print "Decompression failed!"
-    return None
-
-def __gather_tiles(dir_data, dir_temp, bounds):
+def __retrieve_tiles(downloader, dir_temp, bounds):
     '''
     Makes sure the terrain tiles are available at a certain location.
-    @param dir_data: Data path
+    @param downlaoder: Downloader
     @param dir_temp: Temporary path
     @param bounds: Bounding box (GeoRect)
     @return: The list of tile files
@@ -97,7 +50,7 @@ def __gather_tiles(dir_data, dir_temp, bounds):
     if not isinstance(bounds, GeoRect):
         raise TypeError
 
-    print "Gathering terrain tiles ..."
+    print "Retrieving terrain tiles ..."
 
     # Calculate rounded bounds
     lat_start = int(math.floor(bounds.bottom / 5.0)) * 5
@@ -109,10 +62,10 @@ def __gather_tiles(dir_data, dir_temp, bounds):
     # Iterate through latitude and longitude in 5 degree interval
     for lat in range(lat_start, lat_end, 5):
         for lon in range(lon_start, lon_end, 5):
-            tile = __gather_tile(dir_data, dir_temp, lat, lon)
-            if tile != None:
-                # If tile is available append its filename to the tiles list
-                tiles.append(tile)
+            try:
+                tiles.append(__retrieve_tile(downloader, dir_temp, lat, lon))
+            except Exception, e:
+                print "Failed to retrieve tile for %02d/%02d: %s" % (lat, lon, str(e))
 
     # Return list of available tile files
     return tiles
@@ -239,13 +192,9 @@ def __cleanup(dir_temp):
                                        file.startswith("terrain")):
             os.unlink(os.path.join(dir_temp, file))
 
-def create(bounds, arcseconds_per_pixel, dir_data, dir_temp):
-    dir_data = os.path.join(dir_data, "srtm")
-    if not os.path.exists(dir_data):
-        os.makedirs(dir_data)
-
+def create(bounds, arcseconds_per_pixel, downloader, dir_temp):
     # Make sure the tiles are available
-    tiles = __gather_tiles(dir_data, dir_temp, bounds)
+    tiles = __retrieve_tiles(downloader, dir_temp, bounds)
     if len(tiles) < 1:
         return FileList()
 

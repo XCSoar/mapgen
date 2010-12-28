@@ -6,6 +6,7 @@ from xcsoar.mapgen.terrain import srtm
 from xcsoar.mapgen.topology import shapefiles
 from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.filelist import FileList
+from xcsoar.mapgen.downloader import Downloader
 
 class Generator:
     def __init__(self, dir_data, dir_temp):
@@ -14,9 +15,7 @@ class Generator:
         @param dir_data: Path of the data folder
         @param dir_temp: Path of the temporary folder
         '''
-        self.__dir_data = os.path.abspath(dir_data)
-        if not os.path.exists(self.__dir_data):
-            os.mkdir(self.__dir_data)
+        self.__downloader = Downloader(dir_data)
 
         self.__dir_temp = os.path.abspath(dir_temp)
         if not os.path.exists(self.__dir_temp):
@@ -101,7 +100,7 @@ class Generator:
                 raise RuntimeError, "Boundaries undefined!"
             bounds = self.__bounds
 
-        self.__files.extend(shapefiles.create(bounds, self.__dir_data, self.__dir_temp))
+        self.__files.extend(shapefiles.create(bounds, self.__downloader, self.__dir_temp))
 
     def add_terrain(self, arcseconds_per_pixel = 9.0, bounds = None):
         print "Adding terrain..."
@@ -112,16 +111,14 @@ class Generator:
             bounds = self.__bounds
 
         self.__files.extend(srtm.create(bounds, arcseconds_per_pixel,
-                                        self.__dir_data, self.__dir_temp))
+                                        self.__downloader, self.__dir_temp))
 
     def set_bounds(self, bounds):
-        print "Setting map boundaries..."
-
         if not isinstance(bounds, GeoRect):
             raise RuntimeError, "GeoRect expected!"
 
+        print "Setting map boundaries: " + str(bounds)
         self.__bounds = bounds
-        print self.__bounds
 
     def create(self, filename, attach = False):
         '''

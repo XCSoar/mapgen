@@ -2,7 +2,6 @@ import os
 import sys
 import time
 import smtplib
-import socket
 import traceback
 from xcsoar.mapgen.job import Job
 from xcsoar.mapgen.generator import Generator
