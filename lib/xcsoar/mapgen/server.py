@@ -30,7 +30,7 @@ class Server(object):
                     if time.time() - t > 3600:
                         times.remove(t)
                 if len(times) == 0:
-                    db.remove(ip)
+                    del db[ip]
                 else:
                     db[ip] = times
             ip = cherrypy.request.remote.ip
