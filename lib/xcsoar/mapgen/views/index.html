@@ -41,14 +41,15 @@
           <label>Bounds:</label>
 	  <div class="box">
 	    <div id="map"/>
-	    <span class="small">Draw the map bounds rectangle by pressing ctrl and clicking. Ctrl + click on a rectangle to remove.</span>
+	    <span class="note">Draw the map bounds rectangle by pressing ctrl and clicking. Ctrl + click on a rectangle to remove.</span>
+	    <hr/>
+	    <label class="left" for="left">Minimum Longitude:</label><input id="left" type="text" name="left"/><br/>
+	    <label class="left" for="right">Maximum Longitude:</label><input id="right" type="text" name="right"/><br/>
+	    <label class="left" for="bottom">Minimum Latitude:</label><input type="text" name="bottom"/><br/>
+	    <label class="left" for="top">Maximum Latitude:</label><input id="top" type="text" name="top"/><br/>
 	  </div>
 	</div>
 	<button type="submit">Generate</button>
-	<input type="hidden" name="left"/>
-	<input type="hidden" name="right"/>
-	<input type="hidden" name="top"/>
-	<input type="hidden" name="bottom"/>
       </div>
     </form>
     <script type="text/javascript" src="http://www.openlayers.org/api/OpenLayers.js"/>

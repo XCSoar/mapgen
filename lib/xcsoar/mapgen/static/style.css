@@ -5,6 +5,12 @@ body {
   color: #333;
 }
 
+hr {
+  height: 1px;
+  background-color: #9f9c99;
+  border-style: none;
+}
+
 #content {
   width: 50%;
   margin: 80px auto;
@@ -34,11 +40,15 @@ label {
   display: block;
 }
 
-.box label, .box .small {
+.box label, .box .note {
   font-size: 10pt;
-  width: 100%;
   margin: 0;
   display: inline;
+}
+
+.box .left {
+  width: 10em;
+  float: left;
 }
 
 #name, #mail, .box, .error {
