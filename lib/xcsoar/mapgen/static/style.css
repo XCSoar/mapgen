@@ -41,13 +41,14 @@ label {
 }
 
 .box label, .box .note {
+  clear: left;
   font-size: 10pt;
   margin: 0;
   display: inline;
 }
 
 .box .left {
-  width: 10em;
+  width: 12em;
   float: left;
 }
 
