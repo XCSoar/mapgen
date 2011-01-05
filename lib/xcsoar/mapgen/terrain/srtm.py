@@ -106,8 +106,7 @@ def __create(dir_temp, tiles, arcseconds_per_pixel, bounds):
             "-r", "cubic",
             "-tr", str(degree_per_pixel), str(degree_per_pixel),
             "-wt", "Int16",
-            "-dstnodata", "-31744",
-            "-multi"]
+            "-dstnodata", "-31744"]
 
     if __use_world_file == True:
         args.extend(["-co", "TFW=YES"])
