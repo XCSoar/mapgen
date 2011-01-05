@@ -17,7 +17,7 @@ def __get_tile_name(lat, lon):
     col = ((lon + 180) / 5) + 1
     row = (60 - lat) / 5
     if col < 1 or col > 72 or row < 1 or row > 24:
-        return None
+        raise RuntimeError("Coordinate out of bounds")
     return "srtm_%02d_%02d" % (col, row)
 
 def __extract_tile(zip_file, dir_temp, filename):
@@ -31,11 +31,7 @@ def __extract_tile(zip_file, dir_temp, filename):
 
 def __retrieve_tile(downloader, dir_temp, lat, lon):
     filename = __get_tile_name(lat, lon)
-    if filename == None:
-        return None
-
     zip_file = downloader.retrieve('srtm3/' + filename + '.zip')
-
     print("Tile " + filename + " found inside zip file! -> Decompressing ...")
     __extract_tile(zip_file, dir_temp, filename)
     return os.path.join(dir_temp, filename + ".tif")
