@@ -92,7 +92,7 @@ class Server(object):
         if desc.bounds.height() <= 0 or desc.bounds.width() <= 0:
             return view.render(error='Bounds are invalid.') | HTMLFormFiller(data=params)
 
-        if desc.bounds.height() > 15 or desc.bounds.width() > 15:
+        if desc.bounds.height() * desc.bounds.width() > 1000:
             return view.render(error='Selected area is too large.') | HTMLFormFiller(data=params)
 
         if self.too_many_requests():
