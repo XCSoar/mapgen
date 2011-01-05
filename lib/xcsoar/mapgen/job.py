@@ -5,6 +5,8 @@ import time
 import os
 import shutil
 
+from xcsoar.mapgen.util import slurp, spew
+
 class JobDescription:
     name = None
     mail = None
@@ -24,18 +26,22 @@ class Job:
             self.description = desc
             if not os.path.exists(self.dir):
                 os.makedirs(self.dir)
-                f = open(os.path.join(self.dir, 'timestamp'), 'w')
-                f.write(str(time.time()))
-                f.close()
+                spew(os.path.join(self.dir, 'timestamp'), time.time())
         else:
             self.dir  = dir_jobs
             self.uuid = os.path.basename(self.dir).split('.')[0]
-            self.description = pickle.load(file(self.__job_file()))
+            f = open(self.__job_file(), 'rb')
+            try:
+                self.description = pickle.load(f)
+            finally:
+                f.close()
 
     def enqueue(self):
         f = open(self.__job_file(), 'wb')
-        pickle.dump(self.description, f)
-        f.close()
+        try:
+            pickle.dump(self.description, f)
+        finally:
+            f.close()
         self.__move('.queued')
 
     def file_path(self, name):
@@ -62,9 +68,7 @@ class Job:
         os.unlink(self.__status_file())
 
     def update_status(self, status):
-        f = open(self.__status_file(), 'w')
-        f.write(status)
-        f.close()
+        spew(self.__status_file(), status)
 
     def delete(self):
         shutil.rmtree(self.dir)
@@ -72,7 +76,7 @@ class Job:
     def status(self):
         path = self.__status_file()
         if os.path.exists(path):
-            return file(path).read()
+            return slurp(path)
         name = os.path.basename(self.dir)
         i = name.find('.')
         if i == -1:
@@ -113,16 +117,16 @@ class Job:
 
             ts = None
             try:
-                ts = float(file(os.path.join(dir, 'timestamp')).read())
-            except Exception, e:
-                print 'Could not read timestamp file for job ' + dir + "\n" + str(e)
+                ts = float(slurp(os.path.join(dir, 'timestamp')))
+            except Exception as e:
+                print('Could not read timestamp file for job ' + dir + "\n" + str(e))
                 continue
 
             age = time.time() - ts
 
             # Check if there is a running job which is expired
             if (dir.endswith('.locked') or dir.endswith('.working')) and age > 60*60:
-                print 'Delete expired job ' + dir
+                print('Delete expired job ' + dir)
                 shutil.rmtree(dir)
                 continue
 
@@ -133,7 +137,7 @@ class Job:
                     next_ts = ts
             elif age > 24*7*60*60:
                 # Delete if download is expired
-                print 'Delete expired job ' + dir
+                print('Delete expired job ' + dir)
                 shutil.rmtree(dir)
 
         if next_dir != None:

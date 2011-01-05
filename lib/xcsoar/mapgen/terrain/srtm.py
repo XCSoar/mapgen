@@ -1,9 +1,10 @@
 import os
 import math
-import subprocess
 from zipfile import ZipFile, BadZipfile
+
 from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.filelist import FileList
+from xcsoar.mapgen.util import command
 
 __cmd_gdal_warp = "gdalwarp"
 __cmd_geojasper = "geojasper"
@@ -24,7 +25,7 @@ def __extract_tile(zip_file, dir_temp, filename):
         zip = ZipFile(zip_file, "r")
     except BadZipfile:
         os.unlink(zip_file)
-        raise RuntimeError, "Decompression of the file "+zip_file+" failed!"
+        raise RuntimeError("Decompression of the file "+zip_file+" failed!")
     zip.extract(filename + ".tif", dir_temp)
     zip.close()
 
@@ -35,7 +36,7 @@ def __retrieve_tile(downloader, dir_temp, lat, lon):
 
     zip_file = downloader.retrieve('srtm3/' + filename + '.zip')
 
-    print "Tile " + filename + " found inside zip file! -> Decompressing ..."
+    print("Tile " + filename + " found inside zip file! -> Decompressing ...")
     __extract_tile(zip_file, dir_temp, filename)
     return os.path.join(dir_temp, filename + ".tif")
 
@@ -50,7 +51,7 @@ def __retrieve_tiles(downloader, dir_temp, bounds):
     if not isinstance(bounds, GeoRect):
         raise TypeError
 
-    print "Retrieving terrain tiles ..."
+    print("Retrieving terrain tiles ...")
 
     # Calculate rounded bounds
     lat_start = int(math.floor(bounds.bottom / 5.0)) * 5
@@ -64,8 +65,8 @@ def __retrieve_tiles(downloader, dir_temp, bounds):
         for lon in range(lon_start, lon_end, 5):
             try:
                 tiles.append(__retrieve_tile(downloader, dir_temp, lat, lon))
-            except Exception, e:
-                print "Failed to retrieve tile for %02d/%02d: %s" % (lat, lon, str(e))
+            except Exception as e:
+                print("Failed to retrieve tile for %02d/%02d: %s" % (lat, lon, str(e)))
 
     # Return list of available tile files
     return tiles
@@ -94,7 +95,7 @@ def __retrieve_tiles(downloader, dir_temp, bounds):
         (Output file)
 '''
 def __create(dir_temp, tiles, arcseconds_per_pixel, bounds):
-    print "Resampling terrain ..."
+    print("Resampling terrain ...")
     output_file = os.path.join(dir_temp, "terrain.tif")
     if os.path.exists(output_file):
         os.unlink(output_file)
@@ -119,12 +120,7 @@ def __create(dir_temp, tiles, arcseconds_per_pixel, bounds):
     args.extend(tiles)
     args.append(output_file)
 
-    try:
-        p = subprocess.Popen(args)
-        p.wait()
-    except Exception, e:
-        print "Executing " + str(arg) + " failed"
-        raise
+    command(args)
 
     return output_file
 
@@ -147,7 +143,7 @@ def __create(dir_temp, tiles, arcseconds_per_pixel, bounds):
         (???)
 '''
 def __convert(dir_temp, input_file, rc):
-    print "Converting terrain to JP2 format ..."
+    print("Converting terrain to JP2 format ...")
     output_file = os.path.join(dir_temp, "terrain.jp2")
     if os.path.exists(output_file):
         os.unlink(output_file)
@@ -168,12 +164,7 @@ def __convert(dir_temp, input_file, rc):
                      "-O", "latmin=" + str(rc.bottom)])
 
 
-    try:
-        p = subprocess.Popen(args)
-        p.wait()
-    except Exception, e:
-        print "Executing " + str(arg) + " failed"
-        raise
+    command(args)
 
     output = FileList()
     output.add(output_file, False)

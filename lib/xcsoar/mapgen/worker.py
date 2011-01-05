@@ -15,7 +15,7 @@ class Worker:
 
     def __send_download_mail(self, job):
         try:
-            print "Sending download mail to " + job.description.mail + " ..."
+            print("Sending download mail to " + job.description.mail + " ...")
 
             s = smtplib.SMTP(self.__mail_server)
             try:
@@ -28,16 +28,16 @@ class Worker:
                 s.sendmail('no-reply@xcsoar.org', job.description.mail, msg)
             finally:
                 s.quit()
-        except Exception, e:
-            print 'Failed to send mail: ' + str(e)
+        except Exception as e:
+            print('Failed to send mail: ' + str(e))
 
     def __do_job(self, job):
         try:
-            print "Generating map file for job " + job.uuid
+            print("Generating map file for job " + job.uuid)
             description = job.description
 
             if description.waypoint_file == None and description.bounds == None:
-                print "No waypoint file or bounds set. Aborting."
+                print("No waypoint file or bounds set. Aborting.")
                 job.delete()
                 return
 
@@ -75,19 +75,19 @@ class Worker:
 
             os.rmdir(job.file_path('tmp'))
             job.done()
-        except Exception, e:
-            print 'Error: ' + str(e)
+        except Exception as e:
+            print('Error: ' + str(e))
             traceback.print_exc(file=sys.stdout)
             job.error()
             return
 
-        print "Map ready for use (" + job.map_file() + ")"
+        print("Map ready for use (" + job.map_file() + ")")
         if job.description.mail != '':
             self.__send_download_mail(job)
 
     def run(self):
         self.__run = True
-        print "Monitoring " + self.__dir_jobs + " for new jobs ..."
+        print("Monitoring " + self.__dir_jobs + " for new jobs ...")
         while self.__run:
             try:
                 job = Job.get_next(self.__dir_jobs)
@@ -95,6 +95,6 @@ class Worker:
                     time.sleep(0.5)
                     continue
                 self.__do_job(job)
-            except Exception, e:
-                print 'Error: ' + str(e)
+            except Exception as e:
+                print('Error: ' + str(e))
                 traceback.print_exc(file=sys.stdout)

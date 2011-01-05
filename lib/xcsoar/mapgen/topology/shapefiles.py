@@ -1,9 +1,9 @@
 import urllib
 import os
-import subprocess
 
 from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.filelist import FileList
+from xcsoar.mapgen.util import command
 
 __cmd_ogr2ogr = "ogr2ogr"
 __cmd_shptree = "shptree"
@@ -45,7 +45,7 @@ def __create_layer_from_dataset(bounds, layer, dataset, overwrite, downloader, d
 
     data_dir = downloader.retrieve_extracted(dataset['name'] + '.7z')
 
-    print "Reading dataset " + dataset['name']  + " ..."
+    print("Reading dataset " + dataset['name']  + " ...")
     arg = [__cmd_ogr2ogr]
 
     if overwrite == True:
@@ -71,28 +71,18 @@ def __create_layer_from_dataset(bounds, layer, dataset, overwrite, downloader, d
     arg.append(layer['layer'])
     arg.extend(['-nln', layer['name']])
 
-    try:
-        p = subprocess.Popen(arg)
-        p.wait()
-    except Exception, e:
-        print "Executing " + str(arg) + " failed"
-        raise
+    command(arg)
 
 def __create_layer_index(layer, dir_temp):
-    print "Generating index file for layer " + layer['name'] + " ..."
+    print("Generating index file for layer " + layer['name'] + " ...")
     arg = [__cmd_shptree]
 
     arg.append(os.path.join(dir_temp, layer['name'] + ".shp"))
 
-    try:
-        p = subprocess.Popen(arg)
-        p.wait()
-    except Exception, e:
-        print "Executing " + str(arg) + " failed"
-        raise
+    command(arg)
 
 def __create_layer(bounds, layer, downloader, dir_temp, files, index):
-    print "Creating topology layer " + layer['name'] + " ..."
+    print("Creating topology layer " + layer['name'] + " ...")
 
     datasets = __filter_datasets(bounds, layer['datasets'])
     for i in range(len(datasets)):
@@ -111,11 +101,13 @@ def __create_layer(bounds, layer, downloader, dir_temp, files, index):
 
 def __create_index_file(dir_temp, index):
     file = open(os.path.join(dir_temp, 'topology.tpl'), 'w')
-    file.write("* filename, range, icon, label_index, r, g, b\n")
-    for layer in index:
-        file.write(layer['name'] + ',' + str(layer['range']) + ',,' +
-                   ('' if layer['label'] == '' else '1') + ',' + layer['color'] + "\n")
-    file.close()
+    try:
+         file.write("* filename, range, icon, label_index, r, g, b\n")
+         for layer in index:
+              file.write(layer['name'] + ',' + str(layer['range']) + ',,' +
+                         ('' if layer['label'] == '' else '1') + ',' + layer['color'] + "\n")
+    finally:
+         file.close()
     return os.path.join(dir_temp, "topology.tpl")
 
 def create(bounds, downloader, dir_temp):

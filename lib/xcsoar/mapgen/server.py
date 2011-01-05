@@ -43,7 +43,7 @@ class Server(object):
             else:
                 db[ip] = [int(time.time())]
             return False
-        except Exception, e:
+        except Exception as e:
             print 'Error: ' + str(e)
             traceback.print_exc(file=sys.stdout)
             return False
@@ -101,10 +101,12 @@ class Server(object):
         job = Job(self.__dir_jobs, desc)
 
         if desc.waypoint_file:
-            f = open(job.file_path(desc.waypoint_file), 'w')
             waypoint_file.file.seek(0)
-            shutil.copyfileobj(fsrc=waypoint_file.file, fdst=f, length=1024 * 64)
-            f.close()
+            f = open(job.file_path(desc.waypoint_file), 'w')
+            try:
+                shutil.copyfileobj(fsrc=waypoint_file.file, fdst=f, length=1024 * 64)
+            finally:
+                f.close()
 
         job.enqueue()
         raise cherrypy.HTTPRedirect(cherrypy.url('/status?uuid=' + job.uuid))

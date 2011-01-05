@@ -2,8 +2,9 @@ import urllib
 import os
 import hashlib
 import shutil
-import subprocess
 import socket
+
+from xcsoar.mapgen.util import slurp, spew, command
 
 class Downloader:
     def __init__(self, dir):
@@ -26,19 +27,14 @@ class Downloader:
             self.__download(file, dest_file)
             if not self.__is_valid(file, dest_file):
                 self.__remove(dest_file, dest_file + '.md5', dest_dir)
-                raise RuntimeError, 'File is not valid after download ' + dest_file
+                raise RuntimeError('File is not valid after download ' + dest_file)
             if file.endswith('.7z'):
-                print "Decompressing file " + dest_file + " ..."
+                print("Decompressing file " + dest_file + " ...")
                 arg = [self.__cmd_7zip, 'x', '-y', '-o' + os.path.dirname(dest_file), dest_file]
-                try:
-                    p = subprocess.Popen(arg)
-                    p.wait()
-                except Exception, e:
-                    print "Executing " + str(arg) + " failed"
-                    raise
+                command(arg)
                 os.unlink(dest_file)
             else:
-                raise RuntimeError, 'Cannot extract ' + dest
+                raise RuntimeError('Cannot extract ' + dest)
         return dest_dir
 
     def retrieve(self, file):
@@ -54,7 +50,7 @@ class Downloader:
         self.__download(file, dest)
         if not self.__is_valid(file, dest):
             self.__remove(dest, dest + '.md5')
-            raise RuntimeError, 'File is not valid after download ' + dest
+            raise RuntimeError('File is not valid after download ' + dest)
         return dest
 
     def __is_valid(self, file, dest):
@@ -76,11 +72,11 @@ class Downloader:
     def __get_local_md5(self, file):
         md5_path = file + '.md5'
         if os.path.exists(md5_path):
-            return open(md5_path).read()
+            return slurp(md5_path)
         if not os.path.isfile(file):
             return None
-        file = open(file)
         md5 = hashlib.md5()
+        file = open(file)
         try:
             while True:
                 data = file.read(0xFFFF)
@@ -90,15 +86,13 @@ class Downloader:
         finally:
             file.close()
         md5 = md5.hexdigest()
-        file = open(md5_path, 'w')
-        file.write(md5)
-        file.close()
+        spew(md5_path, md5)
         return md5
 
     def __download(self, file, dest):
         if not os.path.exists(dest):
             url = self.__base_url + file
-            print "Downloading " + url + " ..."
+            print("Downloading " + url + " ...")
             if not os.path.exists(os.path.dirname(dest)):
                 os.makedirs(os.path.dirname(dest))
             urllib.urlretrieve(url, dest)
@@ -106,7 +100,7 @@ class Downloader:
     def __remove(self, *files):
         for file in files:
             if os.path.exists(file):
-                print "Removing outdated/invalid file " + file + " ..."
+                print("Removing outdated/invalid file " + file + " ...")
                 if os.path.isdir(file):
                     shutil.rmtree(file)
                 else:
