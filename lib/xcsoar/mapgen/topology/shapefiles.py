@@ -39,7 +39,7 @@ def __filter_datasets(bounds, datasets):
              filtered.append(dataset)
      return filtered
 
-def __create_layer_from_dataset(bounds, layer, dataset, overwrite, downloader, dir_temp):
+def __create_layer_from_dataset(bounds, layer, dataset, append, downloader, dir_temp):
     if not isinstance(bounds, GeoRect):
         raise TypeError
 
@@ -48,11 +48,9 @@ def __create_layer_from_dataset(bounds, layer, dataset, overwrite, downloader, d
     print("Reading dataset " + dataset['name']  + " ...")
     arg = [__cmd_ogr2ogr]
 
-    if overwrite == True:
-        arg.append("-overwrite")
-    else:
-        arg.append("-update")
-        arg.append("-append")
+    if append:
+         arg.append("-update")
+         arg.append("-append")
 
     if layer['where'] != '':
         arg.extend(["-where", layer['where']])
@@ -87,7 +85,7 @@ def __create_layer(bounds, layer, downloader, dir_temp, files, index):
     datasets = __filter_datasets(bounds, layer['datasets'])
     for i in range(len(datasets)):
         __create_layer_from_dataset(bounds, layer, datasets[i],
-                                    i == 0, downloader, dir_temp)
+                                    i != 0, downloader, dir_temp)
 
     if os.path.exists(os.path.join(dir_temp, layer['name'] + '.shp')):
         __create_layer_index(layer, dir_temp)
