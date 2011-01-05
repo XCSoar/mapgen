@@ -91,6 +91,8 @@ class Downloader:
 
     def __download(self, file, dest):
         if not os.path.exists(dest):
+            if not self.__get_origin_md5(file):
+                raise RuntimeError(file + ' exists not on the server')
             url = self.__base_url + file
             print("Downloading " + url + " ...")
             if not os.path.exists(os.path.dirname(dest)):
