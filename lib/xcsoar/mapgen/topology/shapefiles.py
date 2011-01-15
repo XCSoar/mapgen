@@ -23,8 +23,6 @@ __layers = [
      { 'name':     'city_area',
        'datasets': __vmap0_datasets,
        'layer':    'pop-built-up-a',
-       'label':    '',
-       'where':    '',
        'range':    50,
        'color':    '223,223,0' },
      { 'name':     'water_area',
@@ -44,50 +42,39 @@ __layers = [
      { 'name':     'roadbig_line',
        'datasets': __osm_datasets,
        'layer':    'roadbig_line',
-       'label':    '',
-       'where':    '',
        'range':    15,
        'color':    '240,64,64' },
      { 'name':     'roadmedium_line',
        'datasets': __osm_datasets,
        'layer':    'roadmedium_line',
-       'label':    '',
-       'where':    '',
        'range':    8,
        'color':    '240,64,64' },
      { 'name':     'roadsmall_line',
        'datasets': __osm_datasets,
        'layer':    'roadsmall_line',
-       'label':    '',
-       'where':    '',
        'range':    3,
        'color':    '240,64,64' },
      { 'name':     'railway_line',
        'datasets': __osm_datasets,
        'layer':    'railway_line',
-       'label':    '',
-       'where':    '',
        'range':    10,
        'color':    '64,64,64'   },
      { 'name':     'citybig_point',
        'datasets': __osm_datasets,
        'layer':    'citybig_point',
        'label':    'name',
-       'where':    '',
        'range':    15,
        'color':    '223,223,0'  },
      { 'name':     'citymedium_point',
        'datasets': __osm_datasets,
        'layer':    'citymedium_point',
        'label':    'name',
-       'where':    '',
        'range':    10,
        'color':    '223,223,0'  },
      { 'name':     'citysmall_point',
        'datasets': __osm_datasets,
        'layer':    'citysmall_point',
        'label':    'name',
-       'where':    '',
        'range':    3,
        'color':    '223,223,0'  },
      ]
@@ -112,10 +99,10 @@ def __create_layer_from_dataset(bounds, layer, dataset, append, downloader, dir_
          arg.append("-update")
          arg.append("-append")
 
-    if layer['where'] != '':
-        arg.extend(["-where", layer['where']])
+    if 'where' in layer:
+         arg.extend(["-where", layer['where']])
 
-    arg.extend(["-select", layer['label']])
+    arg.extend(["-select", layer['label'] if 'label' in layer else ''])
 
     arg.extend(["-spat",
                 str(bounds.left),
@@ -155,7 +142,7 @@ def __create_layer(bounds, layer, downloader, dir_temp, files, index):
         files.add(os.path.join(dir_temp, layer['name'] + '.dbf'), False)
         files.add(os.path.join(dir_temp, layer['name'] + '.prj'), False)
         files.add(os.path.join(dir_temp, layer['name'] + '.qix'), False)
-        index.append({ 'name': layer['name'], 'range': layer['range'], 'color': layer['color'], 'label': layer['label'] })
+        index.append({ 'name': layer['name'], 'range': layer['range'], 'color': layer['color'], 'label': layer.get('label', '') })
 
 def __create_index_file(dir_temp, index):
     file = open(os.path.join(dir_temp, 'topology.tpl'), 'w')
