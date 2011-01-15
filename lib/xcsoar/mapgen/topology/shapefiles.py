@@ -43,12 +43,14 @@ __layers = [
        'datasets': __osm_datasets,
        'layer':    'roadbig_line',
        'range':    15,
-       'color':    '240,64,64' },
+       'color':    '240,64,64',
+       'pen_width': 3 },
      { 'name':     'roadmedium_line',
        'datasets': __osm_datasets,
        'layer':    'roadmedium_line',
        'range':    8,
-       'color':    '240,64,64' },
+       'color':    '240,64,64',
+       'pen_width': 2 },
      { 'name':     'roadsmall_line',
        'datasets': __osm_datasets,
        'layer':    'roadsmall_line',
@@ -65,12 +67,14 @@ __layers = [
        'layer':    'citybig_point',
        'label':    'name',
        'range':    15,
+       'label_important_range': 10,
        'color':    '223,223,0'  },
      { 'name':     'citymedium_point',
        'datasets': __osm_datasets,
        'layer':    'citymedium_point',
        'label':    'name',
        'range':    10,
+       'label_important_range': 3,
        'color':    '223,223,0'  },
      { 'name':     'citysmall_point',
        'datasets': __osm_datasets,
@@ -143,15 +147,20 @@ def __create_layer(bounds, layer, downloader, dir_temp, files, index):
         files.add(os.path.join(dir_temp, layer['name'] + '.dbf'), False)
         files.add(os.path.join(dir_temp, layer['name'] + '.prj'), False)
         files.add(os.path.join(dir_temp, layer['name'] + '.qix'), False)
-        index.append({ 'name': layer['name'], 'range': layer['range'], 'color': layer['color'], 'label': layer.get('label', '') })
+        index.append(layer)
 
 def __create_index_file(dir_temp, index):
     file = open(os.path.join(dir_temp, 'topology.tpl'), 'w')
     try:
-         file.write("* filename, range, icon, label_index, r, g, b\n")
+         file.write("* filename, range, icon, label_index, r, g, b, pen_width, label_range, label_important_range\n")
          for layer in index:
-              file.write(layer['name'] + ',' + str(layer['range']) + ',,' +
-                         ('' if layer['label'] == '' else '1') + ',' + layer['color'] + "\n")
+              file.write(layer['name'] + ',' +
+                         str(layer['range']) + ',,' +
+                         ('1' if 'label' in layer else '') + ',' +
+                         layer['color'] + ',' +
+                         str(layer.get('pen_width', 1)) + ',' +
+                         str(layer.get('label_range', layer['range'])) + ',' +
+                         str(layer.get('label_important_range', 0)) + "\n")
     finally:
          file.close()
     return os.path.join(dir_temp, "topology.tpl")
