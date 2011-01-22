@@ -147,7 +147,7 @@ def __convert(dir_temp, input_file, rc):
             "-f", input_file,
             "-F", output_file,
             "-T", "jp2",
-            "-O", "rate=0.1",
+            "-O", "rate=1.0",
             "-O", "tilewidth=256",
             "-O", "tileheight=256"]
 
