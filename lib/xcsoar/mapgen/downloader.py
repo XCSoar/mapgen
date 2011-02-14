@@ -9,6 +9,9 @@ class Downloader:
         self.__base_url = 'http://download.xcsoar.org/mapgen/data/'
         self.__cmd_7zip = '7zr'
         self.__dir = os.path.abspath(dir)
+        if not os.path.exists(self.__dir):
+            os.makedirs(self.__dir)
+        command(['wget', '-q', '-N', '-P', self.__dir, self.__base_url + 'data.md5'])
 
     def retrieve_extracted(self, file):
         '''
@@ -55,9 +58,6 @@ class Downloader:
         return md5 and md5 == self.__get_origin_md5(file)
 
     def __get_origin_md5(self, file):
-        if not os.path.exists(self.__dir):
-            os.makedirs(self.__dir)
-        command(['wget', '-q', '-N', '-P', self.__dir, self.__base_url + 'data.md5'])
         f = open(os.path.join(self.__dir, 'data.md5'))
         for line in f:
             line = line.split()
