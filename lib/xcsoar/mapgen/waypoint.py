@@ -47,7 +47,7 @@ class WaypointList:
         if filename.endswith('.xcw') or filename.endswith('.dat'):
             self.__parse_winpilot(lines)
         else:
-            raise RuntimeError, 'Waypoint file ' + filename + ' is not supported'
+            raise RuntimeError('Waypoint file ' + filename + ' is not supported')
         return self
 
     def __parse_winpilot(self, lines):
