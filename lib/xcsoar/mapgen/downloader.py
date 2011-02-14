@@ -1,8 +1,6 @@
-import urllib
 import os
 import hashlib
 import shutil
-import socket
 
 from xcsoar.mapgen.util import slurp, spew, command
 
@@ -11,7 +9,6 @@ class Downloader:
         self.__base_url = 'http://download.xcsoar.org/mapgen/data/'
         self.__cmd_7zip = '7zr'
         self.__dir = os.path.abspath(dir)
-        socket.setdefaulttimeout(10)
 
     def retrieve_extracted(self, file):
         '''
@@ -58,11 +55,10 @@ class Downloader:
         return md5 and md5 == self.__get_origin_md5(file)
 
     def __get_origin_md5(self, file):
-        dest = os.path.join(self.__dir, 'data.md5')
-        if not os.path.exists(os.path.dirname(dest)):
-            os.makedirs(os.path.dirname(dest))
-        urllib.urlretrieve(self.__base_url + 'data.md5', dest)
-        f = open(dest)
+        if not os.path.exists(self.__dir):
+            os.makedirs(self.__dir)
+        command(['wget', '-q', '-N', '-P', self.__dir, self.__base_url + 'data.md5'])
+        f = open(os.path.join(self.__dir, 'data.md5'))
         for line in f:
             line = line.split()
             if line[1] == file:
@@ -97,7 +93,7 @@ class Downloader:
             print("Downloading " + url + " ...")
             if not os.path.exists(os.path.dirname(dest)):
                 os.makedirs(os.path.dirname(dest))
-            urllib.urlretrieve(url, dest)
+            command(['wget', '-O', dest, url])
 
     def __remove(self, *files):
         for file in files:

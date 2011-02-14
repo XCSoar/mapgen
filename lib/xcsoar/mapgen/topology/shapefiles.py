@@ -1,4 +1,3 @@
-import urllib
 import os
 
 from xcsoar.mapgen.georect import GeoRect
