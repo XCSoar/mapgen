@@ -76,7 +76,7 @@ class Downloader:
         if not os.path.isfile(file):
             return None
         md5 = hashlib.md5()
-        file = open(file)
+        file = open(file, 'rb')
         try:
             while True:
                 data = file.read(0xFFFF)
