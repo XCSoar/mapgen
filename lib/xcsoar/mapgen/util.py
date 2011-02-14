@@ -3,16 +3,16 @@ import subprocess
 def slurp(file):
     f = open(file, 'r')
     try:
-	return f.read()
+        return f.read()
     finally:
-	f.close()
+        f.close()
 
 def spew(file, content):
     f = open(file, 'w')
     try:
         f.write(str(content))
     finally:
-	f.close()
+        f.close()
 
 def command(args):
     try:
