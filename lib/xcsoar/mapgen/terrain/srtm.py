@@ -39,7 +39,7 @@ def __retrieve_tile(downloader, dir_temp, lat, lon):
 def __retrieve_tiles(downloader, dir_temp, bounds):
     '''
     Makes sure the terrain tiles are available at a certain location.
-    @param downlaoder: Downloader
+    @param downloader: Downloader
     @param dir_temp: Temporary path
     @param bounds: Bounding box (GeoRect)
     @return: The list of tile files
@@ -93,9 +93,6 @@ def __retrieve_tiles(downloader, dir_temp, bounds):
 def __create(dir_temp, tiles, arcseconds_per_pixel, bounds):
     print("Resampling terrain ...")
     output_file = os.path.join(dir_temp, "terrain.tif")
-    if os.path.exists(output_file):
-        os.unlink(output_file)
-
     degree_per_pixel = float(arcseconds_per_pixel) / 3600.0
 
     args = [__cmd_gdal_warp,
@@ -140,9 +137,6 @@ def __create(dir_temp, tiles, arcseconds_per_pixel, bounds):
 def __convert(dir_temp, input_file, rc):
     print("Converting terrain to JP2 format ...")
     output_file = os.path.join(dir_temp, "terrain.jp2")
-    if os.path.exists(output_file):
-        os.unlink(output_file)
-
     args = [__cmd_geojasper,
             "-f", input_file,
             "-F", output_file,
