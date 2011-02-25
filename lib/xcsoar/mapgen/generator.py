@@ -145,5 +145,8 @@ class Generator:
 
     def cleanup(self):
         for file in self.__files:
-            os.unlink(file[0])
+            try:
+                os.unlink(file[0])
+            except Exception as e:
+                print('Error: ' + str(e))
         self.__files.clear()
