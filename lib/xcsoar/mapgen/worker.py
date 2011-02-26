@@ -5,9 +5,11 @@ import smtplib
 import traceback
 from xcsoar.mapgen.job import Job
 from xcsoar.mapgen.generator import Generator
+from xcsoar.mapgen.util import check_commands
 
 class Worker:
     def __init__(self, dir_jobs, dir_data, mail_server):
+        check_commands()
         self.__dir_jobs = os.path.abspath(dir_jobs)
         self.__dir_data = os.path.abspath(dir_data)
         self.__mail_server = mail_server

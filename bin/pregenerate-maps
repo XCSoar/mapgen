@@ -7,7 +7,6 @@ sys.path.append(os.path.join(app_dir, 'lib'))
 
 from xcsoar.mapgen.generator import Generator
 from xcsoar.mapgen.georect import GeoRect
-from xcsoar.mapgen.util import check_commands
 
 maps = [["GER", 5.5, 47.0, 15.5, 55.0],
 	["POR", -9.6, 36.7, -6.0, 41.5],
@@ -84,7 +83,6 @@ maps = [["GER", 5.5, 47.0, 15.5, 55.0],
 	["US_ID_SOUTHWEST", -119.3, 41.5, -112.7, 45.5]]
 
 def main():
-    check_commands()
     f = open('maps.config.js', 'w')
     f.write("var MAPS = [\n")
     for map in maps:

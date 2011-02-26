@@ -8,7 +8,6 @@ sys.path.append(os.path.join(app_dir, 'lib'))
 from xcsoar.mapgen.generator import Generator
 from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.waypoint import WaypointList
-from xcsoar.mapgen.util import check_commands
 
 def print_help():
     print("Usage:   mapgen [Options] -wpf waypoint_file output_file\n" +\
@@ -17,7 +16,6 @@ def print_help():
           "Options: -r resolution (terrain resolution, arcseconds per pixel)")
 
 def main():
-    check_commands()
     args = sys.argv[1:]
 
     wp = None

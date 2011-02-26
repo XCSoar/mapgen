@@ -7,6 +7,7 @@ from xcsoar.mapgen.topology import shapefiles
 from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.filelist import FileList
 from xcsoar.mapgen.downloader import Downloader
+from xcsoar.mapgen.util import check_commands
 
 class Generator:
     def __init__(self, dir_data, dir_temp):
@@ -15,6 +16,9 @@ class Generator:
         @param dir_data: Path of the data folder
         @param dir_temp: Path of the temporary folder
         '''
+
+        check_commands()
+
         self.__downloader = Downloader(dir_data)
 
         self.__dir_temp = os.path.abspath(dir_temp)
