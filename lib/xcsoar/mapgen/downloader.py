@@ -1,17 +1,19 @@
 import os
 import hashlib
 import shutil
+import subprocess
 
-from xcsoar.mapgen.util import slurp, spew, command
+from xcsoar.mapgen.util import slurp, spew
 
 class Downloader:
     def __init__(self, dir):
         self.__base_url = 'http://download.xcsoar.org/mapgen/data/'
         self.__cmd_7zip = '7zr'
+        self.__cmd_wget = 'wget'
         self.__dir = os.path.abspath(dir)
         if not os.path.exists(self.__dir):
             os.makedirs(self.__dir)
-        command(['wget', '-q', '-N', '-P', self.__dir, self.__base_url + 'data.md5'])
+        subprocess.check_call([self.__cmd_wget, '-q', '-N', '-P', self.__dir, self.__base_url + 'data.md5'])
 
     def retrieve_extracted(self, file):
         '''
@@ -30,8 +32,7 @@ class Downloader:
                 raise RuntimeError('File is not valid after download ' + dest_file)
             if file.endswith('.7z'):
                 print("Decompressing file " + dest_file + " ...")
-                arg = [self.__cmd_7zip, 'x', '-y', '-o' + os.path.dirname(dest_file), dest_file]
-                command(arg)
+                subprocess.check_call([self.__cmd_7zip, 'x', '-y', '-o' + os.path.dirname(dest_file), dest_file])
                 os.unlink(dest_file)
             else:
                 raise RuntimeError('Cannot extract ' + dest)
@@ -92,7 +93,7 @@ class Downloader:
             url = self.__base_url + file
             if not os.path.exists(os.path.dirname(dest)):
                 os.makedirs(os.path.dirname(dest))
-            command(['wget', '-O', dest, url])
+            subprocess.check_call([self.__cmd_wget, '-O', dest, url])
 
     def __remove(self, *files):
         for file in files:

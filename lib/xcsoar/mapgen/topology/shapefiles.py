@@ -1,11 +1,11 @@
 import os
+import subprocess
 
 from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.filelist import FileList
-from xcsoar.mapgen.util import command
 
-__cmd_ogr2ogr = "ogr2ogr"
-__cmd_shptree = "shptree"
+__cmd_ogr2ogr = 'ogr2ogr'
+__cmd_shptree = 'shptree'
 
 __vmap0_datasets = [
      { 'name': 'vmap0/eur', 'bounds': GeoRect( -35, 180, 90,  30) },
@@ -120,15 +120,11 @@ def __create_layer_from_dataset(bounds, layer, dataset, append, downloader, dir_
     arg.append(layer['layer'])
     arg.extend(['-nln', layer['name']])
 
-    command(arg)
+    subprocess.check_call(arg)
 
 def __create_layer_index(layer, dir_temp):
     print("Generating index file for layer " + layer['name'] + " ...")
-    arg = [__cmd_shptree]
-
-    arg.append(os.path.join(dir_temp, layer['name'] + ".shp"))
-
-    command(arg)
+    subprocess.check_call([__cmd_shptree, os.path.join(dir_temp, layer['name'] + ".shp")])
 
 def __create_layer(bounds, layer, downloader, dir_temp, files, index):
     print("Creating topology layer " + layer['name'] + " ...")

@@ -1,13 +1,13 @@
 import os
 import math
+import subprocess
 from zipfile import ZipFile, BadZipfile
 
 from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.filelist import FileList
-from xcsoar.mapgen.util import command
 
-__cmd_gdal_warp = "gdalwarp"
-__cmd_geojasper = "geojasper"
+__cmd_geojasper = 'geojasper'
+__cmd_gdalwarp = 'gdalwarp'
 __use_world_file = True
 
 '''
@@ -95,16 +95,16 @@ def __create(dir_temp, tiles, arcseconds_per_pixel, bounds):
     output_file = os.path.join(dir_temp, "terrain.tif")
     degree_per_pixel = float(arcseconds_per_pixel) / 3600.0
 
-    args = [__cmd_gdal_warp,
-            "-r", "cubic",
-            "-tr", str(degree_per_pixel), str(degree_per_pixel),
-            "-wt", "Int16",
-            "-dstnodata", "-31744"]
+    args = [__cmd_gdalwarp,
+            '-r', 'cubic',
+            '-tr', str(degree_per_pixel), str(degree_per_pixel),
+            '-wt', 'Int16',
+            '-dstnodata', '-31744']
 
     if __use_world_file == True:
-        args.extend(["-co", "TFW=YES"])
+        args.extend(['-co', 'TFW=YES'])
 
-    args.extend(["-te", str(bounds.left),
+    args.extend(['-te', str(bounds.left),
                 str(bounds.bottom),
                 str(bounds.right),
                 str(bounds.top)])
@@ -112,7 +112,7 @@ def __create(dir_temp, tiles, arcseconds_per_pixel, bounds):
     args.extend(tiles)
     args.append(output_file)
 
-    command(args)
+    subprocess.check_call(args)
 
     return output_file
 
@@ -138,22 +138,21 @@ def __convert(dir_temp, input_file, rc):
     print("Converting terrain to JP2 format ...")
     output_file = os.path.join(dir_temp, "terrain.jp2")
     args = [__cmd_geojasper,
-            "-f", input_file,
-            "-F", output_file,
-            "-T", "jp2",
-            "-O", "rate=1.0",
-            "-O", "tilewidth=256",
-            "-O", "tileheight=256"]
+            '-f', input_file,
+            '-F', output_file,
+            '-T', 'jp2',
+            '-O', 'rate=1.0',
+            '-O', 'tilewidth=256',
+            '-O', 'tileheight=256']
 
     if not __use_world_file:
-        args.extend(["-O", "xcsoar=1",
-                     "-O", "lonmin=" + str(rc.left),
-                     "-O", "lonmax=" + str(rc.right),
-                     "-O", "latmax=" + str(rc.top),
-                     "-O", "latmin=" + str(rc.bottom)])
+        args.extend(['-O', 'xcsoar=1',
+                     '-O', 'lonmin=' + str(rc.left),
+                     '-O', 'lonmax=' + str(rc.right),
+                     '-O', 'latmax=' + str(rc.top),
+                     '-O', 'latmin=' + str(rc.bottom)])
 
-
-    command(args)
+    subprocess.check_call(args)
 
     output = FileList()
     output.add(output_file, False)
