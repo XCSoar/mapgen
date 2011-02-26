@@ -36,7 +36,7 @@ __layers = [
        'layer':    'hydro-water-course-l',
        'label':    'nam',
        'where':    'hyc=8',
-       'range':    7,
+       'range':    50,
        'color':    '85,160,255' },
      { 'name':     'roadbig_line',
        'datasets': __osm_datasets,
