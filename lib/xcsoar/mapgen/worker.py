@@ -19,14 +19,15 @@ class Worker:
         try:
             print("Sending download mail to " + job.description.mail + " ...")
 
+            msg = "From: no-reply@xcsoar.org" +\
+                "\nTo: " + job.description.mail +\
+                "\nSubject: XCSoar Map Generator - Download ready (" + job.description.name + ".xcm)\n" +\
+                "The XCSoar Map Generator has finished your map.\n" +\
+                "It can be downloaded at " + job.description.download_url +\
+                "\nThis link is valid for 7 days.\n"
+
             s = smtplib.SMTP(self.__mail_server)
             try:
-                msg = "From: no-reply@xcsoar.org" +\
-                    "\nTo: " + job.description.mail +\
-                    "\nSubject: XCSoar Map Generator - Download ready (" + job.description.name + ".xcm)\n" +\
-                    "The XCSoar Map Generator has finished your map.\n" +\
-                    "It can be downloaded at http://www.xcsoar.org/mapgen/download?uuid=" + job.uuid +\
-                    "\nThis link is valid for 7 days.\n"
                 s.sendmail('no-reply@xcsoar.org', job.description.mail, msg)
             finally:
                 s.quit()

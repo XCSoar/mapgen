@@ -17,6 +17,7 @@ class JobDescription:
     use_terrain = True
     bounds = None
     resolution = 9.0
+    download_url = None
 
 class Job:
     def __init__(self, dir_jobs, desc=None):
