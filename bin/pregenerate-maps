@@ -89,7 +89,7 @@ def main():
 	    bottom = map[2]
 	    right  = map[3]
 	    top    = map[4]
-	    arg = [os.path.dirname(__file__) + '/mapgen', '-b', str(left), str(bottom), str(right), str(top), map[0] + '.xcm']
+	    arg = [os.path.dirname(__file__) + '/mapgen', '-b', str(left), str(right), str(top), str(bottom), map[0] + '.xcm']
 	    try:
 		    p = subprocess.Popen(arg)
 		    p.wait()
