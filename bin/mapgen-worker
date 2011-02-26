@@ -6,8 +6,10 @@ app_dir = os.path.abspath(__file__ + '/../..')
 sys.path.append(os.path.join(app_dir, 'lib'))
 
 from xcsoar.mapgen.worker import Worker
+from xcsoar.mapgen.util import check_commands
 
 def main():
+    check_commands()
     worker = Worker(dir_jobs=os.path.join(app_dir, 'jobs'),
                     dir_data=os.path.join(app_dir, 'data'),
 	            mail_server='localhost')

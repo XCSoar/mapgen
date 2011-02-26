@@ -8,14 +8,16 @@ sys.path.append(os.path.join(app_dir, 'lib'))
 from xcsoar.mapgen.generator import Generator
 from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.waypoint import WaypointList
+from xcsoar.mapgen.util import check_commands
 
 def print_help():
-    print "Usage:   mapgen [Options] -wpf waypoint_file output_file\n" +\
+    print("Usage:   mapgen [Options] -wpf waypoint_file output_file\n" +\
           "         mapgen [Options] -b left right top bottom output_file\n" +\
           "\n" +\
-          "Options: -r resolution (terrain resolution, arcseconds per pixel)"
+          "Options: -r resolution (terrain resolution, arcseconds per pixel)")
 
 def main():
+    check_commands()
     args = sys.argv[1:]
 
     wp = None
@@ -41,10 +43,10 @@ def main():
 
     generator = Generator(dir_data=os.path.join(app_dir, 'data'),
                           dir_temp='/tmp/mapgen-' + str(os.getpid()))
-    if wp != None:
+    if wp:
         generator.add_waypoint_file(wp)
         generator.set_bounds(WaypointList().parse_file(wp).get_bounds())
-    if left != None:
+    if left:
         generator.set_bounds(GeoRect(float(left), float(right), float(top), float(bottom)))
     generator.add_information_file(output_file)
     generator.add_topology()
