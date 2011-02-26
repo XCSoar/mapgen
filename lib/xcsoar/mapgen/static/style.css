@@ -1,8 +1,22 @@
+html {
+  background: url(images/bg.png) 50% 0 repeat;
+  padding: 0;
+  margin: 0;
+}
+
 body {
-  margin: auto;
   font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Helvetica, Arial, sans-serif;
   font-size: 10pt;
   color: #333;
+  padding-top: 20px;
+  margin: 0;
+  background: url(images/shadow.png) 0 10px repeat-x;
+}
+
+#container {
+  background: #FFF;
+  float: left;
+  width: 100%;
 }
 
 hr {
@@ -13,7 +27,8 @@ hr {
 
 #content {
   width: 50%;
-  margin: 80px auto;
+  margin: 50px auto;
+  position: relative;
 }
 
 #logo {
@@ -52,6 +67,13 @@ label {
   float: left;
 }
 
+input {
+  background: #f4f4ed;
+  border: 1px solid #9f9c99;
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+
 #name, #mail, .box, .error {
   display: block;
   width: 100%;
@@ -77,8 +99,8 @@ label {
   font-size: 10pt;
 }
 
-#container {
-  height: 1000px;
+#fieldset {
+  height: 1200px;
 }
 
 .error {
@@ -90,7 +112,7 @@ button, .button {
   display: block;
   width: 50%;
   margin: 2em auto;
-  background: #007f0f;
+  background: #449949;
   color: #fff;
   cursor: pointer;
   padding: 0.5em;
