@@ -23,12 +23,12 @@ def main():
     output_file = None
     res = 9.0
     for i in range(len(args)):
-        if args[i] == "-r" and i + 1 < len(args):
+        if args[i] == '-r' and i + 1 < len(args):
             res = args[i + 1]
-        if args[i] == "-wpf" and i + 2 < len(args):
+        if args[i] == '-wpf' and i + 2 < len(args):
             wp = args[i + 1]
             output_file = args[i + 2]
-        if args[i] == "-b" and i + 5 < len(args):
+        if args[i] == '-b' and i + 5 < len(args):
             left   = args[i + 1]
             right  = args[i + 2]
             top    = args[i + 3]
@@ -40,7 +40,7 @@ def main():
         return
 
     generator = Generator(dir_data=os.path.join(app_dir, 'data'),
-                          dir_temp='/tmp/mapgen-' + str(os.getpid()))
+                          dir_temp='/tmp/mapgen-{}'.format(os.getpid()))
     if wp:
         generator.add_waypoint_file(wp)
         generator.set_bounds(WaypointList().parse_file(wp).get_bounds())
@@ -52,5 +52,5 @@ def main():
     generator.create(output_file)
     generator.cleanup()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

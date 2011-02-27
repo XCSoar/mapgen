@@ -17,4 +17,3 @@ try:
 finally:
     # This ensures that any left-over threads are stopped as well.
     cherrypy.engine.stop()
-
