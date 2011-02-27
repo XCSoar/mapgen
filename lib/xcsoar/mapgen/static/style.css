@@ -10,7 +10,7 @@ body {
   color: #333;
   padding-top: 20px;
   margin: 0;
-  background: url(images/shadow.png) 0 10px repeat-x;
+  background: url(images/shadow-top.png) 0 10px repeat-x;
 }
 
 #container {
@@ -19,9 +19,19 @@ body {
   width: 100%;
 }
 
+#footer {
+  background: url(images/shadow-bottom.png) 0 0 repeat-x;
+  padding: 20px 0;
+  text-align: center;
+  color: #FFF;
+  font-size: small;
+  float: left;
+  width: 100%;
+}
+
 hr {
   height: 1px;
-  background-color: #9f9c99;
+  background-color: #DCDAD4;
   border-style: none;
 }
 
@@ -69,7 +79,7 @@ label {
 
 input {
   background: #f4f4ed;
-  border: 1px solid #9f9c99;
+  border: 1px solid #DCDAD4;
   border-radius: 3px;
   -moz-border-radius: 3px;
 }
@@ -79,7 +89,7 @@ input {
   width: 100%;
   padding: 0.5em;
   margin: 0 0 1em 0;
-  border: 1px solid #9f9c99;
+  border: 1px solid #DCDAD4;
   border-radius: 10px;
   -moz-border-radius: 10px;
   color: #333;

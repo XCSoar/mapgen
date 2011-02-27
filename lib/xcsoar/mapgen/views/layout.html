@@ -7,6 +7,7 @@
       </title>
       <link rel="stylesheet" href="${url('/static/style.css')}" type="text/css" />
       ${select('*[local-name()!="title"]')}
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
   </py:match>
   <py:match path="body" once="true">
@@ -19,6 +20,9 @@
 	  </div>
           ${select('*|text()')}
 	</div>
+      </div>
+      <div id="footer">
+	The <b>XCSoar Map Generator</b> is Free Software released under the GNU/GPL License | Copyright © 2000-2011
       </div>
     </body>
   </py:match>
