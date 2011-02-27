@@ -14,25 +14,25 @@ __use_world_file = True
  1) Retrieve tiles
 '''
 def __get_tile_name(lat, lon):
-    col = ((lon + 180) / 5) + 1
-    row = (60 - lat) / 5
+    col = int(math.floor(((lon + 180) / 5) + 1))
+    row = int(math.floor((60 - lat) / 5))
     if col < 1 or col > 72 or row < 1 or row > 24:
-        raise RuntimeError("Coordinate out of bounds")
-    return "srtm_%02d_%02d" % (col, row)
+        raise RuntimeError('Coordinate out of bounds')
+    return 'srtm_{0:02}_{1:02}'.format(col, row)
 
 def __extract_tile(zip_file, dir_temp, filename):
     try:
-        zip = ZipFile(zip_file, "r")
+        zip = ZipFile(zip_file, 'r')
     except BadZipfile:
         os.unlink(zip_file)
-        raise RuntimeError("Decompression of the file "+zip_file+" failed!")
-    zip.extract(filename + ".tif", dir_temp)
+        raise RuntimeError('Decompression of the file {} failed.'.format(zip_file))
+    zip.extract(filename + '.tif', dir_temp)
     zip.close()
 
 def __retrieve_tile(downloader, dir_temp, lat, lon):
     filename = __get_tile_name(lat, lon)
-    zip_file = downloader.retrieve('srtm3/' + filename + '.zip')
-    print("Tile " + filename + " found inside zip file! -> Decompressing ...")
+    zip_file = downloader.retrieve('srtm3/{}.zip'.format(filename))
+    print('Tile {} found inside zip file.'.format(filename))
     __extract_tile(zip_file, dir_temp, filename)
     return os.path.join(dir_temp, filename + ".tif")
 
@@ -47,7 +47,7 @@ def __retrieve_tiles(downloader, dir_temp, bounds):
     if not isinstance(bounds, GeoRect):
         raise TypeError
 
-    print("Retrieving terrain tiles ...")
+    print('Retrieving terrain tiles...')
 
     # Calculate rounded bounds
     lat_start = int(math.floor(bounds.bottom / 5.0)) * 5
@@ -62,7 +62,7 @@ def __retrieve_tiles(downloader, dir_temp, bounds):
             try:
                 tiles.append(__retrieve_tile(downloader, dir_temp, lat, lon))
             except Exception as e:
-                print("Failed to retrieve tile for %02d/%02d: %s" % (lat, lon, str(e)))
+                print('Failed to retrieve tile for {0:02}/{1:02}: {2}'.format(lat, lon, e))
 
     # Return list of available tile files
     return tiles
@@ -91,8 +91,8 @@ def __retrieve_tiles(downloader, dir_temp, bounds):
         (Output file)
 '''
 def __create(dir_temp, tiles, arcseconds_per_pixel, bounds):
-    print("Resampling terrain ...")
-    output_file = os.path.join(dir_temp, "terrain.tif")
+    print('Resampling terrain...')
+    output_file = os.path.join(dir_temp, 'terrain.tif')
     degree_per_pixel = float(arcseconds_per_pixel) / 3600.0
 
     args = [__cmd_gdalwarp,
@@ -135,8 +135,8 @@ def __create(dir_temp, tiles, arcseconds_per_pixel, bounds):
         (???)
 '''
 def __convert(dir_temp, input_file, rc):
-    print("Converting terrain to JP2 format ...")
-    output_file = os.path.join(dir_temp, "terrain.jp2")
+    print('Converting terrain to JP2 format...')
+    output_file = os.path.join(dir_temp, 'terrain.jp2')
     args = [__cmd_geojasper,
             '-f', input_file,
             '-F', output_file,

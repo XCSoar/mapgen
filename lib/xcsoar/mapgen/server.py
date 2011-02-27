@@ -44,7 +44,7 @@ class Server(object):
                 db[ip] = [int(time.time())]
             return False
         except Exception as e:
-            print('Error: ' + str(e))
+            print('Error: {}'.format(e))
             traceback.print_exc(file=sys.stdout)
             return False
         finally:

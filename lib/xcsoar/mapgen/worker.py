@@ -17,14 +17,16 @@ class Worker:
 
     def __send_download_mail(self, job):
         try:
-            print("Sending download mail to " + job.description.mail + " ...")
+            print('Sending download mail to {} ...'.format(job.description.mail))
 
-            msg = "From: no-reply@xcsoar.org" +\
-                "\nTo: " + job.description.mail +\
-                "\nSubject: XCSoar Map Generator - Download ready (" + job.description.name + ".xcm)\n" +\
-                "The XCSoar Map Generator has finished your map.\n" +\
-                "It can be downloaded at " + job.description.download_url +\
-                "\nThis link is valid for 7 days.\n"
+            msg = '''From: no-reply@xcsoar.org"
+To: {to}
+Subject: XCSoar Map Generator - Download ready ({name}.xcm)
+
+The XCSoar Map Generator has finished your map.
+It can be downloaded at {url}
+This link is valid for 7 days.
+'''.format(to=job.description.mail, name=job.description.name, url=job.description.download_url)
 
             s = smtplib.SMTP(self.__mail_server)
             try:
@@ -32,15 +34,15 @@ class Worker:
             finally:
                 s.quit()
         except Exception as e:
-            print('Failed to send mail: ' + str(e))
+            print('Failed to send mail: {}'.format(e))
 
     def __do_job(self, job):
         try:
-            print("Generating map file for job " + job.uuid)
+            print('Generating map file for job uuid={}, name={}, mail={}'.format(job.uuid, job.description.name, job.description.mail))
             description = job.description
 
-            if description.waypoint_file == None and description.bounds == None:
-                print("No waypoint file or bounds set. Aborting.")
+            if not description.waypoint_file and not description.bounds:
+                print('No waypoint file or bounds set. Aborting.')
                 job.delete()
                 return
 
@@ -79,25 +81,25 @@ class Worker:
             os.rmdir(job.file_path('tmp'))
             job.done()
         except Exception as e:
-            print('Error: ' + str(e))
+            print('Error: {}'.format(e))
             traceback.print_exc(file=sys.stdout)
             job.error()
             return
 
-        print("Map ready for use (" + job.map_file() + ")")
+        print('Map {} is ready for use.'.format(job.map_file()))
         if job.description.mail != '':
             self.__send_download_mail(job)
 
     def run(self):
         self.__run = True
-        print("Monitoring " + self.__dir_jobs + " for new jobs ...")
+        print('Monitoring {} for new jobs...'.format(self.__dir_jobs))
         while self.__run:
             try:
                 job = Job.get_next(self.__dir_jobs)
-                if job == None:
+                if not job:
                     time.sleep(0.5)
                     continue
                 self.__do_job(job)
             except Exception as e:
-                print('Error: ' + str(e))
+                print('Error: {}'.format(e))
                 traceback.print_exc(file=sys.stdout)

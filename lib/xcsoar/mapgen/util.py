@@ -34,6 +34,6 @@ def check_commands():
             subprocess.check_output(['which', cmd], stderr=subprocess.STDOUT)
         except Exception as e:
             ret = False
-            print('Command ' + cmd + ' is missing on the $PATH. ' + help)
+            print('Command {} is missing on the $PATH.'.format(cmd) + help)
     if not ret:
         sys.exit(1)

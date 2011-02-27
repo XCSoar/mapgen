@@ -96,7 +96,7 @@ def __create_layer_from_dataset(bounds, layer, dataset, append, downloader, dir_
 
     data_dir = downloader.retrieve_extracted(dataset['name'] + '.7z')
 
-    print("Reading dataset " + dataset['name']  + " ...")
+    print('Reading dataset {} ...'.format(dataset['name']))
     arg = [__cmd_ogr2ogr]
 
     if append:
@@ -123,11 +123,11 @@ def __create_layer_from_dataset(bounds, layer, dataset, append, downloader, dir_
     subprocess.check_call(arg)
 
 def __create_layer_index(layer, dir_temp):
-    print("Generating index file for layer " + layer['name'] + " ...")
+    print('Generating index file for layer {} ...'.format(layer['name']))
     subprocess.check_call([__cmd_shptree, os.path.join(dir_temp, layer['name'] + ".shp")])
 
 def __create_layer(bounds, layer, downloader, dir_temp, files, index):
-    print("Creating topology layer " + layer['name'] + " ...")
+    print('Creating topology layer {} ...'.format(layer['name']))
 
     datasets = __filter_datasets(bounds, layer['datasets'])
     for i in range(len(datasets)):

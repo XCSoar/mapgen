@@ -31,11 +31,11 @@ class Downloader:
                 self.__remove(dest_file, dest_file + '.md5', dest_dir)
                 raise RuntimeError('File is not valid after download ' + dest_file)
             if file.endswith('.7z'):
-                print("Decompressing file " + dest_file + " ...")
+                print('Decompressing file {} ...'.format(dest_file))
                 subprocess.check_call([self.__cmd_7zip, 'x', '-y', '-o' + os.path.dirname(dest_file), dest_file])
                 os.unlink(dest_file)
             else:
-                raise RuntimeError('Cannot extract ' + dest)
+                raise RuntimeError('Could not extract file {}.'.format(dest))
         return dest_dir
 
     def retrieve(self, file):
@@ -51,7 +51,7 @@ class Downloader:
         self.__download(file, dest)
         if not self.__is_valid(file, dest):
             self.__remove(dest, dest + '.md5')
-            raise RuntimeError('File is not valid after download ' + dest)
+            raise RuntimeError('File {} is not valid after download.'.format(dest))
         return dest
 
     def __is_valid(self, file, dest):
@@ -89,7 +89,7 @@ class Downloader:
     def __download(self, file, dest):
         if not os.path.exists(dest):
             if not self.__get_origin_md5(file):
-                raise RuntimeError(file + ' exists not on the server')
+                raise RuntimeError('{} does not exist on the server.'.format(file))
             url = self.__base_url + file
             if not os.path.exists(os.path.dirname(dest)):
                 os.makedirs(os.path.dirname(dest))
@@ -98,7 +98,7 @@ class Downloader:
     def __remove(self, *files):
         for file in files:
             if os.path.exists(file):
-                print("Removing outdated/invalid file " + file + " ...")
+                print('Removing outdated/invalid file {} ...'.format(file))
                 if os.path.isdir(file):
                     shutil.rmtree(file)
                 else:

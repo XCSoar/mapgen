@@ -1,7 +1,7 @@
 import os.path
 import shutil
 from zipfile import ZipFile, ZIP_DEFLATED, ZIP_STORED
-import time
+from datetime import datetime
 from xcsoar.mapgen.terrain import srtm
 from xcsoar.mapgen.topology import shapefiles
 from xcsoar.mapgen.georect import GeoRect
@@ -32,19 +32,25 @@ class Generator:
         '''
         Adds an information file to the map
         '''
-        if self.__bounds == None:
-            raise RuntimeError("Please set bounds before calling add_information_file() !")
+        if not self.__bounds:
+            raise RuntimeError('Boundaries undefined.')
 
-        dst = os.path.join(self.__dir_temp, "info.txt")
+        dst = os.path.join(self.__dir_temp, 'info.txt')
         f = open(dst, 'w')
         try:
-            f.write("map name: " + name +\
-                        "\ngenerator: XCSoar Map Generator" +\
-                        "\ncreation time: " + time.strftime("%d.%m.%Y %H:%M:%S") + " (" + str(time.time()) +\
-                        ")\nlatitude range: " + str(self.__bounds.bottom) + " to " + str(self.__bounds.top) +\
-                        "\nlongitude range: " + str(self.__bounds.left)   + " to " + str(self.__bounds.right) + "\n")
-            if author != None and author != '':
-                f.write('author: ' + author + "\n")
+            f.write('''map name: {name}
+generator: XCSoar Map Generator
+creation time: {time:%d.%m.%Y %T} ({time:%s})
+latitude range: {minlat} to {maxlat}
+longitude range: {minlon} to {maxlon}
+author: {author}
+'''.format(name=name,
+           time=datetime.now(),
+           minlat=self.__bounds.bottom,
+           maxlat=self.__bounds.top,
+           minlon=self.__bounds.left,
+           maxlon=self.__bounds.right,
+           author=author))
         finally:
             f.close()
 
@@ -55,14 +61,14 @@ class Generator:
         Adds a waypoint file to the map
         @param filename: The file that should be added
         '''
-        print("Adding waypoint file...")
+        print('Adding waypoint file...')
         if not os.path.exists(filename):
-            raise RuntimeError("Waypoint file " + filename + " not found!")
+            raise RuntimeError('Waypoint file {} does not exist.'.format(filename))
 
         dst = os.path.join(self.__dir_temp, "waypoints.xcw")
         shutil.copy(filename, dst)
         if not os.path.exists(dst):
-            raise RuntimeError("Copying " + os.path.basename(filename) + " to " + dst + " failed!")
+            raise RuntimeError('Copying {} to {} failed.'.format(os.path.basename(filename), dst))
 
         self.__files.add(dst, True)
 
@@ -71,14 +77,14 @@ class Generator:
         Adds a waypoint details file to the map
         @param filename: The file that should be added
         '''
-        print("Adding waypoint details file...")
+        print('Adding waypoint details file...')
         if not os.path.exists(filename):
-            raise RuntimeError("Waypoint details file " + filename + " not found!")
+            raise RuntimeError('Waypoint details file {} does not exist.'.format(filename))
 
-        dst = os.path.join(self.__dir_temp, "airfields.txt")
+        dst = os.path.join(self.__dir_temp, 'airfields.txt')
         shutil.copy(filename, dst)
         if not os.path.exists(dst):
-            raise RuntimeError("Copying " + os.path.basename(filename) + " to " + dst + " failed!")
+            raise RuntimeError('Copying {} to {} failed.'.format(os.path.basename(filename), dst))
 
         self.__files.add(dst, True)
 
@@ -87,33 +93,33 @@ class Generator:
         Adds a airspace file to the map
         @param filename: The file that should be added
         '''
-        print("Adding airspace file...")
+        print('Adding airspace file...')
         if not os.path.exists(filename):
-            raise RuntimeError("Airspace file " + filename + " not found!")
+            raise RuntimeError('Airspace file {} does not exist.'.format(filename))
 
-        dst = os.path.join(self.__dir_temp, "airspace.txt")
+        dst = os.path.join(self.__dir_temp, 'airspace.txt')
         shutil.copy(filename, dst)
         if not os.path.exists(dst):
-            raise RuntimeError("Copying " + os.path.basename(filename) + " to " + dst + " failed!")
+            raise RuntimeError('Copying {} to {} failed.'.format(os.path.basename(filename), dst))
 
         self.__files.add(dst, True)
 
     def add_topology(self, bounds = None):
-        print("Adding topology...")
+        print('Adding topology...')
 
-        if bounds == None:
-            if self.__bounds == None:
-                raise RuntimeError("Boundaries undefined!")
+        if not bounds:
+            if not self.__bounds:
+                raise RuntimeError('Boundaries undefined.')
             bounds = self.__bounds
 
         self.__files.extend(shapefiles.create(bounds, self.__downloader, self.__dir_temp))
 
     def add_terrain(self, arcseconds_per_pixel = 9.0, bounds = None):
-        print("Adding terrain...")
+        print('Adding terrain...')
 
-        if bounds == None:
-            if self.__bounds == None:
-                raise RuntimeError("Boundaries undefined!")
+        if not bounds:
+            if not self.__bounds:
+                raise RuntimeError('Boundaries undefined.')
             bounds = self.__bounds
 
         self.__files.extend(srtm.create(bounds, arcseconds_per_pixel,
@@ -121,26 +127,19 @@ class Generator:
 
     def set_bounds(self, bounds):
         if not isinstance(bounds, GeoRect):
-            raise RuntimeError("GeoRect expected!")
+            raise RuntimeError('GeoRect expected.')
 
-        print("Setting map boundaries: " + str(bounds))
+        print('Setting map boundaries: {}'.format(bounds))
         self.__bounds = bounds
 
-    def create(self, filename, attach = False):
+    def create(self, filename):
         '''
         Creates the map at the given location
         @param filename: Location of the map file that should be created
         '''
 
-        # Open the zip file
-        if attach:
-            print("Adding MapGenerator data to map file...")
-            attach = "a"
-        else:
-            print("Creating map file...")
-            attach = "w"
-
-        z = ZipFile(filename, attach, ZIP_DEFLATED)
+        print('Creating map file...')
+        z = ZipFile(filename, 'w', ZIP_DEFLATED)
         for file in self.__files:
             if os.path.isfile(file[0]):
                 # file[1] is the flag if we should compress the file
@@ -152,5 +151,5 @@ class Generator:
             try:
                 os.unlink(file[0])
             except Exception as e:
-                print('Error: ' + str(e))
+                print('Error: {}'.format(e))
         self.__files.clear()
