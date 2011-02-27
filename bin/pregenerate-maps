@@ -99,7 +99,7 @@ def main():
         top    = map[4]
         generator = Generator(dir_data=os.path.join(app_dir, 'data'),
                               dir_temp='/tmp/mapgen-{}'.format(os.getpid()))
-        generator.set_bounds(GeoRect(float(left), float(right), float(top), float(bottom)))
+        generator.set_bounds(GeoRect(left, right, top, bottom))
         generator.add_information_file(output_file)
         generator.add_topology()
         generator.add_terrain(9.0)
