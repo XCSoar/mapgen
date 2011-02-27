@@ -18,8 +18,7 @@ def output(filename, method='html', encoding='utf-8', **options):
         def wrapper(*args, **kwargs):
             cherrypy.thread_data.template = loader.load(filename)
             opt = options.copy()
-            if method == 'html':
-                opt.setdefault('doctype', 'html')
+            opt.setdefault('doctype', 'html5')
             serializer = get_serializer(method, **opt)
             stream = func(*args, **kwargs)
             if not isinstance(stream, Stream):
