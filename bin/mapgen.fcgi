@@ -1,12 +1,12 @@
 #!/usr/bin/python
 
-import cherrypy
 import sys, os
-from flup.server.fcgi import WSGIServer
 
 app_dir = os.path.abspath(__file__ + '/../..')
 sys.path.append(os.path.join(app_dir, 'lib'))
 
+import cherrypy
+from flup.server.fcgi import WSGIServer
 from xcsoar.mapgen.server import Server
 
 app = cherrypy.tree.mount(Server(dir_jobs=os.path.join(app_dir, 'jobs')), '/mapgen')
