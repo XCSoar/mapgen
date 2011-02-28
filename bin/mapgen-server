@@ -9,15 +9,10 @@ import cherrypy
 from xcsoar.mapgen.server import Server
 
 def main():
-    static_dir = os.path.join(app_dir, 'lib', 'xcsoar', 'mapgen', 'static')
     cherrypy.quickstart(Server(dir_jobs=os.path.join(app_dir, 'jobs')), '/', {
         '/static': {
             'tools.staticdir.on': True,
-            'tools.staticdir.dir': static_dir,
-        },
-        '/favicon.ico': {
-            'tools.staticfile.on': True,
-            'tools.staticfile.filename': os.path.join(static_dir, 'favicon.ico'),
+            'tools.staticdir.dir': os.path.join(app_dir, 'lib', 'xcsoar', 'mapgen', 'static'),
         }
     })
 

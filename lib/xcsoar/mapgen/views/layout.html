@@ -5,9 +5,10 @@
       <title py:with="title = list(select('title/text()'))">
         XCSoar Map Generator<py:if test="title">: ${title}</py:if>
       </title>
-      <link rel="stylesheet" href="${url('/static/style.css')}" type="text/css" />
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+      <link rel="stylesheet" href="${url('/static/style.css')}" type="text/css"/>
+      <link rel="shortcut icon" type="image/ico" href="${url('/static/images/favicon.ico')}"/>
       ${select('*[local-name()!="title"]')}
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     </head>
   </py:match>
   <py:match path="body" once="true">
