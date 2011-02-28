@@ -16,8 +16,9 @@ def main():
     config = Downloader(dir_data).retrieve('maps.config.js')
     config = re.sub(r'var\s+MAPS\s+=\s+|;', '', slurp(config))
     maps = json.loads(config)
-    for name, bounds in maps.items():
+    for name in sorted(maps.keys()):
         output_file = name + '.xcm'
+        bounds = maps[name]
         left   = bounds[0]
         bottom = bounds[1]
         right  = bounds[2]
