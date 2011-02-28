@@ -9,6 +9,12 @@ import cherrypy
 from flup.server.fcgi import WSGIServer
 from xcsoar.mapgen.server import Server
 
+cherrypy.config.update({
+    'tools.encode.on': True,
+    'tools.encode.encoding': 'UTF-8',
+    'tools.decode.on': True
+})
+
 app = cherrypy.tree.mount(Server(dir_jobs=os.path.join(app_dir, 'jobs')), '/mapgen')
 cherrypy.engine.start(blocking=False)
 

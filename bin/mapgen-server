@@ -9,6 +9,11 @@ import cherrypy
 from xcsoar.mapgen.server import Server
 
 def main():
+    cherrypy.config.update({
+        'tools.encode.on': True,
+        'tools.encode.encoding': 'UTF-8',
+        'tools.decode.on': True
+    })
     cherrypy.quickstart(Server(dir_jobs=os.path.join(app_dir, 'jobs')), '/', {
         '/static': {
             'tools.staticdir.on': True,
