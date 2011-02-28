@@ -4,4 +4,4 @@ class GeoPoint:
         self.lat = lat
 
     def __str__(self):
-        return str(self.lat) + ", " + str(self.lon)
+        return '{}, {}'.format(self.lat, self.lon)

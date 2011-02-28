@@ -4,10 +4,10 @@ from xcsoar.mapgen.geopoint import GeoPoint
 class Waypoint(GeoPoint):
     def __init__(self):
         self.altitude = 0
-        self.name = ""
+        self.name = ''
 
     def __str__(self):
-        return str(self.name) + ", " + super() + ", " + str(self.altitude)
+        return '{}, {}, {}'.format(self.name, super(), self.altitude)
 
 class WaypointList:
     def __init__(self):
@@ -47,16 +47,16 @@ class WaypointList:
         if filename.endswith('.xcw') or filename.endswith('.dat'):
             self.__parse_winpilot(lines)
         else:
-            raise RuntimeError('Waypoint file ' + filename + ' is not supported')
+            raise RuntimeError('Waypoint file {} has an unsupported format.'.format(filename))
         return self
 
     def __parse_winpilot(self, lines):
         for line in lines:
             line = line.strip()
-            if line == "" or line.startswith("*"):
+            if line == '' or line.startswith('*'):
                 continue
 
-            fields = line.split(",")
+            fields = line.split(',')
             if len(fields) < 6:
                 continue
 
@@ -69,19 +69,19 @@ class WaypointList:
 
     def __parse_winpilot_altitude(self, str):
         str = str.lower()
-        if str.endswith("ft") or str.endswith("f"):
-            str = str.rstrip("ft")
+        if str.endswith('ft') or str.endswith('f'):
+            str = str.rstrip('ft')
             return int(str) * 0.3048
         else:
-            str = str.rstrip("m")
+            str = str.rstrip('m')
             return int(str)
 
     def __parse_winpilot_coordinate(self, str):
         str = str.lower()
-        negative = str.endswith("s") or str.endswith("w")
-        str = str.rstrip("sw") if negative else str.rstrip("ne")
+        negative = str.endswith('s') or str.endswith('w')
+        str = str.rstrip('sw') if negative else str.rstrip('ne')
 
-        str = str.split(":")
+        str = str.split(':')
         if len(str) < 2:
             return None
 

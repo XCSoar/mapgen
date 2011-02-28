@@ -6,10 +6,7 @@ class GeoRect:
         self.bottom = bottom
 
     def __str__(self):
-        return ("L: " + str(self.left) + ", " +
-                "R: " + str(self.right) + ", " +
-                "T: " + str(self.top) + ", " +
-                "B: " + str(self.bottom))
+        return 'left={}, right={}, top={}, bottom={}'.format(self.left, self.right, self.top, self.bottom)
 
     def height(self):
         return self.top - self.bottom
