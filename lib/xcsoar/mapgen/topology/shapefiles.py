@@ -1,6 +1,5 @@
 import os
 import subprocess
-import json
 
 from xcsoar.mapgen.util import slurp
 from xcsoar.mapgen.georect import GeoRect
@@ -29,10 +28,10 @@ def __create_layer_from_dataset(bounds, layer, dataset, append, downloader, dir_
          arg.append("-update")
          arg.append("-append")
 
-    if 'src_where' in layer:
-         arg.extend(["-where", layer['src_where']])
+    if 'where' in layer:
+         arg.extend(["-where", layer['where']])
 
-    arg.extend(["-select", layer['src_label'] if 'src_label' in layer else ''])
+    arg.extend(["-select", layer['label'] if 'label' in layer else ''])
 
     arg.extend(["-spat",
                 str(bounds.left),
@@ -43,7 +42,7 @@ def __create_layer_from_dataset(bounds, layer, dataset, append, downloader, dir_
     arg.append(dir_temp)
     arg.append(data_dir)
 
-    arg.append(layer['src_layer'])
+    arg.append(layer['layer'])
     arg.extend(['-nln', layer['name']])
 
     subprocess.check_call(arg)
@@ -77,7 +76,7 @@ def __create_index_file(dir_temp, index):
          for layer in index:
               file.write(layer['name'] + ',' +
                          str(layer['range']) + ',,' +
-                         ('1' if 'src_label' in layer else '') + ',' +
+                         ('1' if 'label' in layer else '') + ',' +
                          layer['color'] + ',' +
                          str(layer.get('pen_width', 1)) + ',' +
                          str(layer.get('label_range', layer['range'])) + ',' +
@@ -87,12 +86,14 @@ def __create_index_file(dir_temp, index):
     return os.path.join(dir_temp, "topology.tpl")
 
 def create(bounds, downloader, dir_temp):
-     data = json.loads(slurp(downloader.retrieve('topology.json')))
+    topology = downloader.manifest()['topology']
+    layers = topology['layers']
+    datasets = topology['datasets']
 
-     files = FileList()
-     index = []
-     for layer in data['layers']:
-          __create_layer(bounds, layer, data['datasets'][layer['src_dataset']], downloader, dir_temp, files, index)
+    files = FileList()
+    index = []
+    for layer in layers:
+         __create_layer(bounds, layer, datasets[layer['dataset']], downloader, dir_temp, files, index)
 
-     files.add(__create_index_file(dir_temp, index), True)
-     return files
+    files.add(__create_index_file(dir_temp, index), True)
+    return files

@@ -2,6 +2,7 @@ import os
 import hashlib
 import shutil
 import subprocess
+import json
 
 from xcsoar.mapgen.util import slurp, spew
 
@@ -11,9 +12,21 @@ class Downloader:
         self.__cmd_7zip = '7zr'
         self.__cmd_wget = 'wget'
         self.__dir = os.path.abspath(dir)
+        self.__manifest = None
         if not os.path.exists(self.__dir):
             os.makedirs(self.__dir)
-        subprocess.check_call([self.__cmd_wget, '-q', '-N', '-P', self.__dir, self.__base_url + 'data.md5'])
+        subprocess.check_call([self.__cmd_wget, '-q', '-N', '-P', self.__dir, self.__base_url + 'checksums'])
+        self.__checksums = {}
+        for line in slurp(os.path.join(self.__dir, 'checksums')).split("\n"):
+            line = line.strip()
+            if line != '':
+                line = line.split(None, 1)
+                self.__checksums[line[1]] = line[0]
+
+    def manifest(self):
+        if not self.__manifest:
+            self.__manifest = json.loads(slurp(self.retrieve('manifest')))
+        return self.__manifest
 
     def retrieve_extracted(self, file):
         '''
@@ -55,18 +68,10 @@ class Downloader:
         return dest
 
     def __is_valid(self, file, dest):
-        md5 = self.__get_local_md5(dest)
-        return md5 and md5 == self.__get_origin_md5(file)
+        checksum = self.__get_local_checksum(dest)
+        return checksum and checksum == self.__checksums[file]
 
-    def __get_origin_md5(self, file):
-        f = open(os.path.join(self.__dir, 'data.md5'))
-        for line in f:
-            line = line.split()
-            if line[1] == file:
-                return line[0]
-        return None
-
-    def __get_local_md5(self, file):
+    def __get_local_checksum(self, file):
         md5_path = file + '.md5'
         if os.path.exists(md5_path):
             return slurp(md5_path)
@@ -88,7 +93,7 @@ class Downloader:
 
     def __download(self, file, dest):
         if not os.path.exists(dest):
-            if not self.__get_origin_md5(file):
+            if not self.__checksums[file]:
                 raise RuntimeError('{} does not exist on the server.'.format(file))
             url = self.__base_url + file
             if not os.path.exists(os.path.dirname(dest)):
