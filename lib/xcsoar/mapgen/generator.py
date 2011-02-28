@@ -140,16 +140,16 @@ author: {author}
 
         print('Creating map file...')
         z = ZipFile(filename, 'w', ZIP_DEFLATED)
-        for file in self.__files:
-            if os.path.isfile(file[0]):
-                # file[1] is the flag if we should compress the file
-                z.write(file[0], os.path.basename(file[0]), ZIP_DEFLATED if file[1] else ZIP_STORED)
-        z.close()
+        try:
+            for file in self.__files:
+                if os.path.isfile(file[0]):
+                    # file[1] is the flag if we should compress the file
+                    z.write(file[0], os.path.basename(file[0]), ZIP_DEFLATED if file[1] else ZIP_STORED)
+        finally:
+            z.close()
 
     def cleanup(self):
         for file in self.__files:
-            try:
+            if os.path.exists(file[0]):
                 os.unlink(file[0])
-            except Exception as e:
-                print('Error: {}'.format(e))
         self.__files.clear()
