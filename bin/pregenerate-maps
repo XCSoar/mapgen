@@ -1,103 +1,28 @@
 #!/usr/bin/python
 
-import os, sys
+import os, sys, re
+import json
 
 app_dir = os.path.abspath(__file__ + '/../..')
 sys.path.append(os.path.join(app_dir, 'lib'))
 
 from xcsoar.mapgen.generator import Generator
 from xcsoar.mapgen.georect import GeoRect
-
-maps = [['GER', 5.5, 47.0, 15.5, 55.0],
-	['POR', -9.6, 36.7, -6.0, 41.5],
-	['FRA_FULL', -5.0, 42.0, 9.0, 51.5],
-	['ALPS', 4.5, 43.4, 16.5, 49.0],
-	['FIN', 20.5, 59.7, 31.9, 70.3],
-	['UK', -7.3, 49.7, 2.0, 59.0],
-	['POL', 13.5, 48.5, 24.5, 55.0],
-	['FRA_ALPS', 3.5, 43.5, 9.0, 47.5],
-	['CZ_SK', 10.45, 47.17, 22.35, 51.4],
-	['HUN', 16.1, 45.7, 22.9, 48.6],
-	['US_NEWMEXICO', -108.5, 31.0, -102.5, 37.0],
-	['ITA_APENN', 8.0, 41.0, 15.0, 45.5],
-	['US_MICHIGAN', -86.5, 40.0, -82.5, 45.0],
-	['FRA_SW', -2.5, 42.0, 4.0, 47.0],
-	['ESP_BALEAR', 1.2, 38.3, 4.4, 40.1],
-	['NOR_N', 9.3, 63.0, 31.0, 72.1],
-	['US_AZ_PLUS', -115.0, 31.0, -106.0, 38.0],
-	['US_UTAH_R9N', -115.6, 40.2, -108.86, 44.0],
-	['BRA_CENTRO_OESTE', -48.8, -17.5, -45.8, -14.6],
-	['CAN_SE_ONTARIO', -78.0, 44.0, -73.5, 46.5],
-	['NOR_S', 4.3, 57.9, 13.0, 71.1],
-	['FRA_CORSE', 8.0, 41.0, 10.0, 43.0],
-	['CAN_SW_ONTARIO', -82.0, 41.0, -78.0, 46.0],
-	['CL_CHILE_CENTRO', -74.0, -37.5, -69.5, -29.5],
-	['ESP_C', -7.7, 38.0, 1.8, 41.0],
-	['BEN_WGER', 2.0, 49.0, 13.0, 54.0],
-	['US_FL_CENTRAL', -83.0, 26.5, -80.5, 29.5],
-	['US_NORTHEAST', -79.0, 39.0, -70.0, 45.0],
-	['US_ILLINOIS_NO', -91.0, 40.0, -87.0, 44.0],
-	['US_HOBBS', -104.5, 31.0, -100.5, 36.0],
-	['SWE_N', 11.8, 60.5, 21.7, 67.0],
-	['AUS_NSW_VIC', 141.0, -39.0, 154.0, -29.0],
-	['US_WA_STATE', -124.0, 45.5, -117.0, 49.0],
-	['US_OK_HINTON', -104.0, 33.0, -95.5, 39.0],
-	['US_CA_TRUCKEE', -124.5, 34.0, -113.0, 43.0],
-	['SWE_C', 10.9, 58.0, 19.2, 62.5],
-	['US_ID_LOST_RIVER', -117.5, 42.0, -110.5, 47.0],
-	['CAN_SE_BC', -118.0, 47.0, -113.0, 55.0],
-	['CAN_ONTARIO', -77.0, 47.0, -74.0, 55.0],
-	['CAN_QUEBEC_S', -74.0, 44.7, -70.2, 47.2],
-	['JP_HOK', 139.0, 41.0, 147.0, 46.0],
-	['ARG_NORTE', -69.0, -34.0, -58.0, -30.0],
-	['US_HI_OAHU', -158.35, 21.2, -157.6, 21.75],
-	['AUS_BENALLA', 143.0, -40.0, 149.0, -31.0],
-	['IRE', -10.5, 51.3, -5.3, 55.4],
-	['AUS_QLD', 148.5, -29.0, 153.0, -25.0],
-	['BRA_SUDESTE', -49.0, -25.5, -39.3, -16.5],
-	['ISR_ISRAEL', 33.2, 28.9, 36.2, 33.8],
-	['US_TEXAS', -100.0, 26.0, -93.0, 36.0],
-	['NZL_BOTHISLANDS', 172.6, -46.7, 178.6, -34.3],
-	['ITA_SARD', 8.0, 38.5, 10.0, 41.5],
-	['MEX_CENTER', -105.15, 15.29, -95.0, 21.6],
-	['US_OR_STATE', -124.0, 42.0, -117.0, 46.0],
-	['ITA_S', 12.4, 36.6, 18.5, 41.5],
-	['US_ILLINOIS_SO', -91.0, 36.0, -87.0, 40.0],
-	['AUS_ADELAIDE', 138.0, -36.0, 141.0, -33.0],
-	['BRA_SOUTH', -58.0, -34.0, -47.0, -22.0],
-	['ARG_CENTRO', -68.0, -40.0, -57.0, -33.0],
-	['US_COLORADO', -109.0, 37.0, -102.0, 41.0],
-	['US_INDIANA', -88.0, 38.0, -84.0, 42.0],
-	['US_CALIFORN_S', -120.0, 33.0, -114.0, 37.0],
-	['AUS_WA', 115.0, -34.4, 120.0, -24.9],
-	['ESP_N', -9.5, 40.0, 3.4, 43.8],
-	['AUS_NORTHNSW', 146.7, -33.0, 151.8, -28.3],
-	['US_NEWENGLAND', -74.0, 41.1, -68.9, 45.0],
-	['AFR_NAMIBIA_CENTRAL', 12.5, -29.0, 25.0, -16.5],
-	['COLOMBIA', -78.0, 0.0, -70.0, 8.0],
-	['ARG_ANDES', -72.0, -45.0, -69.0, -36.0],
-	['SWE_S', 11.0, 55.3, 18.1, 59.0],
-	['NZL_SOUTHISLAND', 166.2, -46.7, 174.3, -39.4],
-	['ESP_S', -7.7, 35.8, 0.3, 39.5],
-	['AFR_GARIEP_DAM', 19.3, -34.0, 31.0, -24.3],
-	['US_ID_SOUTHWEST', -119.3, 41.5, -112.7, 45.5]]
+from xcsoar.mapgen.downloader import Downloader
+from xcsoar.mapgen.util import slurp
 
 def main():
-    f = open('maps.config.js', 'w')
-    f.write('var MAPS = [')
-    for i, map in enumerate(maps):
-        if i != 0:
-            f.write(',')
-        f.write("\n ['{}',{},{},{},{}]".format(*map))
-    f.write("\n];\n")
-    f.close()
-    for map in maps:
-        output_file = map[0] + '.xcm'
-        left   = map[1]
-        bottom = map[2]
-        right  = map[3]
-        top    = map[4]
-        generator = Generator(dir_data=os.path.join(app_dir, 'data'),
+    dir_data = os.path.join(app_dir, 'data')
+    config = Downloader(dir_data).retrieve('maps.config.js')
+    config = re.sub(r'var\s+MAPS\s+=\s+|;', '', slurp(config))
+    maps = json.loads(config)
+    for name, bounds in maps.items():
+        output_file = name + '.xcm'
+        left   = bounds[0]
+        bottom = bounds[1]
+        right  = bounds[2]
+        top    = bounds[3]
+        generator = Generator(dir_data=dir_data,
                               dir_temp='/tmp/mapgen-{}'.format(os.getpid()))
         generator.set_bounds(GeoRect(left, right, top, bottom))
         generator.add_information_file(output_file)
