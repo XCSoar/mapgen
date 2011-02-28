@@ -7,7 +7,7 @@ from xcsoar.mapgen.topology import shapefiles
 from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.filelist import FileList
 from xcsoar.mapgen.downloader import Downloader
-from xcsoar.mapgen.util import check_commands
+from xcsoar.mapgen.util import check_commands, spew
 
 check_commands()
 
@@ -36,9 +36,7 @@ class Generator:
             raise RuntimeError('Boundaries undefined.')
 
         dst = os.path.join(self.__dir_temp, 'info.txt')
-        f = open(dst, 'w')
-        try:
-            f.write('''map name: {name}
+        spew(dst, '''map name: {name}
 generator: XCSoar Map Generator
 creation time: {time:%d.%m.%Y %T} ({time:%s})
 latitude range: {minlat} to {maxlat}
@@ -51,8 +49,6 @@ author: {author}
            minlon=self.__bounds.left,
            maxlon=self.__bounds.right,
            author=author))
-        finally:
-            f.close()
 
         self.__files.add(dst, True)
 
