@@ -6,6 +6,7 @@ from zipfile import ZipFile, BadZipfile
 from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.filelist import FileList
 
+__cmd_im_convert = 'convert'
 __cmd_geojasper = 'geojasper'
 __cmd_gdalwarp = 'gdalwarp'
 __use_world_file = True
@@ -205,6 +206,26 @@ def __convert(dir_temp, input_file, rc):
 
     return output
 
+'''
+ 4) Create water map
+'''
+def __create_water_map(dir_temp, input_file):
+    print('Creating water map...')
+    output_file = os.path.join(dir_temp, 'terrain.rgb')
+    args = [__cmd_im_convert,
+            '-black-threshold', '45%',
+            '-white-threshold', '55%',
+            '-fill', 'black',
+            '-opaque', 'white',
+            '-white-threshold', '10%',
+            input_file,
+            '-depth', '1',
+            output_file]
+
+    subprocess.check_call(args)
+    
+    return output_file
+
 def __cleanup(dir_temp):
     for file in os.listdir(dir_temp):
         if  file.endswith(".tif") and (file.startswith("srtm_") or
@@ -219,6 +240,12 @@ def create(bounds, arcseconds_per_pixel, downloader, dir_temp):
 
     try:
         terrain_file = __create(dir_temp, tiles, arcseconds_per_pixel, bounds)
-        return __convert(dir_temp, terrain_file, bounds)
+        file_list = __convert(dir_temp, terrain_file, bounds)
+        
+        water_file = __create_water_map(dir_temp, terrain_file)
+        if water_file:
+            file_list.add(water_file, True)
+            
+        return file_list
     finally:
         __cleanup(dir_temp)
