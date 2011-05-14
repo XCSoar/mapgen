@@ -93,7 +93,7 @@ class Downloader:
 
     def __download(self, file, dest):
         if not os.path.exists(dest):
-            if not self.__checksums[file]:
+            if not file in self.__checksums:
                 raise RuntimeError('{} does not exist on the server.'.format(file))
             url = self.__base_url + file
             if not os.path.exists(os.path.dirname(dest)):
