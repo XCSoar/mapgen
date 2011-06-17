@@ -53,7 +53,7 @@ This link is valid for 7 days.
 
             if description.use_topology:
                 job.update_status('Creating topology files...')
-                generator.add_topology()
+                generator.add_topology(compressed = description.compressed)
 
             if description.use_terrain:
                 job.update_status('Creating terrain files...')

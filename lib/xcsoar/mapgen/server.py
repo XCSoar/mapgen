@@ -67,6 +67,7 @@ class Server(object):
         desc.name = name
         desc.mail = params['mail']
         desc.resolution = 3.0 if params.has_key('highres') else 9.0
+        desc.compressed = True if params.has_key('compressed') else False
 
         selection = params['selection']
         waypoint_file = params['waypoint_file']
