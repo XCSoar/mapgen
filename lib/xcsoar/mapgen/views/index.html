@@ -10,7 +10,7 @@
 	<li>Choose a name for the map.</li>
 	<li>Enter your E-Mail address if you want to be informed when the map is ready.</li>
 	<li>Select the map options.</li>
-	<li>Select the map bounds and/or upload a waypoint file (WinPilot/XCSoar format).</li>
+	<li>Select the map bounds and/or upload a waypoint file.</li>
       </ol>
     </div>
     <form action="${url('/')}" method="post" enctype="multipart/form-data">
@@ -31,6 +31,7 @@
 	  <label for="radio_waypoint">Add waypoint file and compute map bounds automatically.</label><br/>
 	  <input type="radio" name="selection" value="waypoint_bounds" id="radio_waypoint_bounds"/>
 	  <label for="radio_waypoint_bounds">Add waypoint file and select map bounds by hand.</label><br/>
+	  <em style="font-size: 10pt;">Note: Waypoint files have to be in Cambridge/Winpilot (.DAT) format</em>
 	</div>
 	<div id="waypoint_file_box">
           <label for="waypoint_file">Waypoint file:</label>
