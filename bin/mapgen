@@ -14,7 +14,8 @@ def print_help():
     print('''Usage:   mapgen [Options] -wpf waypoint_file output_file
          mapgen [Options] -b left right top bottom output_file
 
-         Options: -r resolution (terrain resolution, arcseconds per pixel)''')
+         Options: -r resolution (terrain resolution, arcseconds per pixel)
+                  -c, --compress (compress topology data for smaller file size but lower speed)''')
 
 def main():
     args = sys.argv[1:]
@@ -23,9 +24,12 @@ def main():
     left = None
     output_file = None
     res = 9.0
+    compressed = False
     for i in range(len(args)):
         if args[i] == '-r' and i + 1 < len(args):
             res = args[i + 1]
+        if args[i] == '-c' or args[i] == '--compress':
+            compressed = True
         if args[i] == '-wpf' and i + 2 < len(args):
             wp = args[i + 1]
             output_file = args[i + 2]
@@ -50,7 +54,7 @@ def main():
         if left:
             generator.set_bounds(GeoRect(float(left), float(right), float(top), float(bottom)))
         generator.add_information_file(output_file)
-        generator.add_topology()
+        generator.add_topology(compressed = compressed)
         generator.add_terrain(res)
         generator.create(output_file)
         generator.cleanup()

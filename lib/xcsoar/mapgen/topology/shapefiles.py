@@ -51,7 +51,7 @@ def __create_layer_index(layer, dir_temp):
      print('Generating index file for layer {} ...'.format(layer['name']))
      subprocess.check_call([__cmd_shptree, os.path.join(dir_temp, layer['name'] + ".shp")])
 
-def __create_layer(bounds, layer, datasets, downloader, dir_temp, files, index):
+def __create_layer(bounds, layer, datasets, downloader, dir_temp, files, index, compressed = False):
      print('Creating topology layer {} ...'.format(layer['name']))
 
      datasets = __filter_datasets(bounds, datasets)
@@ -62,11 +62,11 @@ def __create_layer(bounds, layer, datasets, downloader, dir_temp, files, index):
      if os.path.exists(os.path.join(dir_temp, layer['name'] + '.shp')):
           __create_layer_index(layer, dir_temp)
 
-          files.add(os.path.join(dir_temp, layer['name'] + '.shp'), False)
-          files.add(os.path.join(dir_temp, layer['name'] + '.shx'), False)
-          files.add(os.path.join(dir_temp, layer['name'] + '.dbf'), False)
-          files.add(os.path.join(dir_temp, layer['name'] + '.prj'), False)
-          files.add(os.path.join(dir_temp, layer['name'] + '.qix'), False)
+          files.add(os.path.join(dir_temp, layer['name'] + '.shp'), compressed)
+          files.add(os.path.join(dir_temp, layer['name'] + '.shx'), compressed)
+          files.add(os.path.join(dir_temp, layer['name'] + '.dbf'), compressed)
+          files.add(os.path.join(dir_temp, layer['name'] + '.prj'), compressed)
+          files.add(os.path.join(dir_temp, layer['name'] + '.qix'), compressed)
           index.append(layer)
 
 def __create_index_file(dir_temp, index):
@@ -85,7 +85,7 @@ def __create_index_file(dir_temp, index):
           file.close()
      return os.path.join(dir_temp, "topology.tpl")
 
-def create(bounds, downloader, dir_temp):
+def create(bounds, downloader, dir_temp, compressed = False):
      topology = downloader.manifest()['topology']
      layers = topology['layers']
      datasets = topology['datasets']
@@ -93,7 +93,7 @@ def create(bounds, downloader, dir_temp):
      files = FileList()
      index = []
      for layer in layers:
-          __create_layer(bounds, layer, datasets[layer['dataset']], downloader, dir_temp, files, index)
+          __create_layer(bounds, layer, datasets[layer['dataset']], downloader, dir_temp, files, index, compressed)
 
      files.add(__create_index_file(dir_temp, index), True)
      return files
