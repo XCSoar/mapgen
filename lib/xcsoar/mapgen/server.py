@@ -75,8 +75,11 @@ class Server(object):
                 return view.render(error='No waypoint file uploaded.') | HTMLFormFiller(data=params)
 
             try:
-                desc.bounds = WaypointList().parse(waypoint_file.file, waypoint_file.filename).get_bounds()
-                desc.waypoint_file = 'waypoints.dat'
+				if waypoint_file.filename.lower().endswith('.dat'):
+					desc.bounds = WaypointList().parse(waypoint_file.file, waypoint_file.filename).get_bounds()
+					desc.waypoint_file = 'waypoints.dat'
+				else:
+					raise RuntimeError('Waypoint file {} has an unsupported format.'.format(waypoint_file.filename))
             except:
                 return view.render(error='Unsupported waypoint file ' + waypoint_file.filename) | HTMLFormFiller(data=params)
 
