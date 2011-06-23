@@ -44,7 +44,7 @@ class WaypointList:
             f.close()
 
     def parse(self, lines, filename = 'unknown.dat'):
-        if filename.endswith('.xcw') or filename.endswith('.dat'):
+        if filename.lower().endswith('.xcw') or filename.lower().endswith('.dat'):
             self.__parse_winpilot(lines)
         else:
             raise RuntimeError('Waypoint file {} has an unsupported format.'.format(filename))
