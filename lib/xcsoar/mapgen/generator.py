@@ -100,7 +100,7 @@ author: {author}
 
         self.__files.add(dst, True)
 
-    def add_topology(self, bounds = None, compressed = False):
+    def add_topology(self, bounds = None, compressed = False, level_of_detail = 3):
         print('Adding topology...')
 
         if not bounds:
@@ -108,7 +108,7 @@ author: {author}
                 raise RuntimeError('Boundaries undefined.')
             bounds = self.__bounds
 
-        self.__files.extend(shapefiles.create(bounds, self.__downloader, self.__dir_temp, compressed))
+        self.__files.extend(shapefiles.create(bounds, self.__downloader, self.__dir_temp, compressed, level_of_detail))
 
     def add_terrain(self, arcseconds_per_pixel = 9.0, bounds = None):
         print('Adding terrain...')

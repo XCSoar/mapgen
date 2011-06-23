@@ -85,7 +85,7 @@ def __create_index_file(dir_temp, index):
           file.close()
      return os.path.join(dir_temp, "topology.tpl")
 
-def create(bounds, downloader, dir_temp, compressed = False):
+def create(bounds, downloader, dir_temp, compressed = False, level_of_detail = 3):
      topology = downloader.manifest()['topology']
      layers = topology['layers']
      datasets = topology['datasets']
@@ -93,7 +93,8 @@ def create(bounds, downloader, dir_temp, compressed = False):
      files = FileList()
      index = []
      for layer in layers:
-          __create_layer(bounds, layer, datasets[layer['dataset']], downloader, dir_temp, files, index, compressed)
+         if layer['level_of_detail'] <= level_of_detail:
+             __create_layer(bounds, layer, datasets[layer['dataset']], downloader, dir_temp, files, index, compressed)
 
      files.add(__create_index_file(dir_temp, index), True)
      return files

@@ -27,6 +27,14 @@
 	  <input type="checkbox" name="compressed" id="compressed"/>
 	  <label for="compressed">Compressed topography (smaller filesize, but slower)</label><br/>
 	  <hr/>
+	  <span style="font-size: 10pt;">Level of detail:</span><br/>
+	  <input type="radio" name="level_of_detail" value="3" id="radio_lod3" checked="checked"/>
+	  <label for="radio_bounds">3: Every little village and road that we know of.</label><br/>
+	  <input type="radio" name="level_of_detail" value="2" id="radio_lod2"/>
+	  <label for="radio_waypoint">2: No small villages or smaller roads.</label><br/>
+	  <input type="radio" name="level_of_detail" value="1" id="radio_lod1"/>
+	  <label for="radio_waypoint_bounds">1: Only major cities and roads, no railroads.</label><br/>
+	  <hr/>
 	  <input type="radio" name="selection" value="bounds" id="radio_bounds" checked="checked"/>
 	  <label for="radio_bounds">Select map bounds by hand.</label><br/>
 	  <input type="radio" name="selection" value="waypoint" id="radio_waypoint"/>

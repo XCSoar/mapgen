@@ -15,6 +15,9 @@ def print_help():
          mapgen [Options] -b left right top bottom output_file
 
          Options: -r resolution (terrain resolution, arcseconds per pixel)
+                  -l, --lod level_of_detail (1: only major topography,
+                                             2: medium level of detail,
+                                             3: every tiny city name and road)
                   -c, --compress (compress topology data for smaller file size but lower speed)''')
 
 def main():
@@ -25,9 +28,12 @@ def main():
     output_file = None
     res = 9.0
     compressed = False
+    level_of_detail = 3
     for i in range(len(args)):
         if args[i] == '-r' and i + 1 < len(args):
             res = args[i + 1]
+        if (args[i] == '-l' or args[i] == '--lod') and i + 1 < len(args):
+            level_of_detail = int(args[i + 1])
         if args[i] == '-c' or args[i] == '--compress':
             compressed = True
         if args[i] == '-wpf' and i + 2 < len(args):
@@ -54,7 +60,7 @@ def main():
         if left:
             generator.set_bounds(GeoRect(float(left), float(right), float(top), float(bottom)))
         generator.add_information_file(output_file)
-        generator.add_topology(compressed = compressed)
+        generator.add_topology(compressed = compressed, level_of_detail = level_of_detail)
         generator.add_terrain(res)
         generator.create(output_file)
         generator.cleanup()

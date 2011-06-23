@@ -19,6 +19,7 @@ class JobDescription:
     resolution = 9.0
     download_url = None
     compressed = False
+    level_of_detail = 3
 
 class Job:
     def __init__(self, dir_jobs, desc=None):
