@@ -46,10 +46,62 @@ class WaypointList:
     def parse(self, lines, filename = 'unknown.dat'):
         if filename.lower().endswith('.xcw') or filename.lower().endswith('.dat'):
             self.__parse_winpilot(lines)
+        elif filename.lower().endswith('.cup'):
+            self.__parse_seeyou(lines)
         else:
             raise RuntimeError('Waypoint file {} has an unsupported format.'.format(filename))
         return self
 
+    def __parse_seeyou(self, lines):
+        first = True
+        for line in lines:
+            if first:
+                first = False
+                continue
+            
+            line = line.strip()
+            if line == '' or line.startswith('*'):
+                continue
+            
+            if line == '-----Related Tasks-----':
+                break
+
+            fields = line.split(',')
+            if len(fields) < 6:
+                continue
+
+            wp = Waypoint()
+            wp.lat = self.__parse_seeyou_coordinate(fields[3]);
+            wp.lon = self.__parse_seeyou_coordinate(fields[4]);
+            wp.altitude = self.__parse_seeyou_altitude(fields[5]);
+            wp.name = fields[0].strip();
+            self.append(wp)
+
+    def __parse_seeyou_altitude(self, str):
+        str = str.lower()
+        if str.endswith('ft') or str.endswith('f'):
+            str = str.rstrip('ft')
+            return int(float(str) * 0.3048)
+        else:
+            str = str.rstrip('m')
+            return int(float(str))
+
+    def __parse_seeyou_coordinate(self, str):
+        str = str.lower()
+        negative = str.endswith('s') or str.endswith('w')
+        is_lon = str.endswith('e') or str.endswith('w')
+        str = str.rstrip('sw') if negative else str.rstrip('ne')
+
+        # degrees + minutes / 60
+        if is_lon:
+            a = int(str[:3]) + float(str[3:]) / 60
+        else:
+            a = int(str[:2]) + float(str[2:]) / 60
+            
+        if (negative):
+            a *= -1
+        return a
+    
     def __parse_winpilot(self, lines):
         for line in lines:
             line = line.strip()

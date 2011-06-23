@@ -61,7 +61,11 @@ author: {author}
         if not os.path.exists(filename):
             raise RuntimeError('Waypoint file {} does not exist.'.format(filename))
 
-        dst = os.path.join(self.__dir_temp, "waypoints.xcw")
+        if filename.lower().endswith('.cup'):
+            dst = os.path.join(self.__dir_temp, "waypoints.cup")
+        else:
+            dst = os.path.join(self.__dir_temp, "waypoints.xcw")
+            
         shutil.copy(filename, dst)
         if not os.path.exists(dst):
             raise RuntimeError('Copying {} to {} failed.'.format(os.path.basename(filename), dst))
