@@ -68,6 +68,7 @@ class Server(object):
         desc.mail = params['mail']
         desc.resolution = 3.0 if params.has_key('highres') else 9.0
         desc.compressed = True if params.has_key('compressed') else False
+        desc.welt2000 = True if params.has_key('welt2000') else False
         desc.level_of_detail = int(params['level_of_detail'])
 
         selection = params['selection']

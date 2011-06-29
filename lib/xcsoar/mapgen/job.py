@@ -20,6 +20,7 @@ class JobDescription:
     download_url = None
     compressed = False
     level_of_detail = 3
+    welt2000 = False
 
 class Job:
     def __init__(self, dir_jobs, desc=None):

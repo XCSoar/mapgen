@@ -26,6 +26,10 @@ def main():
                         action='store_const', const=True, default=False,
                         help='compress topology data for smaller file size but lower speed')
 
+    parser.add_argument('-w2', metavar='welt2000', dest='welt2000', 
+                        action='store_const', const=True, default=False,
+                        help='create embedded waypoint file from welt2000 database')
+
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('-b', metavar=('left', 'right', 'top', 'bottom'), dest='bounds', 
                        type=float, nargs=4, help='boundaries of the map file')
@@ -40,12 +44,17 @@ def main():
     try:
         generator = Generator(dir_data=os.path.join(app_dir, 'data'),
                               dir_temp=dir_temp)
-        if args.waypoint_file:
-            generator.add_waypoint_file(args.waypoint_file)
-            generator.set_bounds(WaypointList().parse_file(args.waypoint_file).get_bounds())
-            
         if args.bounds:
             generator.set_bounds(GeoRect(args.bounds[0], args.bounds[1], args.bounds[2], args.bounds[3]))
+        elif args.waypoint_file:
+            generator.set_bounds(WaypointList().parse_file(args.waypoint_file).get_bounds())
+        else:
+            parser.error("no map boundaries specified")
+
+        if args.welt2000:
+            generator.add_welt2000()
+        elif args.waypoint_file:
+            generator.add_waypoint_file(args.waypoint_file)
             
         generator.add_information_file(args.output_file)
         generator.add_topology(compressed = args.compressed, level_of_detail = args.level_of_detail)

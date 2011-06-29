@@ -59,7 +59,10 @@ This link is valid for 7 days.
                 job.update_status('Creating terrain files...')
                 generator.add_terrain(description.resolution)
 
-            if description.waypoint_file:
+            if description.welt2000:
+                job.update_status('Adding welt2000 waypoints...')
+                generator.add_welt2000()
+            elif description.waypoint_file:
                 job.update_status('Adding waypoint file...')
                 generator.add_waypoint_file(job.file_path(description.waypoint_file))
 

@@ -2,6 +2,7 @@ import os.path
 import shutil
 from zipfile import ZipFile, ZIP_DEFLATED, ZIP_STORED
 from datetime import datetime
+from xcsoar.mapgen.waypoints import welt2000
 from xcsoar.mapgen.terrain import srtm
 from xcsoar.mapgen.topology import shapefiles
 from xcsoar.mapgen.georect import GeoRect
@@ -21,6 +22,7 @@ class Generator:
 
         self.__downloader = Downloader(dir_data)
 
+        self.__dir_data = os.path.abspath(dir_data)
         self.__dir_temp = os.path.abspath(dir_temp)
         if not os.path.exists(self.__dir_temp):
             os.mkdir(self.__dir_temp)
@@ -124,6 +126,16 @@ author: {author}
 
         self.__files.extend(srtm.create(bounds, arcseconds_per_pixel,
                                         self.__downloader, self.__dir_temp))
+
+    def add_welt2000(self, bounds = None):
+        print('Adding welt2000 waypoints...')
+
+        if not bounds:
+            if not self.__bounds:
+                raise RuntimeError('Boundaries undefined.')
+            bounds = self.__bounds
+
+        self.__files.extend(welt2000.create(bounds, self.__downloader, self.__dir_data, self.__dir_temp))
 
     def set_bounds(self, bounds):
         if not isinstance(bounds, GeoRect):
