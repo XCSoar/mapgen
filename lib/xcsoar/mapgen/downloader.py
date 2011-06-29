@@ -48,7 +48,7 @@ class Downloader:
                 subprocess.check_call([self.__cmd_7zip, 'x', '-y', '-o' + os.path.dirname(dest_file), dest_file])
                 os.unlink(dest_file)
             else:
-                raise RuntimeError('Could not extract file {}.'.format(dest))
+                raise RuntimeError('Could not extract file {}.'.format(dest_file))
         return dest_dir
 
     def retrieve(self, file):
