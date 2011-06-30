@@ -27,13 +27,15 @@ class WaypointList:
     def append(self, wp):
         self.__list.append(wp)
 
-    def get_bounds(self):
+    def get_bounds(self, distance = 15.):
         rc = GeoRect(180, -180, -90, 90)
         for wp in self.__list:
             rc.left = min(rc.left, wp.lon)
             rc.right = max(rc.right, wp.lon)
             rc.top = max(rc.top, wp.lat)
             rc.bottom = min(rc.bottom, wp.lat)
+        
+        rc.expand(distance)
         return rc
 
     def parse_file(self, filename):
