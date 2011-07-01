@@ -138,3 +138,7 @@ button, .button {
 button:hover, .button:hover {
   background: #333;
 }
+
+.olLayerGoogleCopyright {
+    display: none;
+}
