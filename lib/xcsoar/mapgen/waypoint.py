@@ -1,6 +1,31 @@
 from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.geopoint import GeoPoint
 
+class CSVLine:
+    def __init__(self, line):
+        self.__line = line
+        self.__index = 0
+        
+    def has_next(self):
+        return self.__index < len(self.__line)
+    
+    def next(self):
+        if self.__index >= len(self.__line): return None
+        
+        in_quotes = False
+        
+        for i in range(self.__index, len(self.__line)):
+            if self.__line[i] == '"': 
+                in_quotes = not in_quotes
+                
+            if self.__line[i] == ',' and not in_quotes:
+                break
+            
+        next = self.__line[self.__index:i + 1].rstrip(',').strip('"').replace('\"', '"')
+        self.__index = i + 1
+
+        return next
+
 class Waypoint(GeoPoint):
     def __init__(self):
         self.altitude = 0
@@ -68,7 +93,11 @@ class WaypointList:
             if line == '-----Related Tasks-----':
                 break
 
-            fields = line.split(',')
+            fields = []
+            line = CSVLine(line)
+            while line.has_next():
+                fields.append(line.next())
+
             if len(fields) < 6:
                 continue
 
