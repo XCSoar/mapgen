@@ -23,6 +23,7 @@ def generate_map(name, bounds, dir_data, dir_temp):
     generator = Generator(dir_data = dir_data, dir_temp = dir_temp)
     generator.set_bounds(GeoRect(left, right, top, bottom))
     generator.add_information_file(output_file)
+    generator.add_welt2000()
     generator.add_topology()
     generator.add_terrain(9.0)
     generator.create(output_file)
