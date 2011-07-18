@@ -12,7 +12,15 @@ from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.downloader import Downloader
 from xcsoar.mapgen.util import slurp
 
-def generate_map(name, bounds, dir_data, dir_temp):
+def generate_map(name, bounds, dir_data, dir_temp, highres = False, level_of_detail = 3):
+    if level_of_detail < 3:
+        name += "_LOD" + str(level_of_detail)
+    
+    resolution = 9.0
+    if highres: 
+        name += "_HIGHRES"
+        resolution = 3.0
+        
     output_file = name + '.xcm'
     left   = bounds[0]
     bottom = bounds[1]
@@ -24,10 +32,15 @@ def generate_map(name, bounds, dir_data, dir_temp):
     generator.set_bounds(GeoRect(left, right, top, bottom))
     generator.add_information_file(output_file)
     generator.add_welt2000()
-    generator.add_topology()
-    generator.add_terrain(9.0)
+    generator.add_topology(level_of_detail = level_of_detail)
+    generator.add_terrain(resolution)
     generator.create(output_file)
     generator.cleanup()
+
+def generate_maps(name, bounds, dir_data, dir_temp):
+    for level_of_detail in range(1, 4):
+        generate_map(name, bounds, dir_data, dir_temp, True, level_of_detail)
+        generate_map(name, bounds, dir_data, dir_temp, False, level_of_detail)
 
 def main():
     dir_data = os.path.join(app_dir, 'data')
@@ -37,7 +50,7 @@ def main():
     maps = json.loads(config)
     try:
         for name in sorted(maps.keys()):
-            generate_map(name, maps[name], dir_data, dir_temp)
+            generate_maps(name, maps[name], dir_data, dir_temp)
     finally:
         if os.path.exists(dir_temp): shutil.rmtree(dir_temp)
 
