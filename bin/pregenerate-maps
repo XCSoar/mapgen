@@ -12,6 +12,22 @@ from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.downloader import Downloader
 from xcsoar.mapgen.util import slurp
 
+def generate_map(name, bounds, dir_data, dir_temp):
+    output_file = name + '.xcm'
+    left   = bounds[0]
+    bottom = bounds[1]
+    right  = bounds[2]
+    top    = bounds[3]
+
+    print "Generating " + output_file + " ..."
+    generator = Generator(dir_data = dir_data, dir_temp = dir_temp)
+    generator.set_bounds(GeoRect(left, right, top, bottom))
+    generator.add_information_file(output_file)
+    generator.add_topology()
+    generator.add_terrain(9.0)
+    generator.create(output_file)
+    generator.cleanup()
+
 def main():
     dir_data = os.path.join(app_dir, 'data')
     dir_temp = '/tmp/mapgen-{}'.format(os.getpid())
@@ -20,19 +36,7 @@ def main():
     maps = json.loads(config)
     try:
         for name in sorted(maps.keys()):
-            output_file = name + '.xcm'
-            bounds = maps[name]
-            left   = bounds[0]
-            bottom = bounds[1]
-            right  = bounds[2]
-            top    = bounds[3]
-            generator = Generator(dir_data=dir_data, dir_temp=dir_temp)
-            generator.set_bounds(GeoRect(left, right, top, bottom))
-            generator.add_information_file(output_file)
-            generator.add_topology()
-            generator.add_terrain(9.0)
-            generator.create(output_file)
-            generator.cleanup()
+            generate_map(name, maps[name], dir_data, dir_temp)
     finally:
         if os.path.exists(dir_temp): shutil.rmtree(dir_temp)
 
