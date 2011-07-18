@@ -34,7 +34,7 @@ def main():
             generator.create(output_file)
             generator.cleanup()
     finally:
-        shutil.rmtree(dir_temp)
+        if os.path.exists(dir_temp): shutil.rmtree(dir_temp)
 
 if __name__ == '__main__':
     main()
