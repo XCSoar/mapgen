@@ -1,31 +1,7 @@
 from xcsoar.mapgen.waypoints.waypoint import Waypoint
+from xcsoar.mapgen.waypoints.seeyou import parse_seeyou_waypoints
 from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.geopoint import GeoPoint
-
-class CSVLine:
-    def __init__(self, line):
-        self.__line = line
-        self.__index = 0
-        
-    def has_next(self):
-        return self.__index < len(self.__line)
-    
-    def next(self):
-        if self.__index >= len(self.__line): return None
-        
-        in_quotes = False
-        
-        for i in range(self.__index, len(self.__line)):
-            if self.__line[i] == '"': 
-                in_quotes = not in_quotes
-                
-            if self.__line[i] == ',' and not in_quotes:
-                break
-            
-        next = self.__line[self.__index:i + 1].rstrip(',').strip('"').replace('\"', '"')
-        self.__index = i + 1
-
-        return next
 
 class WaypointList:
     def __init__(self):
@@ -44,6 +20,9 @@ class WaypointList:
 
     def append(self, wp):
         self.__list.append(wp)
+
+    def extend(self, wp_list):
+        self.__list.extend(wp_list)
 
     def get_bounds(self, distance = 15.):
         rc = GeoRect(180, -180, -90, 90)
@@ -67,64 +46,10 @@ class WaypointList:
         if filename.lower().endswith('.xcw') or filename.lower().endswith('.dat'):
             self.__parse_winpilot(lines)
         elif filename.lower().endswith('.cup'):
-            self.__parse_seeyou(lines)
+            self.extend(parse_seeyou_waypoints(lines))
         else:
             raise RuntimeError('Waypoint file {} has an unsupported format.'.format(filename))
         return self
-
-    def __parse_seeyou(self, lines):
-        first = True
-        for line in lines:
-            if first:
-                first = False
-                continue
-            
-            line = line.strip()
-            if line == '' or line.startswith('*'):
-                continue
-            
-            if line == '-----Related Tasks-----':
-                break
-
-            fields = []
-            line = CSVLine(line)
-            while line.has_next():
-                fields.append(line.next())
-
-            if len(fields) < 6:
-                continue
-
-            wp = Waypoint()
-            wp.lat = self.__parse_seeyou_coordinate(fields[3]);
-            wp.lon = self.__parse_seeyou_coordinate(fields[4]);
-            wp.altitude = self.__parse_seeyou_altitude(fields[5]);
-            wp.name = fields[0].strip();
-            self.append(wp)
-
-    def __parse_seeyou_altitude(self, str):
-        str = str.lower()
-        if str.endswith('ft') or str.endswith('f'):
-            str = str.rstrip('ft')
-            return int(float(str) * 0.3048)
-        else:
-            str = str.rstrip('m')
-            return int(float(str))
-
-    def __parse_seeyou_coordinate(self, str):
-        str = str.lower()
-        negative = str.endswith('s') or str.endswith('w')
-        is_lon = str.endswith('e') or str.endswith('w')
-        str = str.rstrip('sw') if negative else str.rstrip('ne')
-
-        # degrees + minutes / 60
-        if is_lon:
-            a = int(str[:3]) + float(str[3:]) / 60
-        else:
-            a = int(str[:2]) + float(str[2:]) / 60
-            
-        if (negative):
-            a *= -1
-        return a
     
     def __parse_winpilot(self, lines):
         for line in lines:
