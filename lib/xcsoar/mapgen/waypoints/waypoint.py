@@ -6,6 +6,7 @@ class Waypoint(GeoPoint):
         self.name = ''
         self.short_name = ''
         self.icao = ''
+        self.country_code = ''
         self.surface = None
         self.runway_len = None
         self.runway_dir = None

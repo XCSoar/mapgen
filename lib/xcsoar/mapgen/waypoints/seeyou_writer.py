@@ -3,7 +3,8 @@ from xcsoar.mapgen.waypoints.list import WaypointList
 def __compose_line(waypoint):
     # "Aachen Merzbruc",AACHE,DE,5049.383N,00611.183E,189.0m,5,80,530.0m,"122.875",
     str = '"' + waypoint.name + '",'
-    str += waypoint.short_name + ',,'
+    str += waypoint.short_name + ','
+    str += waypoint.country_code + ','
     
     lat = abs(waypoint.lat)
     str += "{:02d}".format(int(lat))

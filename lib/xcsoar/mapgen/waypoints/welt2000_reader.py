@@ -103,6 +103,8 @@ def __parse_line(line, bounds = None):
     
     while '  ' in wp.name:
         wp.name = wp.name.replace('  ', ' ')
+        
+    wp.country_code = line[60:62].strip();
     
     return wp
 
