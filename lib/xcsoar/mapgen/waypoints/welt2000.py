@@ -15,7 +15,7 @@ def __get_database_file(downloader, dir_data):
     
     return path
 
-def __parse_line(line, bounds):
+def __parse_line(line, bounds = None):
     if line.startswith('$'): return None
     
     lat = line[45:52]
@@ -23,14 +23,14 @@ def __parse_line(line, bounds):
     lat = float(lat[1:3]) + float(lat[3:5]) / 60. + float(lat[5:7]) / 3600.
     if lat_neg: lat = -lat
     
-    if lat > bounds.top or lat < bounds.bottom: return None
+    if bounds and (lat > bounds.top or lat < bounds.bottom): return None
 
     lon = line[52:60]
     lon_neg = lon.startswith('W')  
     lon = float(lon[1:4]) + float(lon[4:6]) / 60. + float(lon[6:8]) / 3600.
     if lon_neg: lon = -lon
     
-    if lon > bounds.right or lon < bounds.left: return None
+    if bounds and (lon > bounds.right or lon < bounds.left): return None
     
     wp = {'lat': lat, 'lon': lon}
 
@@ -116,7 +116,7 @@ def __parse_line(line, bounds):
     
     return wp
 
-def __get_database(downloader, dir_data, bounds):
+def __get_database(downloader, dir_data, bounds = None):
     db = []
     path = __get_database_file(downloader, dir_data)
     with open(path, "r") as f:
@@ -194,7 +194,7 @@ def __create_waypoint_file(database, dir_temp):
     
     return path
 
-def create(bounds, downloader, dir_data, dir_temp):
+def create(downloader, dir_data, dir_temp, bounds = None):
     database = __get_database(downloader, dir_data, bounds)
     file = __create_waypoint_file(database, dir_temp)
     

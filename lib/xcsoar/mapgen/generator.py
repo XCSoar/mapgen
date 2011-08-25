@@ -135,7 +135,7 @@ author: {author}
                 raise RuntimeError('Boundaries undefined.')
             bounds = self.__bounds
 
-        self.__files.extend(welt2000.create(bounds, self.__downloader, self.__dir_data, self.__dir_temp))
+        self.__files.extend(welt2000.create(self.__downloader, self.__dir_data, self.__dir_temp, bounds))
 
     def set_bounds(self, bounds):
         if not isinstance(bounds, GeoRect):
