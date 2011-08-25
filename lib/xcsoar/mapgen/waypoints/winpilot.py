@@ -1,5 +1,5 @@
 from xcsoar.mapgen.waypoints.waypoint import Waypoint
-from xcsoar.mapgen.waypoints.waypoint_list import WaypointList
+from xcsoar.mapgen.waypoints.list import WaypointList
 
 def __parse_altitude(str):
     str = str.lower()
