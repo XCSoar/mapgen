@@ -1,22 +1,7 @@
-import os
 import re
 
 from xcsoar.mapgen.waypoints.waypoint import Waypoint
 from xcsoar.mapgen.waypoints.list import WaypointList
-from xcsoar.mapgen.waypoints.seeyou_writer import write_seeyou_waypoints
-from xcsoar.mapgen.georect import GeoRect
-from xcsoar.mapgen.filelist import FileList
-
-def __get_database_file(downloader, dir_data):
-    path = os.path.join(dir_data, 'welt2000', 'WELT2000.TXT')
-
-    if not os.path.exists(path):
-        downloader.retrieve_extracted('welt2000/WELT2000.7z')
-        
-    if not os.path.exists(path):        
-        raise RuntimeError('Welt2000 database not found at {}'.format(path))
-    
-    return path
 
 def __parse_line(line, bounds = None):
     if line.startswith('$'): return None
@@ -121,28 +106,11 @@ def __parse_line(line, bounds = None):
     
     return wp
 
-def __get_database(downloader, dir_data, bounds = None):
-    db = WaypointList()
-    path = __get_database_file(downloader, dir_data)
-    with open(path, "r") as f:
-        for line in f:
-            wp = __parse_line(line, bounds)
-            if wp: 
-                db.append(wp)
+def parse_welt2000_waypoints(lines, bounds = None):
+    waypoint_list = WaypointList()
     
-    return db
-
-def __create_waypoint_file(database, dir_temp):
-    print("Creating waypoints.cup with {} entries...".format(len(database)))
-    
-    path = os.path.join(dir_temp, 'waypoints.cup')
-    write_seeyou_waypoints(database, path)
-    return path
-
-def create(downloader, dir_data, dir_temp, bounds = None):
-    database = __get_database(downloader, dir_data, bounds)
-    file = __create_waypoint_file(database, dir_temp)
-    
-    list = FileList()
-    list.add(file, True)
-    return list
+    for line in lines:
+        wp = __parse_line(line, bounds)
+        if wp: waypoint_list.append(wp)
+        
+    return waypoint_list

@@ -2,7 +2,7 @@ import os.path
 import shutil
 from zipfile import ZipFile, ZIP_DEFLATED, ZIP_STORED
 from datetime import datetime
-from xcsoar.mapgen.waypoints import welt2000_reader
+from xcsoar.mapgen.waypoints import welt2000
 from xcsoar.mapgen.terrain import srtm
 from xcsoar.mapgen.topology import shapefiles
 from xcsoar.mapgen.georect import GeoRect
@@ -135,7 +135,7 @@ author: {author}
                 raise RuntimeError('Boundaries undefined.')
             bounds = self.__bounds
 
-        self.__files.extend(welt2000_reader.create(self.__downloader, self.__dir_data, self.__dir_temp, bounds))
+        self.__files.extend(welt2000.create(self.__downloader, self.__dir_data, self.__dir_temp, bounds))
 
     def set_bounds(self, bounds):
         if not isinstance(bounds, GeoRect):
