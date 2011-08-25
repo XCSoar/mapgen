@@ -2,7 +2,6 @@ from xcsoar.mapgen.waypoints.waypoint import Waypoint
 from xcsoar.mapgen.waypoints.seeyou import parse_seeyou_waypoints
 from xcsoar.mapgen.waypoints.winpilot import parse_winpilot_waypoints
 from xcsoar.mapgen.georect import GeoRect
-from xcsoar.mapgen.geopoint import GeoPoint
 
 class WaypointList:
     def __init__(self):

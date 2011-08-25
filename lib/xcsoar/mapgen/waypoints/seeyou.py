@@ -1,5 +1,4 @@
 from xcsoar.mapgen.waypoints.waypoint import Waypoint
-from xcsoar.mapgen.geopoint import GeoPoint
 
 class __CSVLine:
     def __init__(self, line):
