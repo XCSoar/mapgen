@@ -2,6 +2,8 @@ import os
 import re
 
 from xcsoar.mapgen.waypoints.waypoint import Waypoint
+from xcsoar.mapgen.waypoints.list import WaypointList
+from xcsoar.mapgen.waypoints.seeyou_writer import write_seeyou_waypoints
 from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.filelist import FileList
 
@@ -120,7 +122,7 @@ def __parse_line(line, bounds = None):
     return wp
 
 def __get_database(downloader, dir_data, bounds = None):
-    db = []
+    db = WaypointList()
     path = __get_database_file(downloader, dir_data)
     with open(path, "r") as f:
         for line in f:
@@ -130,72 +132,11 @@ def __get_database(downloader, dir_data, bounds = None):
     
     return db
 
-def __compose_line(waypoint):
-    # "Aachen Merzbruc",AACHE,DE,5049.383N,00611.183E,189.0m,5,80,530.0m,"122.875",
-    str = '"' + waypoint.name + '",'
-    str += waypoint.short_name + ',,'
-    
-    lat = abs(waypoint.lat)
-    str += "{:02d}".format(int(lat))
-    lat = round((lat - int(lat)) * 60, 3)
-    str += "{:06.3f}".format(lat)
-    if waypoint.lat > 0: str += 'N,' 
-    else: str += 'S,'
-    
-    lon = abs(waypoint.lon)
-    str += "{:03d}".format(int(lon))
-    lon = round((lon - int(lon)) * 60, 3)
-    str += "{:06.3f}".format(lon)
-    if waypoint.lon > 0: str += 'E,' 
-    else: str += 'W,'
-    
-    elev = abs(waypoint.altitude)
-    str += "{:.1f}m,".format(elev)
-    
-    if waypoint.type:
-        if waypoint.type == 'outlanding': str += "3,"
-        elif waypoint.type == 'glider_site': str += "4,"
-        elif waypoint.type == 'airport': 
-            if (waypoint.surface and (waypoint.surface == 'concrete' or 
-                                      waypoint.surface == 'asphalt')): 
-                str += "5,"
-            else: 
-                str += "2,"
-        elif waypoint.type == 'mountain pass': str += "6,"
-        elif waypoint.type == 'mountain top': str += "7,"
-        elif waypoint.type == 'tower': str += "8,"
-        elif waypoint.type == 'tunnel': str += "13,"
-        elif waypoint.type == 'bridge': str += "14,"
-        elif waypoint.type == 'powerplant': str += "15,"
-        elif waypoint.type == 'castle': str += "16,"
-        elif waypoint.type.endswith('junction'): str += "17,"
-        elif waypoint.type.endswith('cross'): str += "17,"
-        else: str += "1,"
-    else: str += "1,"
-
-    if waypoint.runway_dir:
-        str += "{:03d}".format(waypoint.runway_dir)
-        
-    str += ','
-    if waypoint.runway_len:
-        str += "{:03d}.0m".format(waypoint.runway_len)
-        
-    str += ','
-    if waypoint.freq:
-        str += "{:07.3f}".format(waypoint.freq)
-        
-    str += ','
-    return str
-
 def __create_waypoint_file(database, dir_temp):
     print("Creating waypoints.cup with {} entries...".format(len(database)))
     
     path = os.path.join(dir_temp, 'waypoints.cup')
-    with open(path, "w") as f:
-        for waypoint in database:
-            line = __compose_line(waypoint)
-            f.write(line + '\r\n')
-    
+    write_seeyou_waypoints(database, path)
     return path
 
 def create(downloader, dir_data, dir_temp, bounds = None):
