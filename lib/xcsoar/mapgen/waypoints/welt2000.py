@@ -17,7 +17,7 @@ def __get_database_file(downloader, dir_data):
     
     return path
 
-def __get_database(downloader, dir_data, bounds = None):
+def get_database(downloader, dir_data, bounds = None):
     path = __get_database_file(downloader, dir_data)
     with open(path, "r") as f:
         return parse_welt2000_waypoints(f, bounds)
@@ -30,7 +30,7 @@ def __create_waypoint_file(database, dir_temp):
     return path
 
 def create(downloader, dir_data, dir_temp, bounds = None):
-    database = __get_database(downloader, dir_data, bounds)
+    database = get_database(downloader, dir_data, bounds)
     file = __create_waypoint_file(database, dir_temp)
     
     list = FileList()
