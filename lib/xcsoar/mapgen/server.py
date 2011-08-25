@@ -9,7 +9,7 @@ from genshi.filters import HTMLFormFiller
 from xcsoar.mapgen.job import Job, JobDescription
 from xcsoar.mapgen import view
 from xcsoar.mapgen.georect import GeoRect
-from xcsoar.mapgen.waypoint import WaypointList
+from xcsoar.mapgen.waypoints.waypoint import WaypointList
 
 class Server(object):
     def __init__(self, dir_jobs):

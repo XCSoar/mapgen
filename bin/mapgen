@@ -9,7 +9,7 @@ sys.path.append(os.path.join(app_dir, 'lib'))
 
 from xcsoar.mapgen.generator import Generator
 from xcsoar.mapgen.georect import GeoRect
-from xcsoar.mapgen.waypoint import WaypointList
+from xcsoar.mapgen.waypoints.waypoint import WaypointList
 
 def main():
     parser = argparse.ArgumentParser(description='Create a custom XCM map file for XCSoar')
