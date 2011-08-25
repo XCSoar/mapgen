@@ -1,5 +1,5 @@
-from xcsoar.mapgen.waypoints.seeyou import parse_seeyou_waypoints
-from xcsoar.mapgen.waypoints.winpilot import parse_winpilot_waypoints
+from xcsoar.mapgen.waypoints.seeyou_reader import parse_seeyou_waypoints
+from xcsoar.mapgen.waypoints.winpilot_reader import parse_winpilot_waypoints
 
 def parse_waypoint_file(filename):
     file = open(filename, 'r')
