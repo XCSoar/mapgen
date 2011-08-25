@@ -1,4 +1,5 @@
 from xcsoar.mapgen.waypoints.waypoint import Waypoint
+from xcsoar.mapgen.waypoints.waypoint_list import WaypointList
 
 def __parse_altitude(str):
     str = str.lower()
@@ -23,7 +24,7 @@ def __parse_coordinate(str):
     return a
 
 def parse_winpilot_waypoints(lines):
-    waypoint_list = []
+    waypoint_list = WaypointList()
     
     first = True
     for line in lines:

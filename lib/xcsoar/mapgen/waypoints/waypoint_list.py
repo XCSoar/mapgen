@@ -1,6 +1,4 @@
 from xcsoar.mapgen.waypoints.waypoint import Waypoint
-from xcsoar.mapgen.waypoints.seeyou import parse_seeyou_waypoints
-from xcsoar.mapgen.waypoints.winpilot import parse_winpilot_waypoints
 from xcsoar.mapgen.georect import GeoRect
 
 class WaypointList:
@@ -34,20 +32,3 @@ class WaypointList:
         
         rc.expand(distance)
         return rc
-
-    def parse_file(self, filename):
-        f = open(filename, 'r')
-        try:
-            return self.parse(f, filename)
-        finally:
-            f.close()
-
-    def parse(self, lines, filename = 'unknown.dat'):
-        if filename.lower().endswith('.xcw') or filename.lower().endswith('.dat'):
-            self.extend(parse_winpilot_waypoints(lines))
-        elif filename.lower().endswith('.cup'):
-            self.extend(parse_seeyou_waypoints(lines))
-        else:
-            raise RuntimeError('Waypoint file {} has an unsupported format.'.format(filename))
-        
-        return self

@@ -9,7 +9,7 @@ sys.path.append(os.path.join(app_dir, 'lib'))
 
 from xcsoar.mapgen.generator import Generator
 from xcsoar.mapgen.georect import GeoRect
-from xcsoar.mapgen.waypoints.waypoint_list import WaypointList
+from xcsoar.mapgen.waypoints.parser import parse_waypoint_file
 
 def main():
     parser = argparse.ArgumentParser(description='Create a custom XCM map file for XCSoar')
@@ -47,7 +47,7 @@ def main():
         if args.bounds:
             generator.set_bounds(GeoRect(args.bounds[0], args.bounds[1], args.bounds[2], args.bounds[3]))
         elif args.waypoint_file:
-            generator.set_bounds(WaypointList().parse_file(args.waypoint_file).get_bounds())
+            generator.set_bounds(parse_waypoint_file(args.waypoint_file).get_bounds())
         else:
             parser.error("no map boundaries specified")
 

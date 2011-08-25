@@ -1,4 +1,5 @@
 from xcsoar.mapgen.waypoints.waypoint import Waypoint
+from xcsoar.mapgen.waypoints.waypoint_list import WaypointList
 
 class __CSVLine:
     def __init__(self, line):
@@ -48,7 +49,7 @@ def __parse_coordinate(str):
     return a
 
 def parse_seeyou_waypoints(lines):
-    waypoint_list = []
+    waypoint_list = WaypointList()
     
     first = True
     for line in lines:

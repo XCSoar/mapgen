@@ -9,7 +9,7 @@ from genshi.filters import HTMLFormFiller
 from xcsoar.mapgen.job import Job, JobDescription
 from xcsoar.mapgen import view
 from xcsoar.mapgen.georect import GeoRect
-from xcsoar.mapgen.waypoints.waypoint_list import WaypointList
+from xcsoar.mapgen.waypoints.parser import parse_waypoint_file
 
 class Server(object):
     def __init__(self, dir_jobs):
@@ -80,7 +80,7 @@ class Server(object):
             try:
                 filename = waypoint_file.filename.lower()
                 if filename.endswith('.dat') or filename.endswith('.cup'):
-                    desc.bounds = WaypointList().parse(waypoint_file.file, waypoint_file.filename).get_bounds()
+                    desc.bounds = parse_waypoint_file(waypoint_file.file, waypoint_file.filename).get_bounds()
                     desc.waypoint_file = 'waypoints.cup' if filename.endswith('.cup') else 'waypoints.dat'
                 else:
                     raise RuntimeError('Waypoint file {} has an unsupported format.'.format(waypoint_file.filename))
