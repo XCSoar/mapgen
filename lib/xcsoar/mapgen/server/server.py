@@ -6,8 +6,8 @@ import time
 import traceback
 import fcntl
 from genshi.filters import HTMLFormFiller
-from xcsoar.mapgen.job import Job, JobDescription
-from xcsoar.mapgen import view
+from xcsoar.mapgen.server.job import Job, JobDescription
+from xcsoar.mapgen.server import view
 from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.waypoints.parser import parse_waypoint_file
 

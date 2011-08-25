@@ -6,7 +6,7 @@ app_dir = os.path.abspath(__file__ + '/../..')
 sys.path.append(os.path.join(app_dir, 'lib'))
 
 import cherrypy
-from xcsoar.mapgen.server import Server
+from xcsoar.mapgen.server.server import Server
 
 def main():
     cherrypy.config.update({
@@ -17,7 +17,7 @@ def main():
     cherrypy.quickstart(Server(dir_jobs=os.path.join(app_dir, 'jobs')), '/', {
         '/static': {
             'tools.staticdir.on': True,
-            'tools.staticdir.dir': os.path.join(app_dir, 'lib', 'xcsoar', 'mapgen', 'static'),
+            'tools.staticdir.dir': os.path.join(app_dir, 'lib', 'xcsoar', 'mapgen', 'server', 'static'),
         }
     })
 

@@ -7,7 +7,7 @@ sys.path.append(os.path.join(app_dir, 'lib'))
 
 import cherrypy
 from flup.server.fcgi import WSGIServer
-from xcsoar.mapgen.server import Server
+from xcsoar.mapgen.server.server import Server
 
 cherrypy.config.update({
     'tools.encode.on': True,
