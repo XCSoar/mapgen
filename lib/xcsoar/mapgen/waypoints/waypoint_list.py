@@ -17,9 +17,15 @@ class WaypointList:
         return iter(self.__list)
 
     def append(self, wp):
+        if not isinstance(wp, Waypoint):
+            raise TypeError("Waypoint expected")
+        
         self.__list.append(wp)
 
     def extend(self, wp_list):
+        if not isinstance(wp_list, WaypointList):
+            raise TypeError("WaypointList expected")
+        
         self.__list.extend(wp_list)
 
     def get_bounds(self, distance = 15.):
