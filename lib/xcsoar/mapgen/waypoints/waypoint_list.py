@@ -28,7 +28,7 @@ class WaypointList:
         
         self.__list.extend(wp_list)
 
-    def get_bounds(self, distance = 15.):
+    def get_bounds(self, offset_distance = 15.):
         rc = GeoRect(180, -180, -90, 90)
         for wp in self.__list:
             rc.left = min(rc.left, wp.lon)
@@ -36,5 +36,5 @@ class WaypointList:
             rc.top = max(rc.top, wp.lat)
             rc.bottom = min(rc.bottom, wp.lat)
         
-        rc.expand(distance)
+        rc.expand(offset_distance)
         return rc
