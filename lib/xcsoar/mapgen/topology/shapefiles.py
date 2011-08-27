@@ -1,7 +1,6 @@
 import os
 import subprocess
 
-from xcsoar.mapgen.util import slurp
 from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.filelist import FileList
 
