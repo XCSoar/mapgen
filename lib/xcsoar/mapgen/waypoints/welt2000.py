@@ -1,9 +1,7 @@
 import os
 
-from xcsoar.mapgen.waypoints.list import WaypointList
 from xcsoar.mapgen.waypoints.welt2000_reader import parse_welt2000_waypoints
 from xcsoar.mapgen.waypoints.seeyou_writer import write_seeyou_waypoints
-from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.filelist import FileList
 
 def __get_database_file(downloader, dir_data):
