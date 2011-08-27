@@ -102,7 +102,8 @@ class Job:
         base = os.path.join(dir_jobs, uuid)
         for suffix in ['', '.locked', '.queued', '.working', '.error']:
             if os.path.exists(base + suffix):
-              return Job(base + suffix)
+                return Job(base + suffix)
+            
         return None
 
     @staticmethod
