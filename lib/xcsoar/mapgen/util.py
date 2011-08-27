@@ -26,7 +26,7 @@ def check_commands():
     for (cmd, help) in __used_commands.items():
         try:
             subprocess.check_output(['which', cmd], stderr=subprocess.STDOUT)
-        except Exception as e:
+        except:
             ret = False
             print('Command {} is missing on the $PATH. '.format(cmd) + help)
     if not ret:
