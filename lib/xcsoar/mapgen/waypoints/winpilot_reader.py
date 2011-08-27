@@ -26,7 +26,6 @@ def __parse_coordinate(str):
 def parse_winpilot_waypoints(lines):
     waypoint_list = WaypointList()
     
-    first = True
     for line in lines:
         line = line.strip()
         if line == '' or line.startswith('*'):
