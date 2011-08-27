@@ -16,7 +16,7 @@ def main():
     dir_data = os.path.join(app_dir, 'data')
     
     print("Reading Welt2000 waypoint file ...")
-    waypoints = welt2000.get_database(Downloader(dir_data), dir_data)
+    waypoints = welt2000.get_database(dir_data)
     
     print("Building database ...")
     database = {}
