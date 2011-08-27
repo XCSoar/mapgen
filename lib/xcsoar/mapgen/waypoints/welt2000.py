@@ -10,19 +10,26 @@ def __get_database_file(downloader, dir_data):
     if not os.path.exists(path):
         downloader.retrieve_extracted('welt2000/WELT2000.7z')
         
+    # Check if download succeeded
     if not os.path.exists(path):        
         raise RuntimeError('Welt2000 database not found at {}'.format(path))
     
+    # Return path to the Welt2000 file
     return path
 
 def get_database(downloader, dir_data, bounds = None):
+    # Get Welt2000 file
     path = __get_database_file(downloader, dir_data)
+    
+    # Parse Welt2000 file
     with open(path, "r") as f:
+        # Return parsed WaypointList
         return parse_welt2000_waypoints(f, bounds)
 
 def __create_waypoint_file(database, dir_temp):
     print("Creating waypoints.cup with {} entries...".format(len(database)))
     
+    # Create a Seeyou CUP file from the Welt2000 data
     path = os.path.join(dir_temp, 'waypoints.cup')
     write_seeyou_waypoints(database, path)
     return path
