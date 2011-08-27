@@ -1,4 +1,5 @@
 import math
+from xcsoar.mapgen.geopoint import GeoPoint
 
 class GeoRect:
     def __init__(self, left = 0, right = 0, top = 0, bottom = 0):
@@ -59,3 +60,7 @@ class GeoRect:
         
     def inside(self, y, x):
         return y <= self.top and y >= self.bottom and x <= self.right and x >= self.left
+
+    def get_center(self):
+        return GeoPoint((self.left + self.right) / 2., 
+                        (self.top + self.bottom) / 2.)
