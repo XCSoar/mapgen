@@ -139,6 +139,6 @@ button:hover, .button:hover {
   background: #333;
 }
 
-.olLayerGoogleCopyright {
+.olLayerGoogleCopyright, .olLayerGooglePoweredBy {
     display: none;
 }
