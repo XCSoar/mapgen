@@ -80,7 +80,7 @@ class Server(object):
             try:
                 filename = waypoint_file.filename.lower()
                 if filename.endswith('.dat') or filename.endswith('.cup'):
-                    desc.bounds = parse_waypoint_file(waypoint_file.file, waypoint_file.filename).get_bounds()
+                    desc.bounds = parse_waypoint_file(waypoint_file.filename, waypoint_file.file).get_bounds()
                     desc.waypoint_file = 'waypoints.cup' if filename.endswith('.cup') else 'waypoints.dat'
                 else:
                     raise RuntimeError('Waypoint file {} has an unsupported format.'.format(waypoint_file.filename))
