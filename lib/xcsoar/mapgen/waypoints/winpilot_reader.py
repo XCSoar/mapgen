@@ -18,8 +18,14 @@ def __parse_coordinate(str):
     str = str.split(':')
     if len(str) < 2: return None
 
-    # degrees + minutes / 60
-    a = int(str[0]) + float(str[1]) / 60
+    if len(str) == 2:
+        # degrees + minutes / 60
+        a = int(str[0]) + float(str[1]) / 60
+
+    if len(str) == 3:
+        # degrees + minutes / 60 + seconds / 3600
+        a = int(str[0]) + float(str[1]) / 60 + float(str[2]) / 3600
+
     if (negative): a *= -1
     return a
 
