@@ -4,8 +4,10 @@ from xcsoar.mapgen.waypoints.waypoint import Waypoint
 from xcsoar.mapgen.waypoints.list import WaypointList
 
 def __parse_line(line, bounds = None):
+    # Ignore comments
     if line.startswith('$'): return None
     
+    # Parse latitude
     lat = line[45:52]
     lat_neg = lat.startswith('S')  
     lat = float(lat[1:3]) + float(lat[3:5]) / 60. + float(lat[5:7]) / 3600.
@@ -13,6 +15,7 @@ def __parse_line(line, bounds = None):
     
     if bounds and (lat > bounds.top or lat < bounds.bottom): return None
 
+    # Parse longitude
     lon = line[52:60]
     lon_neg = lon.startswith('W')  
     lon = float(lon[1:4]) + float(lon[4:6]) / 60. + float(lon[6:8]) / 3600.
@@ -20,20 +23,24 @@ def __parse_line(line, bounds = None):
     
     if bounds and (lon > bounds.right or lon < bounds.left): return None
     
+    # Create waypoint instance
     wp = Waypoint()
     wp.lat = lat
     wp.lon = lon
 
+    # Parse elevation
     elev = line[41:45].strip()
     if elev != '': wp.altitude = float(elev)
     else: wp.altitude = 0.0
 
+    # Extract short name
     wp.short_name = line[:6]
     if wp.short_name.endswith('1'): wp.type = 'airport'
     elif wp.short_name.endswith('2'): wp.type = 'outlanding'
     
     wp.short_name = wp.short_name.strip()
     
+    # Extract waypoint name
     wp.name = line[7:41].strip()
     
     if 'GLD' in wp.name: wp.type = 'glider_site'
@@ -50,6 +57,7 @@ def __parse_line(line, bounds = None):
         icao = data[:4]
         if not icao.startswith('GLD') and not icao.startswith('ULM'): wp.icao = icao
         
+        # Extract and parse surface character
         if data[4:5] == 'A': wp.surface = 'asphalt'
         elif data[4:5] == 'C': wp.surface = 'concrete'
         elif data[4:5] == 'L': wp.surface = 'loam'
@@ -59,6 +67,7 @@ def __parse_line(line, bounds = None):
         elif data[4:5] == 'V': wp.surface = 'gravel'
         elif data[4:5] == 'D': wp.surface = 'dirt'
 
+        # Extract and parse runway length and direction
         runway_len = data[5:8].strip()
         if runway_len != '':
             wp.runway_len = int(runway_len) * 10
@@ -67,6 +76,7 @@ def __parse_line(line, bounds = None):
         if runway_dir != '':
             wp.runway_dir = int(runway_dir) * 10
         
+        # Extract and parse radio frequency
         freq = data[12:17].strip()
         if len(freq) == 5:
             if freq.endswith('2') or freq.endswith('7'): freq += '5'
@@ -99,13 +109,16 @@ def __parse_line(line, bounds = None):
     if re.search('(\s)TV($|\s)', wp.name): wp.type = 'tower'
     if re.search('(\s)KW($|\s)', wp.name): wp.type = 'powerplant'
         
+    # Format waypoint name properly
     wp.name = wp.name.title()
-    
+
+    # Strip duplicate spaces from waypoint name
     while '  ' in wp.name:
         wp.name = wp.name.replace('  ', ' ')
-        
+
+    # Extract country code
     wp.country_code = line[60:62].strip();
-    
+
     return wp
 
 def parse_welt2000_waypoints(lines, bounds = None):
