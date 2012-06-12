@@ -14,5 +14,7 @@ class Waypoint(GeoPoint):
         self.type = None
 
     def __str__(self):
-        return '{}, {}, {}'.format(self.name, super(), self.altitude)
+        return '{}, {}, {}'.format(self.name,
+                                   super(Waypoint, self).__str__(),
+                                   self.altitude)
 
