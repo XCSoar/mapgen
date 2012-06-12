@@ -24,6 +24,12 @@ def __compose_line(waypoint):
     str += "{:.1f}m,".format(elev)
     
     if waypoint.type:
+        if waypoint.type == 'ulm':
+            if waypoint.runway_len and waypoint.runway_len > 500:
+                waypoint.type = 'airport'
+            else:
+                waypoint.type = 'outlanding'
+
         if waypoint.type == 'outlanding': str += "3,"
         elif waypoint.type == 'glider_site': str += "4,"
         elif waypoint.type == 'airport': 
