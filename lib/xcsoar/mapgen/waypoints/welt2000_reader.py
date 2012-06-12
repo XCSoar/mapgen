@@ -34,28 +34,45 @@ def __parse_line(line, bounds = None):
     else: wp.altitude = 0.0
 
     # Extract short name
-    wp.short_name = line[:6]
-    if wp.short_name.endswith('1'): wp.type = 'airport'
-    elif wp.short_name.endswith('2'): wp.type = 'outlanding'
+    wp.short_name = line[:6].strip()
     
-    wp.short_name = wp.short_name.strip()
-    
+    # Parse and strip optional type identifier from short name
+    if wp.short_name.endswith('1'):
+      wp.type = 'airport'
+      wp.short_name = wp.short_name[:5]
+
+    elif wp.short_name.endswith('2'):
+      wp.type = 'outlanding'
+      wp.short_name = wp.short_name[:5]
+
     # Extract waypoint name
     wp.name = line[7:41].strip()
     
-    if 'GLD' in wp.name: wp.type = 'glider_site'
-    if 'ULM' in wp.name: wp.type = 'ulm'
-    
-    pos = -1
-    if '#' in wp.name: pos = wp.name.find('#')
-    if '*' in wp.name: pos = wp.name.find('*')
+    # Check for extra data indicator
+    if '*' in wp.name or '#' in wp.name:
+        # Split data from waypoint name
+        data = wp.name[17:]
+        wp.name = wp.name[:16].strip()
+
+        # Check waypoint name for glider site indicator
+        if wp.name.endswith('GLD'):
+            wp.name = wp.name[:-3].strip()
+            wp.type = 'glider_site'
+
+        # Extract ICAO code if possible
+        icao = data[:4].strip('!? ')
         
-    if pos > -1:        
-        data = wp.name[pos + 1:]
-        wp.name = wp.name[:pos].strip()
-        
-        icao = data[:4]
-        if not icao.startswith('GLD') and not icao.startswith('ULM'): wp.icao = icao
+        # Check icao code field for glider site indicator
+        if icao == 'GLD':
+            wp.type = 'glider_site'
+
+        # Check icao code field for ultra light indicator
+        if icao == 'ULM' and not wp.type:
+            wp.type = 'ulm'
+
+        # Save ICAO code
+        if len(icao) == 4:
+            wp.icao = icao
         
         # Extract and parse surface character
         if data[4:5] == 'A': wp.surface = 'asphalt'
@@ -82,33 +99,33 @@ def __parse_line(line, bounds = None):
             if freq.endswith('2') or freq.endswith('7'): freq += '5'
             else: freq += '0'
             wp.freq = float(freq) / 1000.
+
+    # Strip uninvited characters from waypoint name
+    wp.name = wp.name.rstrip('!?1 ')
     
-    if wp.name.endswith('GLD'):
-        wp.name = wp.name[:-3].strip()
-    else:
-        wp.name = wp.name.rstrip('!?1 ')
-    
-    if re.search('(^|\s)BERG($|\s)', wp.name): wp.type = 'mountain top'
-    if re.search('(^|\s)COL($|\s)', wp.name): wp.type = 'mountain pass'
-    if re.search('(^|\s)PASS($|\s)', wp.name): wp.type = 'mountain pass'
-    if re.search('(^|\s)TOP($|\s)', wp.name): wp.type = 'mountain top'
-    if re.search('(\s)A(\d){0,3}($|\s)', wp.name): wp.type = 'highway exit'
-    if re.search('(\s)AB(\d){0,3}($|\s)', wp.name): wp.type = 'highway exit'
-    if re.search('(\s)BAB(\d){0,3}($|\s)', wp.name): wp.type = 'highway exit'
-    if re.search('(\s)(\w){0,3}XA(\d){0,3}($|\s)', wp.name): wp.type = 'highway cross'
-    if re.search('(\s)(\w){0,3}YA(\d){0,3}($|\s)', wp.name): wp.type = 'highway junction'
-    if re.search('(\s)STR($|\s)', wp.name): wp.type = 'road'
-    if re.search('(\s)SX($|\s)', wp.name): wp.type = 'road cross'
-    if re.search('(\s)SY($|\s)', wp.name): wp.type = 'road junction'
-    if re.search('(\s)EX($|\s)', wp.name): wp.type = 'railway cross'
-    if re.search('(\s)EY($|\s)', wp.name): wp.type = 'railway junction'
-    if re.search('(\s)TR($|\s)', wp.name): wp.type = 'gas station'
-    if re.search('(\s)BF($|\s)', wp.name): wp.type = 'railway station'
-    if re.search('(\s)RS($|\s)', wp.name): wp.type = 'railway station'
-    if re.search('(\s)BR($|\s)', wp.name): wp.type = 'bridge'
-    if re.search('(\s)TV($|\s)', wp.name): wp.type = 'tower'
-    if re.search('(\s)KW($|\s)', wp.name): wp.type = 'powerplant'
-        
+    # Find waypoint type from waypoint name if not available yet
+    if not wp.type:
+        if re.search('(^|\s)BERG($|\s)', wp.name): wp.type = 'mountain top'
+        if re.search('(^|\s)COL($|\s)', wp.name): wp.type = 'mountain pass'
+        if re.search('(^|\s)PASS($|\s)', wp.name): wp.type = 'mountain pass'
+        if re.search('(^|\s)TOP($|\s)', wp.name): wp.type = 'mountain top'
+        if re.search('(\s)A(\d){0,3}($|\s)', wp.name): wp.type = 'highway exit'
+        if re.search('(\s)AB(\d){0,3}($|\s)', wp.name): wp.type = 'highway exit'
+        if re.search('(\s)BAB(\d){0,3}($|\s)', wp.name): wp.type = 'highway exit'
+        if re.search('(\s)(\w){0,3}XA(\d){0,3}($|\s)', wp.name): wp.type = 'highway cross'
+        if re.search('(\s)(\w){0,3}YA(\d){0,3}($|\s)', wp.name): wp.type = 'highway junction'
+        if re.search('(\s)STR($|\s)', wp.name): wp.type = 'road'
+        if re.search('(\s)SX($|\s)', wp.name): wp.type = 'road cross'
+        if re.search('(\s)SY($|\s)', wp.name): wp.type = 'road junction'
+        if re.search('(\s)EX($|\s)', wp.name): wp.type = 'railway cross'
+        if re.search('(\s)EY($|\s)', wp.name): wp.type = 'railway junction'
+        if re.search('(\s)TR($|\s)', wp.name): wp.type = 'gas station'
+        if re.search('(\s)BF($|\s)', wp.name): wp.type = 'railway station'
+        if re.search('(\s)RS($|\s)', wp.name): wp.type = 'railway station'
+        if re.search('(\s)BR($|\s)', wp.name): wp.type = 'bridge'
+        if re.search('(\s)TV($|\s)', wp.name): wp.type = 'tower'
+        if re.search('(\s)KW($|\s)', wp.name): wp.type = 'powerplant'
+
     # Format waypoint name properly
     wp.name = wp.name.title()
 
