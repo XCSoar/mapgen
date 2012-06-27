@@ -109,10 +109,6 @@ input {
   font-size: 10pt;
 }
 
-#fieldset {
-  height: 1200px;
-}
-
 .error {
   color: #A00;
   border-color: #A00;

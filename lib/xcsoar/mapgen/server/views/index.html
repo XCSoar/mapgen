@@ -14,7 +14,7 @@
       </ol>
     </div>
     <form action="${url('/')}" method="post" enctype="multipart/form-data">
-      <div id="fieldset">
+      <div>
 	<div py:if="defined('error')" class="error">${error}</div>
 	<label for="name">Map name:</label>
         <input id="name" type="text" name="name"/>
@@ -55,13 +55,13 @@
           <label>Bounds:</label>
 	  <div class="box">
 	    <div id="map"/>
-	    <span class="note">Draw the map bounds rectangle by pressing ctrl and clicking. Ctrl + click on a rectangle to remove.</span>
+	    <em class="note">Draw the map bounds rectangle by pressing ctrl and clicking. Ctrl + click on a rectangle to remove.</em>
 	    <hr/>
-	    <span class="note">Coordinates of the SW and NE corners can be entered or tweaked underneath. Coordinates are in float format <i>e.g.</i> Ulvade is at 29.211111,-99.74388, Wasserkuppe at 50.498056,9.937778 and Benalla at -36.552982,146.013408.</span><br/>
 	    <label class="left" for="left">Minimum Longitude:</label><input id="left" type="text" name="left"/><br/>
 	    <label class="left" for="right">Maximum Longitude:</label><input id="right" type="text" name="right"/><br/>
 	    <label class="left" for="bottom">Minimum Latitude:</label><input type="text" name="bottom"/><br/>
 	    <label class="left" for="top">Maximum Latitude:</label><input id="top" type="text" name="top"/><br/>
+	    <em class="note">Coordinates of the SW and NE corners can be entered or tweaked above. Coordinates are in float format.<br/>(e.g. Ulvade is at 29.211111,-99.74388, Wasserkuppe at 50.498056,9.937778 and Benalla at -36.552982,146.013408)</em>
 	  </div>
 	</div>
 	<button type="submit">Generate</button>
