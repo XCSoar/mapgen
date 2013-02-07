@@ -48,7 +48,7 @@ def __parse_coordinate(str):
     if (negative): a *= -1
     return a
 
-def parse_seeyou_waypoints(lines):
+def parse_seeyou_waypoints(lines, bounds = None):
     waypoint_list = WaypointList()
     
     first = True
@@ -72,9 +72,17 @@ def parse_seeyou_waypoints(lines):
         if len(fields) < 6:
             continue
 
+        lat = __parse_coordinate(fields[3]);
+        if bounds and (lat > bounds.top or lat < bounds.bottom):
+            continue
+
+        lon = __parse_coordinate(fields[4]);
+        if bounds and (lon > bounds.right or lon < bounds.left):
+            continue
+
         wp = Waypoint()
-        wp.lat = __parse_coordinate(fields[3]);
-        wp.lon = __parse_coordinate(fields[4]);
+        wp.lat = lat;
+        wp.lon = lon;
         wp.altitude = __parse_altitude(fields[5]);
         wp.name = fields[0].strip();
         
