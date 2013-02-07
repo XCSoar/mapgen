@@ -100,6 +100,10 @@ def parse_seeyou_waypoints(lines, bounds = None):
 
         if len(fields) > 8 and len(fields[8]) > 0:
           wp.runway_len = __parse_length(fields[8]);
+
+        if len(fields) > 9 and len(fields[9]) > 0:
+          wp.freq = float(fields[9]);
+
         waypoint_list.append(wp)
         
     return waypoint_list
