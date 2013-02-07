@@ -104,6 +104,9 @@ def parse_seeyou_waypoints(lines, bounds = None):
         if len(fields) > 9 and len(fields[9]) > 0:
           wp.freq = float(fields[9]);
 
+        if len(fields) > 10 and len(fields[10]) > 0:
+          wp.comment = fields[10].strip();
+
         waypoint_list.append(wp)
         
     return waypoint_list

@@ -12,6 +12,7 @@ class Waypoint(GeoPoint):
         self.runway_dir = None
         self.freq = None
         self.type = None
+        self.comment = None
 
     def __str__(self):
         return '{}, {}, {}, {}'.format(self.name,

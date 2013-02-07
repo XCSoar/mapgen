@@ -62,6 +62,9 @@ def __compose_line(waypoint):
         str += "{:07.3f}".format(waypoint.freq)
         
     str += ','
+    if waypoint.comment:
+        str += '"' + waypoint.comment + '"'
+
     return str
 
 def write_seeyou_waypoints(waypoints, path):
