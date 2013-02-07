@@ -85,6 +85,7 @@ def parse_seeyou_waypoints(lines, bounds = None):
         wp.lon = lon;
         wp.altitude = __parse_altitude(fields[5]);
         wp.name = fields[0].strip();
+        wp.country_code = fields[2].strip();
         
         waypoint_list.append(wp)
         
