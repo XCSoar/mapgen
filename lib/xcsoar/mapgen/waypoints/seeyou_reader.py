@@ -33,7 +33,10 @@ def __parse_altitude(str):
         return int(float(str) * 0.3048)
     else:
         str = str.rstrip('m')
-        return int(float(str))
+        if len(str) > 0:
+            return int(float(str))
+        else:
+            return None
 
 def __parse_coordinate(str):
     str = str.lower()

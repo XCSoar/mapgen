@@ -19,9 +19,11 @@ def __compose_line(waypoint):
     str += "{:06.3f}".format(lon)
     if waypoint.lon > 0: str += 'E,' 
     else: str += 'W,'
-    
-    elev = abs(waypoint.altitude)
-    str += "{:.1f}m,".format(elev)
+
+    if waypoint.altitude:
+        elev = abs(waypoint.altitude)
+        str += "{:.1f}m,".format(elev)
+    else: str += ","
 
     if waypoint.cup_type:
         str += "{:d},".format(waypoint.cup_type)
