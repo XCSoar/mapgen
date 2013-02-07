@@ -94,7 +94,10 @@ def parse_seeyou_waypoints(lines, bounds = None):
         wp.altitude = __parse_altitude(fields[5]);
         wp.name = fields[0].strip();
         wp.country_code = fields[2].strip();
-        
+
+        if len(fields) > 6 and len(fields[6]) > 0:
+          wp.cup_type = int(fields[6])
+
         if len(fields) > 7 and len(fields[7]) > 0:
             wp.runway_dir = int(fields[7]);
 

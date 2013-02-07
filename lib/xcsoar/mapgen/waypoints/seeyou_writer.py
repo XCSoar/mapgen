@@ -22,8 +22,10 @@ def __compose_line(waypoint):
     
     elev = abs(waypoint.altitude)
     str += "{:.1f}m,".format(elev)
-    
-    if waypoint.type:
+
+    if waypoint.cup_type:
+        str += "{:d},".format(waypoint.cup_type)
+    elif waypoint.type:
         if waypoint.type == 'ulm':
             if waypoint.runway_len and waypoint.runway_len > 500:
                 waypoint.type = 'airport'
