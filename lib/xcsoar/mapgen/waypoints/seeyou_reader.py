@@ -48,6 +48,14 @@ def __parse_coordinate(str):
     if (negative): a *= -1
     return a
 
+def __parse_length(str):
+    str = str.lower()
+    if (str.endswith('m')):
+        str = str.rstrip('m');
+        return int(float(str))
+    else:
+        return None;
+
 def parse_seeyou_waypoints(lines, bounds = None):
     waypoint_list = WaypointList()
     
@@ -87,6 +95,11 @@ def parse_seeyou_waypoints(lines, bounds = None):
         wp.name = fields[0].strip();
         wp.country_code = fields[2].strip();
         
+        if len(fields) > 7 and len(fields[7]) > 0:
+            wp.runway_dir = int(fields[7]);
+
+        if len(fields) > 8 and len(fields[8]) > 0:
+          wp.runway_len = __parse_length(fields[8]);
         waypoint_list.append(wp)
         
     return waypoint_list
