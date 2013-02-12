@@ -135,19 +135,15 @@ def __create(dir_temp, tiles, arcseconds_per_pixel, bounds):
 def __convert(dir_temp, input_file, rc):
     print('Converting terrain to JP2 format...')
     output_file = os.path.join(dir_temp, 'terrain.jp2')
-    args = [__cmd_geojasper,
-            '-f', input_file,
-            '-F', output_file,
-            '-T', 'jp2',
-            '-O', 'tilewidth=256',
-            '-O', 'tileheight=256']
 
-    if not __use_world_file:
-        args.extend(['-O', 'xcsoar=1',
-                     '-O', 'lonmin=' + str(rc.left),
-                     '-O', 'lonmax=' + str(rc.right),
-                     '-O', 'latmax=' + str(rc.top),
-                     '-O', 'latmin=' + str(rc.bottom)])
+    args = ['gdal_translate',
+            '-of', 'JPEG2000',
+            '-scale', '-32768', '-1', '32768', '65535',
+            '-ot', 'UInt16',
+            '-co', 'tilewidth=256',
+            '-co', 'tileheight=256',
+            input_file,
+            output_file]
 
     subprocess.check_call(args)
 
