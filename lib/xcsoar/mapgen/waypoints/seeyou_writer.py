@@ -20,9 +20,8 @@ def __compose_line(waypoint):
     if waypoint.lon > 0: str += 'E,' 
     else: str += 'W,'
 
-    if waypoint.altitude:
-        elev = abs(waypoint.altitude)
-        str += "{:.1f}m,".format(elev)
+    if waypoint.altitude and waypoint.altitude > -500:
+        str += "{:.1f}m,".format(waypoint.altitude)
     else: str += ","
 
     if waypoint.cup_type:
