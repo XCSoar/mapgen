@@ -164,6 +164,17 @@ def __cleanup(dir_temp):
             os.unlink(os.path.join(dir_temp, file))
 
 def create(bounds, arcseconds_per_pixel, downloader, dir_temp):
+    # calculate height and width (in pixels) of map from geo coordinates
+    px =  round((bounds.right - bounds.left) * 3600 / arcseconds_per_pixel)
+    py =  round((bounds.top - bounds.bottom) * 3600 / arcseconds_per_pixel)
+    # round up so only full jpeg2000 tiles (256x256) are used
+    # works around a bug in openjpeg 2.0.0 library
+    px = (int(px / 256) + 1) * 256
+    py = (int(py / 256) + 1) * 256
+    # and back to geo coordinates for size
+    bounds.right = bounds.left + (px * arcseconds_per_pixel / 3600)
+    bounds.bottom = bounds.top - (py * arcseconds_per_pixel / 3600)
+
     # Make sure the tiles are available
     tiles = __retrieve_tiles(downloader, dir_temp, bounds)
     if len(tiles) < 1:
