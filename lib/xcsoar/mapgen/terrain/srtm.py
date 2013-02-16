@@ -137,11 +137,10 @@ def __convert(dir_temp, input_file, rc):
     output_file = os.path.join(dir_temp, 'terrain.jp2')
 
     args = ['gdal_translate',
-            '-of', 'JPEG2000',
-            '-scale', '-32768', '-1', '32768', '65535',
-            '-ot', 'UInt16',
-            '-co', 'tilewidth=256',
-            '-co', 'tileheight=256',
+            '-of', 'JP2OpenJPEG',
+            '-co', 'BLOCKXSIZE=256',
+            '-co', 'BLOCKYSIZE=256',
+            '-co', 'QUALITY=95',
             input_file,
             output_file]
 
