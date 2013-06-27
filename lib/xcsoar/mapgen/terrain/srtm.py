@@ -18,21 +18,11 @@ def __get_tile_name(lat, lon):
     row = int(math.floor((60 - lat) / 5))
     return 'srtm_{0:02}_{1:02}'.format(col, row)
 
-def __extract_tile(zip_file, dir_temp, filename):
-    try:
-        zip = ZipFile(zip_file, 'r')
-    except BadZipfile:
-        os.unlink(zip_file)
-        raise RuntimeError('Decompression of the file {} failed.'.format(zip_file))
-    zip.extract(filename + '.tif', dir_temp)
-    zip.close()
-
 def __retrieve_tile(downloader, dir_temp, lat, lon):
     filename = __get_tile_name(lat, lon)
-    zip_file = downloader.retrieve('srtm3/{}.zip'.format(filename))
-    print('Tile {} found inside zip file.'.format(filename))
-    __extract_tile(zip_file, dir_temp, filename)
-    return os.path.join(dir_temp, filename + ".tif")
+    tif_file = downloader.retrieve('srtm3/{}.tif'.format(filename))
+    print('Tile {} found.'.format(filename))
+    return tif_file
 
 def __retrieve_tiles(downloader, dir_temp, bounds):
     '''
