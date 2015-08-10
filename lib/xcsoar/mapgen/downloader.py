@@ -8,7 +8,7 @@ from xcsoar.mapgen.util import slurp, spew
 
 class Downloader:
     def __init__(self, dir):
-        self.__base_url = 'http://download.xcsoar.org/mapgen/data/'
+        self.__base_url = 'http://mapgen-data.sigkill.ch/'
         self.__cmd_7zip = '7zr'
         self.__cmd_wget = 'wget'
         self.__dir = os.path.abspath(dir)
