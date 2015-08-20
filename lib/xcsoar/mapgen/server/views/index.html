@@ -55,11 +55,11 @@
           <label>Bounds:</label>
 	  <div class="box">
 	    <div id="map"/>
-	    <em class="note">Draw the map bounds rectangle by pressing ctrl and clicking. Ctrl + click on a rectangle to remove.</em>
+	    <em class="note">Draw the map bounds rectangle by clicking in the map.</em>
 	    <hr/>
 	    <label class="left" for="left">Minimum Longitude:</label><input id="left" type="text" name="left"/><br/>
 	    <label class="left" for="right">Maximum Longitude:</label><input id="right" type="text" name="right"/><br/>
-	    <label class="left" for="bottom">Minimum Latitude:</label><input type="text" name="bottom"/><br/>
+	    <label class="left" for="bottom">Minimum Latitude:</label><input id="bottom" type="text" name="bottom"/><br/>
 	    <label class="left" for="top">Maximum Latitude:</label><input id="top" type="text" name="top"/><br/>
 	    <em class="note">Coordinates of the SW and NE corners can be entered or tweaked above. Coordinates are in float format.<br/>(e.g. Ulvade is at 29.211111,-99.74388, Wasserkuppe at 50.498056,9.937778 and Benalla at -36.552982,146.013408)</em>
 	  </div>
@@ -69,7 +69,7 @@
     </form>
     <script type="text/javascript" src="http://www.openlayers.org/api/OpenLayers.js"/>
     <script type="text/javascript" src="${url('/static/jquery.js')}"/>
-    <script src="http://maps.google.com/maps/api/js?sensor=false"/>
+    <script type="text/javascript" src="http://openlayers.org/en/v3.7.0/build/ol.js"></script>
     <script type="text/javascript" src="${url('/static/mapgen.js')}"/>
   </body>
 </html>

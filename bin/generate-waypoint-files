@@ -9,7 +9,7 @@ sys.path.append(os.path.join(app_dir, 'lib'))
 
 from xcsoar.mapgen.geopoint import GeoPoint
 from xcsoar.mapgen.waypoints.list import WaypointList
-from xcsoar.mapgen.waypoints import welt2000
+from xcsoar.mapgen.waypoints import welt2000cup
 from xcsoar.mapgen.waypoints.seeyou_writer import write_seeyou_waypoints
 from xcsoar.mapgen.downloader import Downloader
 from xcsoar.mapgen.country_codes import get_country_name
@@ -17,8 +17,8 @@ from xcsoar.mapgen.country_codes import get_country_name
 def main():
     dir_data = os.path.join(app_dir, 'data')
     
-    print("Reading Welt2000 waypoint file ...")
-    waypoints = welt2000.get_database(dir_data)
+    print("Reading Welt2000 cup waypoint file ...")
+    waypoints = welt2000cup.get_database(dir_data)
     
     print("Building database ...")
     database = {}

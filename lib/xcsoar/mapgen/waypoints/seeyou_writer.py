@@ -19,11 +19,14 @@ def __compose_line(waypoint):
     str += "{:06.3f}".format(lon)
     if waypoint.lon > 0: str += 'E,' 
     else: str += 'W,'
-    
-    elev = abs(waypoint.altitude)
-    str += "{:.1f}m,".format(elev)
-    
-    if waypoint.type:
+
+    if waypoint.altitude and waypoint.altitude > -500:
+        str += "{:.1f}m,".format(waypoint.altitude)
+    else: str += ","
+
+    if waypoint.cup_type:
+        str += "{:d},".format(waypoint.cup_type)
+    elif waypoint.type:
         if waypoint.type == 'ulm':
             if waypoint.runway_len and waypoint.runway_len > 500:
                 waypoint.type = 'airport'
@@ -62,6 +65,9 @@ def __compose_line(waypoint):
         str += "{:07.3f}".format(waypoint.freq)
         
     str += ','
+    if waypoint.comment:
+        str += '"' + waypoint.comment + '"'
+
     return str
 
 def write_seeyou_waypoints(waypoints, path):

@@ -18,21 +18,11 @@ def __get_tile_name(lat, lon):
     row = int(math.floor((60 - lat) / 5))
     return 'srtm_{0:02}_{1:02}'.format(col, row)
 
-def __extract_tile(zip_file, dir_temp, filename):
-    try:
-        zip = ZipFile(zip_file, 'r')
-    except BadZipfile:
-        os.unlink(zip_file)
-        raise RuntimeError('Decompression of the file {} failed.'.format(zip_file))
-    zip.extract(filename + '.tif', dir_temp)
-    zip.close()
-
 def __retrieve_tile(downloader, dir_temp, lat, lon):
     filename = __get_tile_name(lat, lon)
-    zip_file = downloader.retrieve('srtm3/{}.zip'.format(filename))
-    print('Tile {} found inside zip file.'.format(filename))
-    __extract_tile(zip_file, dir_temp, filename)
-    return os.path.join(dir_temp, filename + ".tif")
+    tif_file = downloader.retrieve('srtm3/{}.tif'.format(filename))
+    print('Tile {} found.'.format(filename))
+    return tif_file
 
 def __retrieve_tiles(downloader, dir_temp, bounds):
     '''
@@ -135,20 +125,14 @@ def __create(dir_temp, tiles, arcseconds_per_pixel, bounds):
 def __convert(dir_temp, input_file, rc):
     print('Converting terrain to JP2 format...')
     output_file = os.path.join(dir_temp, 'terrain.jp2')
-    args = [__cmd_geojasper,
-            '-f', input_file,
-            '-F', output_file,
-            '-T', 'jp2',
-            '-O', 'rate=1.0',
-            '-O', 'tilewidth=256',
-            '-O', 'tileheight=256']
 
-    if not __use_world_file:
-        args.extend(['-O', 'xcsoar=1',
-                     '-O', 'lonmin=' + str(rc.left),
-                     '-O', 'lonmax=' + str(rc.right),
-                     '-O', 'latmax=' + str(rc.top),
-                     '-O', 'latmin=' + str(rc.bottom)])
+    args = ['gdal_translate',
+            '-of', 'JP2OpenJPEG',
+            '-co', 'BLOCKXSIZE=256',
+            '-co', 'BLOCKYSIZE=256',
+            '-co', 'QUALITY=95',
+            input_file,
+            output_file]
 
     subprocess.check_call(args)
 
@@ -170,6 +154,17 @@ def __cleanup(dir_temp):
             os.unlink(os.path.join(dir_temp, file))
 
 def create(bounds, arcseconds_per_pixel, downloader, dir_temp):
+    # calculate height and width (in pixels) of map from geo coordinates
+    px =  round((bounds.right - bounds.left) * 3600 / arcseconds_per_pixel)
+    py =  round((bounds.top - bounds.bottom) * 3600 / arcseconds_per_pixel)
+    # round up so only full jpeg2000 tiles (256x256) are used
+    # works around a bug in openjpeg 2.0.0 library
+    px = (int(px / 256) + 1) * 256
+    py = (int(py / 256) + 1) * 256
+    # and back to geo coordinates for size
+    bounds.right = bounds.left + (px * arcseconds_per_pixel / 3600)
+    bounds.bottom = bounds.top - (py * arcseconds_per_pixel / 3600)
+
     # Make sure the tiles are available
     tiles = __retrieve_tiles(downloader, dir_temp, bounds)
     if len(tiles) < 1:

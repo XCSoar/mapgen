@@ -2,7 +2,7 @@ from xcsoar.mapgen.geopoint import GeoPoint
 
 class Waypoint(GeoPoint):
     def __init__(self):
-        self.altitude = 0
+        self.altitude = None
         self.name = ''
         self.short_name = ''
         self.icao = ''
@@ -12,6 +12,8 @@ class Waypoint(GeoPoint):
         self.runway_dir = None
         self.freq = None
         self.type = None
+        self.cup_type = None
+        self.comment = None
 
     def __str__(self):
         return '{}, {}, {}, {}'.format(self.name,

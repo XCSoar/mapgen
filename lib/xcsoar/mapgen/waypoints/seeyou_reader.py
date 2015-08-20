@@ -33,7 +33,10 @@ def __parse_altitude(str):
         return int(float(str) * 0.3048)
     else:
         str = str.rstrip('m')
-        return int(float(str))
+        if len(str) > 0:
+            return int(float(str))
+        else:
+            return None
 
 def __parse_coordinate(str):
     str = str.lower()
@@ -48,7 +51,15 @@ def __parse_coordinate(str):
     if (negative): a *= -1
     return a
 
-def parse_seeyou_waypoints(lines):
+def __parse_length(str):
+    str = str.lower()
+    if (str.endswith('m')):
+        str = str.rstrip('m');
+        return int(float(str))
+    else:
+        return None;
+
+def parse_seeyou_waypoints(lines, bounds = None):
     waypoint_list = WaypointList()
     
     first = True
@@ -72,12 +83,36 @@ def parse_seeyou_waypoints(lines):
         if len(fields) < 6:
             continue
 
+        lat = __parse_coordinate(fields[3]);
+        if bounds and (lat > bounds.top or lat < bounds.bottom):
+            continue
+
+        lon = __parse_coordinate(fields[4]);
+        if bounds and (lon > bounds.right or lon < bounds.left):
+            continue
+
         wp = Waypoint()
-        wp.lat = __parse_coordinate(fields[3]);
-        wp.lon = __parse_coordinate(fields[4]);
+        wp.lat = lat;
+        wp.lon = lon;
         wp.altitude = __parse_altitude(fields[5]);
         wp.name = fields[0].strip();
-        
+        wp.country_code = fields[2].strip();
+
+        if len(fields) > 6 and len(fields[6]) > 0:
+          wp.cup_type = int(fields[6])
+
+        if len(fields) > 7 and len(fields[7]) > 0:
+            wp.runway_dir = int(fields[7]);
+
+        if len(fields) > 8 and len(fields[8]) > 0:
+          wp.runway_len = __parse_length(fields[8]);
+
+        if len(fields) > 9 and len(fields[9]) > 0:
+          wp.freq = float(fields[9]);
+
+        if len(fields) > 10 and len(fields[10]) > 0:
+          wp.comment = fields[10].strip();
+
         waypoint_list.append(wp)
         
     return waypoint_list
