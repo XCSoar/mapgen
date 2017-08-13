@@ -14,7 +14,7 @@ def __get_database_file(dir_data):
 
     # Download the current file
     # (only if server file is newer than local file)
-    url = 'http://www.segelflug.de/vereine/welt2000/download/SEEYOU.CUP'
+    url = 'https://mapgen-data.sigkill.ch/welt2000/SEEYOU.CUP'
     subprocess.check_call(['wget', '-N', '-P', os.path.dirname(path), url])
 
     # Check if download succeeded
