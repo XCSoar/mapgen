@@ -3,6 +3,7 @@ import sys
 import time
 import smtplib
 import traceback
+import shutil
 from xcsoar.mapgen.server.job import Job
 from xcsoar.mapgen.generator import Generator
 from xcsoar.mapgen.util import check_commands
@@ -81,7 +82,7 @@ This link is valid for 7 days.
             finally:
                 generator.cleanup()
 
-            os.rmdir(job.file_path('tmp'))
+            shutil.rmtree(job.file_path('tmp'))
             job.done()
         except Exception as e:
             print('Error: {}'.format(e))
