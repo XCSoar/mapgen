@@ -1,0 +1,32 @@
+#!/bin/bash
+
+function total {
+  echo "Total jobs: $(ls -d1 /opt/mapgen/jobs/*  2> /dev/null| wc -l )"
+}
+function error {
+  echo "Error jobs: $(ls -d1 /opt/mapgen/jobs/*.error 2> /dev/null | wc -l )"
+}
+function queued { 
+  echo "Queued jobs: $(ls -d1 /opt/mapgen/jobs/*.queued  2> /dev/null| wc -l )"
+}
+function working {
+  echo "Working jobs: $(ls -d1 /opt/mapgen/jobs/*.working  2> /dev/null| wc -l )"
+}
+
+case "$1" in 
+  "-e")
+  error
+  ;; 
+  "-q")
+  queued
+  ;;
+  "-w")
+  working
+  ;;
+  "*")
+  error
+  queued
+  working
+  total
+  ;;
+esac
