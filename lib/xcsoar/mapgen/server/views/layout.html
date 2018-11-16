@@ -5,7 +5,7 @@
       <title py:with="title = list(select('title/text()'))">
         XCSoar Map Generator<py:if test="title">: ${title}</py:if>
       </title>
-      <link rel="stylesheet" href="https://openlayers.org/en/v4.3.0/css/ol.css" type="text/css"/>
+      <link rel="stylesheet" href="https://openlayers.org/en/v4.6.5/css/ol.css" type="text/css"/>
       <link rel="stylesheet" href="${url('/static/style.css')}" type="text/css"/>
       <link rel="shortcut icon" type="image/ico" href="${url('/static/images/favicon.ico')}"/>
       ${select('*[local-name()!="title"]')}
