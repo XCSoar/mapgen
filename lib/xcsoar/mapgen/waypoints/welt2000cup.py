@@ -6,7 +6,7 @@ from xcsoar.mapgen.waypoints.seeyou_writer import write_seeyou_waypoints
 from xcsoar.mapgen.filelist import FileList
 
 def __get_database_file(dir_data):
-    path = os.path.join(dir_data, 'welt2000', 'SEEYOU.CUP')
+    path = os.path.join(dir_data, 'xcsoar-data', 'xcsoar_waypoints.cup')
 
     # Create Welt2000 data folder if necessary
     if not os.path.exists(os.path.dirname(path)):
