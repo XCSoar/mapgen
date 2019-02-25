@@ -14,7 +14,7 @@ def __get_database_file(dir_data):
 
     # Download the current file
     # (only if server file is newer than local file)
-    url = 'https://mapgen-data.sigkill.ch/welt2000/SEEYOU.CUP'
+    url = 'https://download.xcsoar.org/waypoints/xcsoar_waypoints.cup'
     subprocess.check_call(['wget', '-N', '-P', os.path.dirname(path), url])
 
     # Check if download succeeded
