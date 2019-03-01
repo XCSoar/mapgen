@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os.path
 import shutil
 from zipfile import ZipFile, ZIP_DEFLATED, ZIP_STORED
@@ -44,6 +45,30 @@ creation time: {time:%d.%m.%Y %T} ({time:%s})
 latitude range: {minlat} to {maxlat}
 longitude range: {minlon} to {maxlon}
 author: {author}
+
+resource: Topology data
+credits: © OpenStreetMap contributors (https://www.openstreetmap.org)
+license: CC-BY-SA (https://creativecommons.org/licenses/by-sa/2.0/)
+
+resource: Terrain data
+credits: Jarvis, A., H.I. Reuter, A. Nelson, E. Guevara, 2008, Hole-filled
+SRTM for the globe Version 4, available from the CGIAR-CSI SRTM 90m Database
+(http://srtm.csi.cgiar.org)
+license: Users are prohibited from any commercial, non-free resale, or
+redistribution without explicit written permission from CIAT. Users should
+acknowledge CIAT as the source used in the creation of any reports,
+publications, new data sets, derived products, or services resulting from
+the use of this data set. CIAT also request reprints of any publications
+and notification of any redistributing efforts. For commercial access to the
+data, send requests to Andy Jarvis (a.jarvis@…). 
+
+resource: Waypoint data
+credits: WELT2000 contributors (http://www.segelflug.de/vereine/welt2000/)
+license: ODbL 1.0 (https://opendatacommons.org/licenses/odbl/1.0/)
+
+resource: All other content
+credits: XCSoar contributors https://www.xcsoar.org)
+license: GPLv2 (gpl-2.0.txt)
 '''.format(name=name,
            time=datetime.now(),
            minlat=self.__bounds.bottom,
