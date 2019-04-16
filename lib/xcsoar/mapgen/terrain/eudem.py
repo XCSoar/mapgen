@@ -10,49 +10,14 @@ __cmd_gdalwarp = 'gdalwarp'
 __use_world_file = True
 
 '''
- 1) Retrieve tiles
+EU-DEM terrain importer. EU-DEM terrain must be downloaded under <dir_data>/eu-dem, like:
+<dir_data> % ls eu-dem/eu_dem*
+eu-dem/eu_dem_v11_E40N40.TFw          eu-dem/eu_dem_v11_E40N50.TFw
+eu-dem/eu_dem_v11_E40N40.TIF          eu-dem/eu_dem_v11_E40N50.TIF
+eu-dem/eu_dem_v11_E40N40.TIF.aux.xml  eu-dem/eu_dem_v11_E40N50.TIF.aux.xml
+eu-dem/eu_dem_v11_E40N40.TIF.ovr      eu-dem/eu_dem_v11_E40N50.TIF.ovr
+eu-dem/eu_dem_v11_E40N40.zip          eu-dem/eu_dem_v11_E40N50.zip
 '''
-def __get_tile_name(lat, lon):
-    col = int(math.floor(((lon + 180) / 5) + 1))
-    row = int(math.floor((60 - lat) / 5))
-    return 'srtm_{0:02}_{1:02}'.format(col, row)
-
-def __retrieve_tile(downloader, dir_temp, lat, lon):
-    filename = __get_tile_name(lat, lon)
-    tif_file = downloader.retrieve('srtm3/{}.tif'.format(filename))
-    print('Tile {} found.'.format(filename))
-    return tif_file
-
-def __retrieve_tiles(downloader, dir_temp, bounds):
-    '''
-    Makes sure the terrain tiles are available at a certain location.
-    @param downloader: Downloader
-    @param dir_temp: Temporary path
-    @param bounds: Bounding box (GeoRect)
-    @return: The list of tile files
-    '''
-    if not isinstance(bounds, GeoRect):
-        raise TypeError
-
-    print('Retrieving terrain tiles...')
-
-    # Calculate rounded bounds
-    lat_start = int(math.floor(bounds.bottom / 5.0)) * 5
-    lon_start = int(math.floor(bounds.left / 5.0)) * 5
-    lat_end = int(math.ceil(bounds.top / 5.0)) * 5
-    lon_end = int(math.ceil(bounds.right / 5.0)) * 5
-
-    tiles = []
-    # Iterate through latitude and longitude in 5 degree interval
-    for lat in range(lat_start, lat_end, 5):
-        for lon in range(lon_start, lon_end, 5):
-            try:
-                tiles.append(__retrieve_tile(downloader, dir_temp, lat, lon))
-            except Exception as e:
-                print('Failed to retrieve tile for {0:02}/{1:02}: {2}'.format(lat, lon, e))
-
-    # Return list of available tile files
-    return tiles
 
 '''
  2) Merge tiles into big tif, Resample and Crop merged image
@@ -84,6 +49,7 @@ def __create(dir_temp, tiles, arcseconds_per_pixel, bounds):
 
     args = [__cmd_gdalwarp,
             '-wo', 'NUM_THREADS=ALL_CUPS',
+            '-t_srs', 'EPSG:4326',
             '-r', 'cubic',
             '-tr', str(degree_per_pixel), str(degree_per_pixel),
             '-wt', 'Int16',
@@ -105,7 +71,7 @@ def __create(dir_temp, tiles, arcseconds_per_pixel, bounds):
     return output_file
 
 '''
- 3) Convert to GeoJP2 with gdal_translate
+ 3) Convert to GeoJP2 with GDAL
 '''
 def __convert(dir_temp, input_file, rc):
     print('Converting terrain to JP2 format...')
@@ -116,6 +82,7 @@ def __convert(dir_temp, input_file, rc):
             '-co', 'BLOCKXSIZE=256',
             '-co', 'BLOCKYSIZE=256',
             '-co', 'QUALITY=95',
+            '-ot', 'Int16',
             input_file,
             output_file]
 
@@ -151,7 +118,8 @@ def create(bounds, arcseconds_per_pixel, downloader, dir_temp, dir_data):
     bounds.bottom = bounds.top - (py * arcseconds_per_pixel / 3600)
 
     # Make sure the tiles are available
-    tiles = __retrieve_tiles(downloader, dir_temp, bounds)
+    eudem_parent = os.path.join(dir_data, 'eu-dem')
+    tiles = [os.path.join(eudem_parent, f) for f in os.listdir(eudem_parent) if f.endswith('TIF')]
     if len(tiles) < 1:
         return FileList()
 

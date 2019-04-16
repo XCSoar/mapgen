@@ -3,7 +3,7 @@ import shutil
 from zipfile import ZipFile, ZIP_DEFLATED, ZIP_STORED
 from datetime import datetime
 from xcsoar.mapgen.waypoints import welt2000cup
-from xcsoar.mapgen.terrain import srtm
+from xcsoar.mapgen import terrain
 from xcsoar.mapgen.topology import shapefiles
 from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.filelist import FileList
@@ -116,7 +116,7 @@ author: {author}
 
         self.__files.extend(shapefiles.create(bounds, self.__downloader, self.__dir_temp, compressed, level_of_detail))
 
-    def add_terrain(self, arcseconds_per_pixel = 9.0, bounds = None):
+    def add_terrain(self, arcseconds_per_pixel = 9.0, bounds = None, source = 'srtm'):
         print('Adding terrain...')
 
         if not bounds:
@@ -124,8 +124,10 @@ author: {author}
                 raise RuntimeError('Boundaries undefined.')
             bounds = self.__bounds
 
-        self.__files.extend(srtm.create(bounds, arcseconds_per_pixel,
-                                        self.__downloader, self.__dir_temp))
+        source = getattr(terrain, source)
+
+        self.__files.extend(source.create(bounds, arcseconds_per_pixel,
+                                        self.__downloader, self.__dir_temp, self.__dir_data))
 
     def add_welt2000(self, bounds = None):
         print('Adding welt2000 cup waypoints...')
