@@ -18,7 +18,6 @@ __used_commands = { 'ogr2ogr':   'Please install gdal (http://www.gdal.org/).',
                     'shptree':   'Please install it from the mapserver package (http://mapserver.org/).',
                     '7zr':       'Please install 7-zip (http://www.7-zip.org/).',
                     'wget':      'Please install it using your distribution package manager.',
-                    'geojasper': 'Please install geojasper (http://www.dimin.net/software/geojasper/).',
                     'gdalwarp':  'Please install gdal (http://www.gdal.org/).' }
 
 def check_commands():

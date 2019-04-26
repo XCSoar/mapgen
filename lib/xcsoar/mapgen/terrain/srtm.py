@@ -6,7 +6,6 @@ from zipfile import ZipFile, BadZipfile
 from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.filelist import FileList
 
-__cmd_geojasper = 'geojasper'
 __cmd_gdalwarp = 'gdalwarp'
 __use_world_file = True
 
@@ -106,22 +105,7 @@ def __create(dir_temp, tiles, arcseconds_per_pixel, bounds):
     return output_file
 
 '''
- 3) Convert to GeoJP2 with GeoJasPer
-    geojasper
-    -f blabla_cropped.tif
-        (Input file name)
-    -F terrain.jp2
-        (Output file name)
-    -T jp2
-        (Output type)
-    -O rate=0.1
-        (Compression rate, 10 times)
-    -O tilewidth=256
-        (generate tiled image using tile width 256)
-    -O tileheight=256
-        (generate tiled image using tile height 256)
-    -O xcsoar=1
-        (???)
+ 3) Convert to GeoJP2 with gdal_translate
 '''
 def __convert(dir_temp, input_file, rc):
     print('Converting terrain to JP2 format...')

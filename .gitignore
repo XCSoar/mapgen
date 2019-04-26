@@ -12,6 +12,5 @@ data
 jobs
 *.pyc
 bin/shptree
-bin/geojasper
 bin/gdalwarp
 bin/ogr2ogr
