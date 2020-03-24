@@ -6,8 +6,8 @@
         XCSoar Map Generator<py:if test="title">: ${title}</py:if>
       </title>
       <link rel="stylesheet" href="https://openlayers.org/en/v4.6.5/css/ol.css" type="text/css"/>
-      <link rel="stylesheet" href="${url('/static/style.css')}" type="text/css"/>
-      <link rel="shortcut icon" type="image/ico" href="${url('/static/images/favicon.ico')}"/>
+      <link rel="stylesheet" href="/static/style.css" type="text/css"/>
+      <link rel="shortcut icon" type="image/ico" href="/static/images/favicon.ico"/>
       ${select('*[local-name()!="title"]')}
     </head>
   </py:match>
@@ -16,8 +16,8 @@
       <div id="container">
 	<div id="content">
 	  <div id="logo">
-	    <a href="https://xcsoar.org/"><img src="${url('/static/images/logo.png')}" alt="XCSoar"/></a>
-	    <a href="${url}">Map Generator</a>
+	    <a href="https://xcsoar.org/"><img src="/static/images/logo.png'" alt="XCSoar"/></a>
+	    <a href="/">Map Generator</a>
 	  </div>
           ${select('*|text()')}
 	</div>

@@ -5,11 +5,11 @@
   <head>
     <title>Generating Map ${name}</title>
     <script type="text/javascript">
-      setTimeout(function() { location.href = '${url('/status')}?uuid=${uuid}'; }, 10000);
+      setTimeout(function() { location.href = '/status?uuid=${uuid}'; }, 10000);
     </script>
   </head>
   <body>
     <div class="box">${name}: ${status}</div>
-    <a class="button" href="${url('/status')}?uuid=${uuid}">Refresh</a>
+    <a class="button" href="/status?uuid=${uuid}">Refresh</a>
   </body>
 </html>
