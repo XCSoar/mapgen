@@ -115,9 +115,9 @@ class Server(object):
             finally:
                 f.close()
 
-        desc.download_url = cherrypy.url('/download?uuid=' + job.uuid)
+        desc.download_url = '/download?uuid=' + job.uuid
         job.enqueue()
-        raise cherrypy.HTTPRedirect(cherrypy.url('/status?uuid=' + job.uuid))
+        raise cherrypy.HTTPRedirect('/status?uuid=' + job.uuid)
 
     @cherrypy.expose
     @view.output('status.html')
