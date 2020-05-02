@@ -13,17 +13,17 @@
 	<li>Select the map bounds and/or upload a waypoint file.</li>
       </ol>
     </div>
-    <form action="${url('/')}" method="post" enctype="multipart/form-data">
+    <form action="/" method="post" enctype="multipart/form-data">
       <div>
 	<div py:if="defined('error')" class="error">${error}</div>
 	<label for="name">Map name:</label>
-        <input id="name" type="text" name="name"/>
+        <input id="name" type="text" name="name" pattern="^[a-zA-Z0-9_\s]*$" title="Only Ascii (a-z) and numeric characters, spaces and dashes."/>
         <label for="mail">E-Mail:</label>
         <input id="mail" type="text" name="mail"/>
 	<label>Options:</label>
 	<div class="box">
 	  <input type="checkbox" name="welt2000" id="welt2000"/>
-	  <label for="highres">Include <a href="http://www.segelflug.de/vereine/welt2000/">Welt2000</a> waypoints</label><br/>
+    <label for="highres">Include the <a href="https://github.com/XCSoar/xcsoar-data-content/tree/master/waypoints">XCSoar Waypoint Database</a></label><br/>
 	  <input type="checkbox" name="highres" id="highres" value="1"/>
 	  <label for="highres">High resolution terrain (3 arcseconds per pixel instead of 9)</label><br/>
 	  <input type="checkbox" name="compressed" id="compressed"/>
@@ -67,8 +67,8 @@
 	<button type="submit">Generate</button>
       </div>
     </form>
-    <script type="text/javascript" src="${url('/static/jquery.js')}"/>
+    <script type="text/javascript" src="/static/jquery.js"/>
     <script type="text/javascript" src="https://openlayers.org/en/v4.6.5/build/ol.js"></script>
-    <script type="text/javascript" src="${url('/static/mapgen.js')}"/>
+    <script type="text/javascript" src="/static/mapgen.js"/>
   </body>
 </html>
