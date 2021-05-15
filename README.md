@@ -1,4 +1,7 @@
 # mapgen
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/2637c9ca421c46e7ad7ca67b07ba1f4a)](https://app.codacy.com/gh/XCSoar/mapgen?utm_source=github.com&utm_medium=referral&utm_content=XCSoar/mapgen&utm_campaign=Badge_Grade_Settings)
+
 Map generator for XCSoar
 
 This generates maps in the xcm format for [https://xcsoar.org/] a tactical Gliding computer.
