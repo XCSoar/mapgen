@@ -43,22 +43,27 @@ hr {
 }
 
 #logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   text-align: center;
+  vertical-align: middle;
   font-size: 250%;
-  margin-bottom: 1.5em;
+  text-decoration: none;
+  height: 20%;
 }
 
-#logo img {
+/*#logo img {
   border: 0;
   margin-right: 0.5em;
   margin-bottom: -0.6em;
-}
+*/}
 
-#logo a {
+/* #logo a {
   text-decoration: none;
   color: #333;
 }
-
+*/
 label {
   font-size: 140%;
   width: 100%;
