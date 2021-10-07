@@ -4,13 +4,13 @@ html {
 
 body {
   color: #333;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); 
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Helvetica, Arial, sans-serif;
 }
 
 #container {
   max-width: 100em;
-  background: white; 
+  background: white;
   margin: auto;
   padding: 0.5em;
 }
@@ -18,7 +18,7 @@ body {
 #logo {
   font-size: 250%;
   text-decoration: none;
-  text-color: gray;
+  color: gray;
   padding: 0.5em 0.5em;
   text-align: center;
 }
@@ -35,14 +35,14 @@ body {
 
 label {
   font-size: 140%;
-  margin: 1em 0 0em 0.0em;
+  margin: 1em 0 0 0;
   display: block;
 }
 
 #footer {
   padding: 2em 0;
   text-align: center;
-  color: #FFF;
+  color: #fff;
   font-size: small;
   float: left;
   width: 100%;
@@ -57,20 +57,19 @@ label {
 
 input {
   background: #f4f4ed;
-  border: 1px solid #DCDAD4;
+  border: 1px solid #dcdad4;
   padding: 0.5em;
 }
 
 #name, #mail, .box, .error {
   padding: 0.5em;
-  border: 1px solid #DCDAD4;
+  border: 1px solid #dcdad4;
   border-radius: 10px;
   -moz-border-radius: 10px;
   color: #333;
   width: 100%;
   box-sizing: border-box;
   background: #f4f4ed;
-
 }
 
 .box {
@@ -84,8 +83,6 @@ input {
   padding: 0;
 }
 
-
-
 #waypoint_file {
   width: 50%;
   display: block;
@@ -97,7 +94,7 @@ button, .button {
   width: 50%;
   margin: 2em auto;
   background: #449949;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); 
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   color: #fff;
   cursor: pointer;
   padding: 0.5em;
@@ -109,5 +106,3 @@ button, .button {
   text-decoration: none;
   text-align: center;
 }
-
-
