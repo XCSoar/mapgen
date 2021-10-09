@@ -1,0 +1,19 @@
+version: '3'
+services:
+  mapgen-frontend:
+    build: frontend/.
+    image: ghcr.io/xcsoar/mapgen-frontend
+    ports: 
+      - "9090:9090"
+    volumes:
+      - mapgen-jobs:/opt/mapgen/jobs
+  mapgen-worker:
+    build: worker/.
+    image: ghcr.io/xcsoar/mapgen-worker
+    volumes:
+      - mapgen-jobs:/opt/mapgen/jobs
+      - mapgen-data:/opt/mapgen/data
+
+volumes:
+  mapgen-data:
+  mapgen-jobs:
