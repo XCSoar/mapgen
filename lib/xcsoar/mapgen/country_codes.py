@@ -128,7 +128,7 @@ __codes = {
     'LT': 'LITHUANIA',
     'LU': 'LUXEMBOURG',
     'LV': 'LATVIA',
-    'LY': 'LIBYAN ARAB JAMABIRIYA',
+    'LY': 'LIBYA',
     'MA': 'MOROCCO',
     'MC': 'MONACO',
     'MD': 'MOLDOVA',
