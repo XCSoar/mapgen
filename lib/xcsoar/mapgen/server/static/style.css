@@ -18,7 +18,7 @@ body {
 #logo {
   font-size: 250%;
   text-decoration: none;
-  text-color: gray;
+  color: gray;
   padding: 0.5em 0.5em;
   text-align: center;
 }
@@ -35,7 +35,7 @@ body {
 
 label {
   font-size: 140%;
-  margin: 1em 0em 0em 0em;
+  margin: 1em 0 0 0;
   display: block;
 }
 
