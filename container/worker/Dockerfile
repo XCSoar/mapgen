@@ -9,8 +9,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 # install base packages needed for mapgen
 RUN apt-get update && apt-get $APT_OPTS install $MAPWRK_PKGS && apt-get clean 
 
-# use git during install only smaller size
-RUN apt install -y git && git clone $GITURL -b $GITBRANCH /opt/mapgen/ && apt-get -y purge git && apt-get -y autoremove && apt-get clean
+# Copy python scripts to target
+COPY lib/ /opt/mapgen/lib
+COPY bin/ /opt/mapgen/bin
 
 # Volume for data caching
 VOLUME /opt/mapgen/data

@@ -10,14 +10,15 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt install -y $MAPFRNT_PKG && apt-get clean 
 
 # use git during install only smaller size
-RUN apt-get install -y git && git clone $GITURL -b $GITBRANCH /opt/mapgen/ && apt-get -y purge git && apt-get -y autoremove && apt-get clean
+COPY lib/ /opt/mapgen/lib/
+COPY bin/ /opt/mapgen/bin/
 
 ## Volume for jobs used by mapgen-worker
 VOLUME /opt/mapgen/jobs
 
 # Nginx for reverse proxy
 RUN apt-get $APT_OPTS install nginx && apt-get clean
-COPY files/default /etc/nginx/sites-available/default 
+COPY ./container/frontend/files/default /etc/nginx/sites-available/default 
 RUN ln -fs /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
 EXPOSE 9090
@@ -25,7 +26,7 @@ EXPOSE 9090
 # Supervisord for running two processes inside container
 RUN apt-get $APT_OPTS install supervisor && apt-get clean
 RUN mkdir -p /var/log/supervisor
-COPY files/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY ./container/frontend/files/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Launch supervisord on container startup
 CMD ["/usr/bin/supervisord"]

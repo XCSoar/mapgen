@@ -1,106 +1,86 @@
 html {
   background: url(images/bg.png) 50% 0 repeat;
-  padding: 0;
-  margin: 0;
 }
 
 body {
-  font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Helvetica, Arial, sans-serif;
-  font-size: 10pt;
   color: #333;
-  padding-top: 20px;
-  margin: 0;
-  background: url(images/shadow-top.png) 0 10px repeat-x;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Helvetica, Arial, sans-serif;
 }
 
 #container {
-  background: #FFF;
-  float: left;
-  width: 100%;
+  max-width: 100em;
+  background: white;
+  margin: auto;
+  padding: 0.5em;
+}
+
+#logo {
+  font-size: 250%;
+  text-decoration: none;
+  text-color: gray;
+  padding: 0.5em 0.5em;
+  text-align: center;
+}
+
+#logo img {
+  height: 3em;
+  vertical-align: middle;
+}
+
+#logo a {
+  text-decoration: none;
+  color: #333;
+}
+
+label {
+  font-size: 140%;
+  margin: 1em 0em 0em 0em;
+  display: block;
 }
 
 #footer {
-  background: url(images/shadow-bottom.png) 0 0 repeat-x;
-  padding: 20px 0;
+  padding: 2em 0;
   text-align: center;
-  color: #FFF;
+  color: #fff;
   font-size: small;
   float: left;
   width: 100%;
 }
 
-hr {
-  height: 1px;
-  background-color: #DCDAD4;
-  border-style: none;
-}
-
-#content {
-  width: 90%;
-  max-width: 1024px;
-  margin: 50px auto;
-  position: relative;
-}
-
-#logo {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  vertical-align: middle;
-  font-size: 250%;
-  text-decoration: none;
-  height: 20%;
-}
-
-/*#logo img {
-  border: 0;
-  margin-right: 0.5em;
-  margin-bottom: -0.6em;
-*/}
-
-/* #logo a {
-  text-decoration: none;
-  color: #333;
-}
-*/
-label {
-  font-size: 140%;
-  width: 100%;
-  margin: 1.2em 0 0.2em 0;
-  display: block;
-}
-
 .box label, .box .note {
   clear: left;
-  font-size: 10pt;
+  font-size: 100%;
   margin: 0;
   display: inline;
 }
 
-.box .left {
-  width: 12em;
-  float: left;
-}
-
 input {
   background: #f4f4ed;
-  border: 1px solid #DCDAD4;
-  border-radius: 3px;
-  -moz-border-radius: 3px;
+  border: 1px solid #dcdad4;
+  padding: 0.5em;
 }
 
 #name, #mail, .box, .error {
-  display: block;
-  width: 100%;
   padding: 0.5em;
-  margin: 0 0 1em 0;
-  border: 1px solid #DCDAD4;
+  border: 1px solid #dcdad4;
   border-radius: 10px;
   -moz-border-radius: 10px;
   color: #333;
-  font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Helvetica, Arial, sans-serif;
-  font-size: 140%;
+  width: 100%;
+  box-sizing: border-box;
+  background: #f4f4ed;
+}
+
+.box {
+  margin: 0;
+  padding: 0.5em;
+  background: #f4f4f4;
+}
+
+.mapbox {
+  margin: 0;
+  padding: 0;
 }
 
 #waypoint_file {
@@ -109,38 +89,20 @@ input {
   margin: 0 auto;
 }
 
-#map {
-  width: 100%;
-  height: 400px;
-  font-size: 10pt;
-}
-
-.error {
-  color: #A00;
-  border-color: #A00;
-}
-
 button, .button {
   display: block;
   width: 50%;
   margin: 2em auto;
   background: #449949;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   color: #fff;
   cursor: pointer;
   padding: 0.5em;
   font-size: 140%;
   text-transform: uppercase;
   border: 0;
-  border-radius: 10px;
-  -moz-border-radius: 10px;
+  border-radius: 1em;
+  -moz-border-radius: 1em;
   text-decoration: none;
   text-align: center;
-}
-
-button:hover, .button:hover {
-  background: #333;
-}
-
-.olLayerGoogleCopyright, .olLayerGooglePoweredBy {
-    display: none;
 }
