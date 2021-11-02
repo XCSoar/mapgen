@@ -4,13 +4,13 @@ html {
 
 body {
   color: #333;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); 
   font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Helvetica, Arial, sans-serif;
 }
 
 #container {
   max-width: 100em;
-  background: white;
+  background: white; 
   margin: auto;
   padding: 0.5em;
 }
@@ -35,7 +35,7 @@ body {
 
 label {
   font-size: 140%;
-  margin: 1em 0em 0em 0em;
+  margin: 1em 0 0 0;
   display: block;
 }
 
@@ -94,7 +94,7 @@ button, .button {
   width: 50%;
   margin: 2em auto;
   background: #449949;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); 
   color: #fff;
   cursor: pointer;
   padding: 0.5em;
