@@ -24,7 +24,7 @@ class Server(object):
             lock = open(os.path.join(self.__dir_jobs, 'requests.db.lock'), 'a')
             fcntl.flock(lock, fcntl.LOCK_EX)
             db = shelve.open(os.path.join(self.__dir_jobs, 'requests.db'))
-            for ip in db.keys():
+            for ip in list(db.keys()):
                 times = db[ip]
                 for t in times:
                     if time.time() - t > 3600:
@@ -34,7 +34,7 @@ class Server(object):
                 else:
                     db[ip] = times
             ip = cherrypy.request.remote.ip
-            if db.has_key(ip):
+            if ip in db:
                 if len(db[ip]) >= 3:
                     return True
                 times = db[ip]
@@ -44,7 +44,7 @@ class Server(object):
                 db[ip] = [int(time.time())]
             return False
         except Exception as e:
-            print('Error: {}'.format(e))
+            print(('Error: {}'.format(e)))
             traceback.print_exc(file=sys.stdout)
             return False
         finally:
@@ -66,9 +66,9 @@ class Server(object):
         desc = JobDescription()
         desc.name = name
         desc.mail = params['mail']
-        desc.resolution = 3.0 if params.has_key('highres') else 9.0
-        desc.compressed = True if params.has_key('compressed') else False
-        desc.welt2000 = True if params.has_key('welt2000') else False
+        desc.resolution = 3.0 if 'highres' in params else 9.0
+        desc.compressed = True if 'compressed' in params else False
+        desc.welt2000 = True if 'welt2000' in params else False
         desc.level_of_detail = int(params['level_of_detail'])
 
         selection = params['selection']

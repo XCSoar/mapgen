@@ -44,7 +44,7 @@ class Downloader:
                 self.__remove(dest_file, dest_file + '.md5', dest_dir)
                 raise RuntimeError('File is not valid after download ' + dest_file)
             if file.endswith('.7z'):
-                print('Decompressing file {} ...'.format(dest_file))
+                print(('Decompressing file {} ...'.format(dest_file)))
                 subprocess.check_call([self.__cmd_7zip, 'x', '-y', '-o' + os.path.dirname(dest_file), dest_file])
                 os.unlink(dest_file)
             else:
@@ -103,7 +103,7 @@ class Downloader:
     def __remove(self, *files):
         for file in files:
             if os.path.exists(file):
-                print('Removing outdated/invalid file {} ...'.format(file))
+                print(('Removing outdated/invalid file {} ...'.format(file)))
                 if os.path.isdir(file):
                     shutil.rmtree(file)
                 else:

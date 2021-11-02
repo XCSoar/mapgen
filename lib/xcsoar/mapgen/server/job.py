@@ -124,14 +124,14 @@ class Job:
             try:
                 ts = float(slurp(os.path.join(dir, 'timestamp')))
             except Exception as e:
-                print("Could not read timestamp file for job {}\n{}".format(dir, e))
+                print(("Could not read timestamp file for job {}\n{}".format(dir, e)))
                 continue
 
             age = time.time() - ts
 
             # Check if there is a running job which is expired
             if (dir.endswith('.locked') or dir.endswith('.working')) and age > 60*60:
-                print('Delete expired job {}'.format(dir))
+                print(('Delete expired job {}'.format(dir)))
                 shutil.rmtree(dir)
                 continue
 
@@ -142,7 +142,7 @@ class Job:
                     next_ts = ts
             elif age > 24*7*60*60:
                 # Delete if download is expired
-                print('Delete expired job {}'.format(dir))
+                print(('Delete expired job {}'.format(dir)))
                 shutil.rmtree(dir)
 
         if next_dir != None:

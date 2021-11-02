@@ -25,7 +25,7 @@ def main():
     for waypoint in waypoints:
         country = get_country_name(waypoint.country_code)
         if not country:
-            print("Country code not found: " + waypoint.country_code)
+            print(("Country code not found: " + waypoint.country_code))
             continue
         
     	if country not in database:
@@ -35,9 +35,9 @@ def main():
     
     json_all = {}
     json_compact = {}
-    for country, waypoints in database.iteritems():
+    for country, waypoints in database.items():
         path = country + ".cup"
-        print("Writing " + country + ".cup (" + str(len(waypoints)) + " entries) ...")
+        print(("Writing " + country + ".cup (" + str(len(waypoints)) + " entries) ..."))
         write_seeyou_waypoints(waypoints, path)
         
         average = GeoPoint(0, 0)

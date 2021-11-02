@@ -20,7 +20,7 @@ def __get_tile_name(lat, lon):
 def __retrieve_tile(downloader, dir_temp, lat, lon):
     filename = __get_tile_name(lat, lon)
     tif_file = downloader.retrieve('srtm3/{}.tif'.format(filename))
-    print('Tile {} found.'.format(filename))
+    print(('Tile {} found.'.format(filename)))
     return tif_file
 
 def __retrieve_tiles(downloader, dir_temp, bounds):
@@ -49,7 +49,7 @@ def __retrieve_tiles(downloader, dir_temp, bounds):
             try:
                 tiles.append(__retrieve_tile(downloader, dir_temp, lat, lon))
             except Exception as e:
-                print('Failed to retrieve tile for {0:02}/{1:02}: {2}'.format(lat, lon, e))
+                print(('Failed to retrieve tile for {0:02}/{1:02}: {2}'.format(lat, lon, e)))
 
     # Return list of available tile files
     return tiles

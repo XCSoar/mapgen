@@ -9,7 +9,7 @@ class __CSVLine:
     def has_next(self):
         return self.__index < len(self.__line)
     
-    def next(self):
+    def __next__(self):
         if self.__index >= len(self.__line): return None
         
         in_quotes = False
@@ -81,7 +81,7 @@ def parse_seeyou_waypoints(lines, bounds = None):
         fields = []
         line = __CSVLine(line)
         while line.has_next():
-            fields.append(line.next())
+            fields.append(next(line))
 
         if len(fields) < 6:
             continue

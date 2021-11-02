@@ -18,7 +18,7 @@ class Worker:
 
     def __send_download_mail(self, job):
         try:
-            print('Sending download mail to {} ...'.format(job.description.mail))
+            print(('Sending download mail to {} ...'.format(job.description.mail)))
 
             msg = '''From: no-reply@xcsoar.org"
 To: {to}
@@ -35,11 +35,11 @@ This link is valid for 7 days.
             finally:
                 s.quit()
         except Exception as e:
-            print('Failed to send mail: {}'.format(e))
+            print(('Failed to send mail: {}'.format(e)))
 
     def __do_job(self, job):
         try:
-            print('Generating map file for job uuid={}, name={}, mail={}'.format(job.uuid, job.description.name, job.description.mail))
+            print(('Generating map file for job uuid={}, name={}, mail={}'.format(job.uuid, job.description.name, job.description.mail)))
             description = job.description
 
             if not description.waypoint_file and not description.bounds:
@@ -85,18 +85,18 @@ This link is valid for 7 days.
             shutil.rmtree(job.file_path('tmp'))
             job.done()
         except Exception as e:
-            print('Error: {}'.format(e))
+            print(('Error: {}'.format(e)))
             traceback.print_exc(file=sys.stdout)
             job.error()
             return
 
-        print('Map {} is ready for use.'.format(job.map_file()))
+        print(('Map {} is ready for use.'.format(job.map_file())))
         if job.description.mail != '':
             self.__send_download_mail(job)
 
     def run(self):
         self.__run = True
-        print('Monitoring {} for new jobs...'.format(self.__dir_jobs))
+        print(('Monitoring {} for new jobs...'.format(self.__dir_jobs)))
         while self.__run:
             try:
                 job = Job.get_next(self.__dir_jobs)
@@ -105,5 +105,5 @@ This link is valid for 7 days.
                     continue
                 self.__do_job(job)
             except Exception as e:
-                print('Error: {}'.format(e))
+                print(('Error: {}'.format(e)))
                 traceback.print_exc(file=sys.stdout)

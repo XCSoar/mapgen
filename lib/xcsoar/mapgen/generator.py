@@ -141,7 +141,7 @@ author: {author}
         if not isinstance(bounds, GeoRect):
             raise RuntimeError('GeoRect expected.')
 
-        print('Setting map boundaries: {}'.format(bounds))
+        print(('Setting map boundaries: {}'.format(bounds)))
         self.__bounds = bounds
 
     def create(self, filename):

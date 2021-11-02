@@ -22,7 +22,7 @@ def generate_map(name, bounds, dir_data, dir_temp, resolution = 9.0, level_of_de
     right  = bounds[2]
     top    = bounds[3]
 
-    print "Generating " + output_file + " ..."
+    print("Generating " + output_file + " ...")
     generator = Generator(dir_data = dir_data, dir_temp = dir_temp)
     generator.set_bounds(GeoRect(left, right, top, bottom))
     generator.add_information_file(output_file, author = 'the XCSoar team')

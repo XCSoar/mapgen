@@ -22,11 +22,11 @@ __used_commands = { 'ogr2ogr':   'Please install gdal (http://www.gdal.org/).',
 
 def check_commands():
     ret = True
-    for (cmd, help) in __used_commands.items():
+    for (cmd, help) in list(__used_commands.items()):
         try:
             subprocess.check_output(['which', cmd], stderr=subprocess.STDOUT)
         except:
             ret = False
-            print('Command {} is missing on the $PATH. '.format(cmd) + help)
+            print(('Command {} is missing on the $PATH. '.format(cmd) + help))
     if not ret:
         sys.exit(1)

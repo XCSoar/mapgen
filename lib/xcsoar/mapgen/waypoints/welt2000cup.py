@@ -34,7 +34,7 @@ def get_database(dir_data, bounds = None):
         return parse_seeyou_waypoints(f, bounds)
 
 def __create_waypoint_file(database, dir_temp):
-    print("Creating waypoints.cup with {} entries...".format(len(database)))
+    print(("Creating waypoints.cup with {} entries...".format(len(database))))
 
     # Create a Seeyou CUP file from the Welt2000 cup data
     path = os.path.join(dir_temp, 'waypoints.cup')
