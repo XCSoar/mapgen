@@ -1,9 +1,9 @@
 # Creates a mapgen-worker instance for building maps
-FROM debian:stretch-backports
+FROM debian:bullseye-backports
 ARG GITURL=https://github.com/XCSoar/mapgen.git
 ARG GITBRANCH=master
 ENV APT_OPTS="-y"
-ENV MAPFRNT_PKG="ca-certificates python-minimal python-cherrypy3 python-genshi"
+ENV MAPFRNT_PKG="ca-certificates python3-minimal python3-cherrypy3 python3-genshi"
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Deploy Mapgen

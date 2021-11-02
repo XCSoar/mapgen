@@ -1,4 +1,3 @@
-
 # Map generator for XCSoar
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/099ae14d05e6426d82080c5e1074e38c)](https://app.codacy.com/gh/XCSoar/mapgen?utm_source=github.com&utm_medium=referral&utm_content=XCSoar/mapgen&utm_campaign=Badge_Grade_Settings)
@@ -72,10 +71,8 @@ Port 9090
 
 The Following build variables can be set during build (optional):
 
-1. GITURL - The git url for the mapgen sources
-   Default: [Mapgen git](https://github.com/xcsoar/mapgen/mapgen.git)
-1. GITBRANCH - The branch name
-   Default: master
+  1. GITURL - The git url for the mapgen sources
+  2. GITBRANCH - The branch name
 
 #### Building
 
