@@ -26,6 +26,8 @@ class __CSVLine:
 
         return next
 
+    next = __next__
+
 def __parse_altitude(str):
     str = str.lower()
     if str.endswith('ft') or str.endswith('f'):
