@@ -26,11 +26,12 @@ def __create_layer_from_dataset(bounds, layer, dataset, append, downloader, dir_
     if append:
         arg.append("-update")
         arg.append("-append")
+    else:
+        arg.extend(["-select", layer['label'] if 'label' in layer else ''])
 
     if 'where' in layer:
         arg.extend(["-where", layer['where']])
 
-    arg.extend(["-select", layer['label'] if 'label' in layer else ''])
 
     arg.extend(["-spat",
                 str(bounds.left),
