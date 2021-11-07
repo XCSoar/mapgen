@@ -4,7 +4,11 @@ function total {
   echo "Total jobs: $(ls -d1 /opt/mapgen/jobs/*  2> /dev/null| wc -l )"
 }
 function error {
-  echo "Error jobs: $(ls -d1 /opt/mapgen/jobs/*.error 2> /dev/null | wc -l )"
+  NOJOBS=$(ls -d1 /opt/mapgen/jobs/*.error 2> /dev/null | wc -l )
+  if [ "$NOJOBS" -gt 0 ]; then
+    echo "Error Jobs: $NOJOBS"
+    exit 1
+  fi
 }
 function queued { 
   echo "Queued jobs: $(ls -d1 /opt/mapgen/jobs/*.queued  2> /dev/null| wc -l )"
