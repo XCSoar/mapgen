@@ -5,7 +5,7 @@ class __CSVLine:
     def __init__(self, line):
         self.__line = line
         self.__index = 0
-        
+
     def has_next(self):
         return self.__index < len(self.__line)
     
@@ -15,7 +15,7 @@ class __CSVLine:
         in_quotes = False
         
         for i in range(self.__index, len(self.__line)):
-            if self.__line[i] == '"': 
+            if self.__line[i] == '"':
                 in_quotes = not in_quotes
                 
             if self.__line[i] == ',' and not in_quotes:
@@ -63,20 +63,20 @@ def __parse_length(str):
 
 def parse_seeyou_waypoints(lines, bounds = None):
     waypoint_list = WaypointList()
-    
+
     first = True
     for line in lines:
         if first: 
             first = False
             continue
-        
+
         line = line.strip()
         if line == 'name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc':
             break
 
         if line == '' or line.startswith('*'):
             continue
-        
+
         if line == '-----Related Tasks-----':
             break
 
@@ -119,5 +119,5 @@ def parse_seeyou_waypoints(lines, bounds = None):
           wp.comment = fields[10].strip();
 
         waypoint_list.append(wp)
-        
+
     return waypoint_list

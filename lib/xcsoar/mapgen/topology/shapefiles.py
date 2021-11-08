@@ -74,12 +74,12 @@ def __create_index_file(dir_temp, index):
     try:
         file.write("* filename, range, icon, label_index, r, g, b, pen_width, label_range, label_important_range\n")
         for layer in index:
-            file.write(layer['name'] + ',' + 
-                       str(layer['range']) + ',,' + 
-                       ('1' if 'label' in layer else '') + ',' + 
-                       layer['color'] + ',' + 
-                       str(layer.get('pen_width', 1)) + ',' + 
-                       str(layer.get('label_range', layer['range'])) + ',' + 
+            file.write(layer['name'] + ',' +
+                       str(layer['range']) + ',,' +
+                       ('1' if 'label' in layer else '') + ',' +
+                       layer['color'] + ',' +
+                       str(layer.get('pen_width', 1)) + ',' +
+                       str(layer.get('label_range', layer['range'])) + ',' +
                        str(layer.get('label_important_range', 0)) + "\n")
     finally:
         file.close()
