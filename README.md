@@ -35,7 +35,7 @@ frontend container are started by supervisord.
 
 Frontend produces job files that are put into a shared volume
 
-```
+```bash
 /opt/mapgen/jobs/<jobid>.queued
 ```
 
@@ -48,13 +48,13 @@ This is the actual map builder, that takes the queued jobs in
 
 These are named volumes inside your docker service.
 
-```
+```bash
 /opt/mapgen/jobs:
 ```
 
  This is the job directory where all jobs get stored
 
-```
+```bash
 /opt/mapgen/data:
 ```
 
@@ -63,7 +63,7 @@ These are named volumes inside your docker service.
 
 ### Ports
 
-```
+```bash
 Port 9090
 ```
 
@@ -71,8 +71,8 @@ Port 9090
 
 The Following build variables can be set during build (optional):
 
-  1. GITURL - The git url for the mapgen sources
-  2. GITBRANCH - The branch name
+1. GITURL: The git url for the mapgen sources
+2. GITBRANCH: The branch name
 
 #### Building
 
