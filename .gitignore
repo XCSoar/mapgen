@@ -8,6 +8,7 @@
 *.orig
 *.rej
 *.log
+*.xcm
 data
 jobs
 *.pyc
