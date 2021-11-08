@@ -1,5 +1,3 @@
-import hashlib
-import random
 import pickle
 import time
 import os
