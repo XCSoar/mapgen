@@ -34,7 +34,8 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
-          context: ./container/worker
+          context: ./
+          file: ./container/worker/Dockerfile
           tags: ghcr.io/${{ steps.string.outputs.lowercase }}/mapgen-worker:latest
           secrets: |
             GIT_AUTH_TOKEN=${{ github.token }}
@@ -43,7 +44,8 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
-          context: ./container/frontend
+          context: ./ 
+          file: ./container/frontend/Dockerfile
           tags: ghcr.io/${{ steps.string.outputs.lowercase }}/mapgen-frontend:latest
           secrets: |
             GIT_AUTH_TOKEN=${{ github.token }}
