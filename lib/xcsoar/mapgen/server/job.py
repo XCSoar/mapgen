@@ -1,9 +1,8 @@
-import hashlib
-import random
 import pickle
 import time
 import os
 import shutil
+import uuid
 
 from xcsoar.mapgen.util import slurp, spew
 
@@ -93,9 +92,8 @@ class Job:
         os.rename(old, self.dir)
 
     def __generate_uuid(self):
-        m = hashlib.sha1()
-        m.update(str(random.random()))
-        return m.hexdigest()
+        myuuid = str(uuid.uuid1())
+        return myuuid
 
     @staticmethod
     def find(dir_jobs, uuid):
