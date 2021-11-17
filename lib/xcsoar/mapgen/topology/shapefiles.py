@@ -23,6 +23,7 @@ def __create_layer_from_dataset(bounds, layer, dataset, append, downloader, dir_
     print(('Reading dataset {} ...'.format(dataset['name'])))
     arg = [__cmd_ogr2ogr]
 
+    arg.append("-skipfailures")
     if append:
         arg.append("-update")
         arg.append("-append")
