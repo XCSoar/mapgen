@@ -6,23 +6,23 @@ from xcsoar.mapgen.waypoints.list import WaypointList
 def __parse_line(line, bounds = None):
     # Ignore comments
     if line.startswith('$'): return None
-    
+
     # Parse latitude
     lat = line[45:52]
-    lat_neg = lat.startswith('S')  
+    lat_neg = lat.startswith('S')
     lat = float(lat[1:3]) + float(lat[3:5]) / 60. + float(lat[5:7]) / 3600.
     if lat_neg: lat = -lat
-    
+
     if bounds and (lat > bounds.top or lat < bounds.bottom): return None
 
     # Parse longitude
     lon = line[52:60]
-    lon_neg = lon.startswith('W')  
+    lon_neg = lon.startswith('W')
     lon = float(lon[1:4]) + float(lon[4:6]) / 60. + float(lon[6:8]) / 3600.
     if lon_neg: lon = -lon
-    
+
     if bounds and (lon > bounds.right or lon < bounds.left): return None
-    
+
     # Create waypoint instance
     wp = Waypoint()
     wp.lat = lat
@@ -30,12 +30,10 @@ def __parse_line(line, bounds = None):
 
     # Parse elevation
     elev = line[41:45].strip()
-    if elev != '': wp.altitude = float(elev)
-    else: wp.altitude = 0.0
-
+    wp.altitude = float(elev) if elev != '' else 0.0
     # Extract short name
     wp.short_name = line[:6].strip()
-    
+
     # Parse and strip optional type identifier from short name
     if wp.short_name.endswith('1'):
       wp.type = 'airport'
@@ -47,7 +45,7 @@ def __parse_line(line, bounds = None):
 
     # Extract waypoint name
     wp.name = line[7:41].strip()
-    
+
     # Check for extra data indicator
     if '*' in wp.name or '#' in wp.name:
         # Split data from waypoint name
@@ -61,7 +59,7 @@ def __parse_line(line, bounds = None):
 
         # Extract ICAO code if possible
         icao = data[:4].strip('!? ')
-        
+
         # Check icao code field for glider site indicator
         if icao == 'GLD':
             wp.type = 'glider_site'
@@ -73,7 +71,7 @@ def __parse_line(line, bounds = None):
         # Save ICAO code
         if len(icao) == 4:
             wp.icao = icao
-        
+
         # Extract and parse surface character
         if data[4:5] == 'A': wp.surface = 'asphalt'
         elif data[4:5] == 'C': wp.surface = 'concrete'
@@ -88,11 +86,11 @@ def __parse_line(line, bounds = None):
         runway_len = data[5:8].strip()
         if runway_len != '':
             wp.runway_len = int(runway_len) * 10
-        
+
         runway_dir = data[8:10].strip()
         if runway_dir != '':
             wp.runway_dir = int(runway_dir) * 10
-        
+
         # Extract and parse radio frequency
         freq = data[12:17].strip()
         if len(freq) == 5:
@@ -102,7 +100,7 @@ def __parse_line(line, bounds = None):
 
     # Strip uninvited characters from waypoint name
     wp.name = wp.name.rstrip('!?1 ')
-    
+
     # Find waypoint type from waypoint name if not available yet
     if not wp.type:
         if re.search('(^|\s)BERG($|\s)', wp.name): wp.type = 'mountain top'

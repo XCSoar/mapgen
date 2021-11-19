@@ -67,27 +67,28 @@ class Server(object):
         desc.name = name
         desc.mail = params['mail']
         desc.resolution = 3.0 if 'highres' in params else 9.0
-        desc.compressed = True if 'compressed' in params else False
-        desc.welt2000 = True if 'welt2000' in params else False
+        desc.compressed = 'compressed' in params
+        desc.welt2000 = 'welt2000' in params
         desc.level_of_detail = int(params['level_of_detail'])
 
         selection = params['selection']
         waypoint_file = params['waypoint_file']
-        if selection == 'waypoint' or selection == 'waypoint_bounds':
+        if selection in ['waypoint', 'waypoint_bounds']:
             if not waypoint_file.file or not waypoint_file.filename:
                 return view.render(error='No waypoint file uploaded.') | HTMLFormFiller(data=params)
 
             try:
                 filename = waypoint_file.filename.lower()
-                if filename.endswith('.dat') or filename.endswith('.cup'):
-                    desc.bounds = parse_waypoint_file(waypoint_file.filename, waypoint_file.file).get_bounds()
-                    desc.waypoint_file = 'waypoints.cup' if filename.endswith('.cup') else 'waypoints.dat'
-                else:
+                if not filename.endswith('.dat') and (
+                    filename.endswith('.dat') or not filename.endswith('.cup')
+                ):
                     raise RuntimeError('Waypoint file {} has an unsupported format.'.format(waypoint_file.filename))
+                desc.bounds = parse_waypoint_file(waypoint_file.filename, waypoint_file.file).get_bounds()
+                desc.waypoint_file = 'waypoints.cup' if filename.endswith('.cup') else 'waypoints.dat'
             except:
                 return view.render(error='Unsupported waypoint file ' + waypoint_file.filename) | HTMLFormFiller(data=params)
 
-        if selection == 'bounds' or selection == 'waypoint_bounds':
+        if selection in ['bounds', 'waypoint_bounds']:
             try:
                 desc.bounds = GeoRect(float(params['left']),
                                       float(params['right']),
@@ -123,7 +124,7 @@ class Server(object):
     @view.output('status.html')
     def status(self, uuid):
         job = Job.find(self.__dir_jobs, uuid)
-        if job == None:
+        if job is None:
             return view.render('error.html', error='Job not found!')
         status = job.status()
         if status == 'Error':

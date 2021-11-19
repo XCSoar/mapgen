@@ -92,8 +92,7 @@ class Job:
         os.rename(old, self.dir)
 
     def __generate_uuid(self):
-        myuuid = str(uuid.uuid1())
-        return myuuid
+        return str(uuid.uuid1())
 
     @staticmethod
     def find(dir_jobs, uuid):
@@ -128,7 +127,9 @@ class Job:
             age = time.time() - ts
 
             # Check if there is a running job which is expired
-            if (dir.endswith('.locked') or dir.endswith('.working')) and age > 60*60:
+            if (
+                (dir.endswith('.locked') or dir.endswith('.working'))
+            ) and age > 60 ** 2:
                 print(('Delete expired job {}'.format(dir)))
                 shutil.rmtree(dir)
                 continue

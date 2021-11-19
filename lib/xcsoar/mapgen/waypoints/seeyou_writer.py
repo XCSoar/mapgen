@@ -5,21 +5,17 @@ def __compose_line(waypoint):
     str = '"' + waypoint.name + '",'
     str += waypoint.short_name + ','
     str += waypoint.country_code + ','
-    
+
     lat = abs(waypoint.lat)
     str += "{:02d}".format(int(lat))
     lat = round((lat - int(lat)) * 60, 3)
     str += "{:06.3f}".format(lat)
-    if waypoint.lat > 0: str += 'N,' 
-    else: str += 'S,'
-    
+    str += 'N,' if waypoint.lat > 0 else 'S,'
     lon = abs(waypoint.lon)
     str += "{:03d}".format(int(lon))
     lon = round((lon - int(lon)) * 60, 3)
     str += "{:06.3f}".format(lon)
-    if waypoint.lon > 0: str += 'E,' 
-    else: str += 'W,'
-
+    str += 'E,' if waypoint.lon > 0 else 'W,'
     if waypoint.altitude and waypoint.altitude > -500:
         str += "{:.1f}m,".format(waypoint.altitude)
     else: str += ","
@@ -36,8 +32,10 @@ def __compose_line(waypoint):
         if waypoint.type == 'outlanding': str += "3,"
         elif waypoint.type == 'glider_site': str += "4,"
         elif waypoint.type == 'airport': 
-            if (waypoint.surface and (waypoint.surface == 'concrete' or 
-                                      waypoint.surface == 'asphalt')): 
+            if waypoint.surface and waypoint.surface in [
+                'concrete',
+                'asphalt',
+            ]: 
                 str += "5,"
             else: 
                 str += "2,"
@@ -55,15 +53,15 @@ def __compose_line(waypoint):
 
     if waypoint.runway_dir:
         str += "{:03d}".format(waypoint.runway_dir)
-        
+
     str += ','
     if waypoint.runway_len:
         str += "{:03d}.0m".format(waypoint.runway_len)
-        
+
     str += ','
     if waypoint.freq:
         str += "{:07.3f}".format(waypoint.freq)
-        
+
     str += ','
     if waypoint.comment:
         str += '"' + waypoint.comment + '"'
