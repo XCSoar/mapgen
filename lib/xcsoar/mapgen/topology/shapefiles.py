@@ -8,11 +8,11 @@ __cmd_ogr2ogr = 'ogr2ogr'
 __cmd_shptree = 'shptree'
 
 def __filter_datasets(bounds, datasets):
-    filtered = []
-    for dataset in datasets:
-        if bounds.intersects(GeoRect(*dataset['bounds'])):
-            filtered.append(dataset)
-    return filtered
+    return [
+        dataset
+        for dataset in datasets
+        if bounds.intersects(GeoRect(*dataset['bounds']))
+    ]
 
 def __create_layer_from_dataset(bounds, layer, dataset, append, downloader, dir_temp):
     if not isinstance(bounds, GeoRect):
@@ -21,9 +21,8 @@ def __create_layer_from_dataset(bounds, layer, dataset, append, downloader, dir_
     data_dir = downloader.retrieve_extracted(dataset['name'] + '.7z')
 
     print(('Reading dataset {} ...'.format(dataset['name'])))
-    arg = [__cmd_ogr2ogr]
+    arg = [__cmd_ogr2ogr, '-skipfailures']
 
-    arg.append("-skipfailures")
     if append:
         arg.append("-update")
         arg.append("-append")
