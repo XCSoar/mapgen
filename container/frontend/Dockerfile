@@ -1,6 +1,6 @@
 # Creates a mapgen-worker instance for building maps
 FROM debian:bullseye-slim
-ENV MAPFRNT_PKG="ca-certificates python3-minimal python3-cherrypy3 python3-genshi"
+ENV MAPFRNT_PKG="ca-certificates python3-cherrypy3 python3-genshi"
 ENV NGINX_PKG="nginx"
 ENV SUPERVISOR_PKG="supervisor"
 ENV DEBIAN_FRONTEND=noninteractive
