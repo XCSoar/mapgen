@@ -15,4 +15,4 @@ VOLUME /opt/mapgen/data
 VOLUME /opt/mapgen/jobs
 
 # worker process
-CMD /opt/mapgen/bin/mapgen-worker
+ENTRYPOINT ["/opt/mapgen/bin/mapgen-worker"]
