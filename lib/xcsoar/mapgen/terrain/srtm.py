@@ -18,11 +18,13 @@ def __get_tile_name(lat, lon):
         ns = 'n'
     else:
         ns = 's'
+        lat = -lat
 
     if lon >= 0:
         ew = 'e'
     else:
         ew = 'w'
+        lon = -lon
 
     return '' + ns + '{0:02}'.format(lat) + ew + '{0:03}'.format(lon)
 
@@ -62,6 +64,19 @@ def __retrieve_tiles(downloader, dir_temp, bounds):
 
     # Return list of available tile files
     return tiles
+
+def __retrieve_waterpolygons(downloader, dir_temp):
+    '''
+    Retrieve water polygons from the OSM coastline data
+    @param download: Downloader
+    @param dir_temp: Temporary path
+    '''
+    print('Retrieving water polygons...')
+    water_file1 = downloader.retrieve('waterpolygons/water_polygons.dbf')
+    water_file2 = downloader.retrieve('waterpolygons/water_polygons.cpg')
+    water_file3 = downloader.retrieve('waterpolygons/water_polygons.shx')
+    water_file = downloader.retrieve('waterpolygons/water_polygons.shp')
+    return water_file
 
 '''
  2) Merge tiles into big tif, Resample and Crop merged image
@@ -116,8 +131,25 @@ def __create(dir_temp, tiles, arcseconds_per_pixel, bounds):
 '''
  3) Convert to GeoJP2 with gdal_translate
 '''
-def __convert(dir_temp, input_file, rc):
+def __convert(dir_temp, input_file, water_file, rc):
+    print('Masking coastlines...')
+    output_file = os.path.join(dir_temp, 'terrain.tif')
+
+    args = ['gdal_rasterize',
+            '-optim', 'VECTOR',
+            '-b', '1',
+            '-burn', '-31744',
+            water_file,
+            output_file]
+
+    subprocess.check_call(args)
+
+    output = FileList()
+    output.add(output_file, False)
+
+
     print('Converting terrain to JP2 format...')
+    input_file = os.path.join(dir_temp, 'terrain.tif')
     output_file = os.path.join(dir_temp, 'terrain.jp2')
 
     args = ['gdal_translate',
@@ -138,6 +170,7 @@ def __convert(dir_temp, input_file, rc):
     if __use_world_file and os.path.exists(world_file_tiff):
         os.rename(world_file_tiff, world_file)
         output.add(world_file, True)
+
 
     return output
 
@@ -166,6 +199,7 @@ def create(bounds, arcseconds_per_pixel, downloader, dir_temp):
 
     try:
         terrain_file = __create(dir_temp, tiles, arcseconds_per_pixel, bounds)
-        return __convert(dir_temp, terrain_file, bounds)
+        water_file = __retrieve_waterpolygons(downloader, dir_temp) 
+        return __convert(dir_temp, terrain_file, water_file, bounds)
     finally:
         __cleanup(dir_temp)
