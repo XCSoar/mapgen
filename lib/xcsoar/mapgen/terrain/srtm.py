@@ -13,15 +13,26 @@ __use_world_file = True
  1) Retrieve tiles
 '''
 def __get_tile_name(lat, lon):
-    col = int(math.floor(((lon + 180) / 5) + 1))
-    row = int(math.floor((60 - lat) / 5))
-    return 'srtm_{0:02}_{1:02}'.format(col, row)
+    print('lat: {}, lon: {}'.format(lat, lon))
+    if lat >= 0:
+        ns = 'n'
+    else:
+        ns = 's'
+        lat = -lat
+
+    if lon >= 0:
+        ew = 'e'
+    else:
+        ew = 'w'
+        lon = -lon
+
+    return '' + ns + '{0:02}'.format(lat) + ew + '{0:03}'.format(lon)
 
 def __retrieve_tile(downloader, dir_temp, lat, lon):
     filename = __get_tile_name(lat, lon)
-    tif_file = downloader.retrieve('srtm3/{}.tif'.format(filename))
+    hgt_file = downloader.retrieve('dem3/{}.hgt'.format(filename))
     print(('Tile {} found.'.format(filename)))
-    return tif_file
+    return hgt_file
 
 def __retrieve_tiles(downloader, dir_temp, bounds):
     '''
@@ -37,15 +48,15 @@ def __retrieve_tiles(downloader, dir_temp, bounds):
     print('Retrieving terrain tiles...')
 
     # Calculate rounded bounds
-    lat_start = int(math.floor(bounds.bottom / 5.0)) * 5
-    lon_start = int(math.floor(bounds.left / 5.0)) * 5
-    lat_end = int(math.ceil(bounds.top / 5.0)) * 5
-    lon_end = int(math.ceil(bounds.right / 5.0)) * 5
+    lat_start = int(math.floor(bounds.bottom)) -1
+    lon_start = int(math.floor(bounds.left)) -1
+    lat_end = int(math.ceil(bounds.top)) + 1 
+    lon_end = int(math.ceil(bounds.right)) + 1
 
     tiles = []
-    # Iterate through latitude and longitude in 5 degree interval
-    for lat in range(lat_start, lat_end, 5):
-        for lon in range(lon_start, lon_end, 5):
+    # Iterate through latitude and longitude in 1 degree interval
+    for lat in range(lat_start, lat_end, 1):
+        for lon in range(lon_start, lon_end, 1):
             try:
                 tiles.append(__retrieve_tile(downloader, dir_temp, lat, lon))
             except Exception as e:
@@ -53,6 +64,19 @@ def __retrieve_tiles(downloader, dir_temp, bounds):
 
     # Return list of available tile files
     return tiles
+
+def __retrieve_waterpolygons(downloader, dir_temp):
+    '''
+    Retrieve water polygons from the OSM coastline data
+    @param download: Downloader
+    @param dir_temp: Temporary path
+    '''
+    print('Retrieving water polygons...')
+    water_file1 = downloader.retrieve('waterpolygons/water_polygons.dbf')
+    water_file2 = downloader.retrieve('waterpolygons/water_polygons.cpg')
+    water_file3 = downloader.retrieve('waterpolygons/water_polygons.shx')
+    water_file = downloader.retrieve('waterpolygons/water_polygons.shp')
+    return water_file
 
 '''
  2) Merge tiles into big tif, Resample and Crop merged image
@@ -107,8 +131,25 @@ def __create(dir_temp, tiles, arcseconds_per_pixel, bounds):
 '''
  3) Convert to GeoJP2 with gdal_translate
 '''
-def __convert(dir_temp, input_file, rc):
+def __convert(dir_temp, input_file, water_file, rc):
+    print('Masking coastlines...')
+    output_file = os.path.join(dir_temp, 'terrain.tif')
+
+    args = ['gdal_rasterize',
+            '-optim', 'VECTOR',
+            '-b', '1',
+            '-burn', '-31744',
+            water_file,
+            output_file]
+
+    subprocess.check_call(args)
+
+    output = FileList()
+    output.add(output_file, False)
+
+
     print('Converting terrain to JP2 format...')
+    input_file = os.path.join(dir_temp, 'terrain.tif')
     output_file = os.path.join(dir_temp, 'terrain.jp2')
 
     args = ['gdal_translate',
@@ -129,6 +170,7 @@ def __convert(dir_temp, input_file, rc):
     if __use_world_file and os.path.exists(world_file_tiff):
         os.rename(world_file_tiff, world_file)
         output.add(world_file, True)
+
 
     return output
 
@@ -157,6 +199,7 @@ def create(bounds, arcseconds_per_pixel, downloader, dir_temp):
 
     try:
         terrain_file = __create(dir_temp, tiles, arcseconds_per_pixel, bounds)
-        return __convert(dir_temp, terrain_file, bounds)
+        water_file = __retrieve_waterpolygons(downloader, dir_temp) 
+        return __convert(dir_temp, terrain_file, water_file, bounds)
     finally:
         __cleanup(dir_temp)
