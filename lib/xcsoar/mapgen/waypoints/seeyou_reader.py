@@ -72,7 +72,7 @@ def parse_seeyou_waypoints(lines, bounds = None):
 
         line = line.strip()
         if line == 'name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc':
-            break
+            continue
 
         if line == '' or line.startswith('*'):
             continue
