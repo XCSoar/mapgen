@@ -7,6 +7,7 @@ import shutil
 from xcsoar.mapgen.server.job import Job
 from xcsoar.mapgen.generator import Generator
 from xcsoar.mapgen.util import check_commands
+from xcsoar.mapgen.server.config import mapgen
 
 class Worker:
     def __init__(self, dir_jobs, dir_data, mail_server):
@@ -24,10 +25,10 @@ class Worker:
 To: {to}
 Subject: XCSoar Map Generator - Download ready ({name}.xcm)
 
-The XCSoar Map Generator has finished your map.
-It can be downloaded at {url}
+The XCSoar Map Generator has finished your map: {name}
+It can be downloaded at {protocol}://{domain}{url}
 This link is valid for 7 days.
-'''.format(to=job.description.mail, name=job.description.name, url=job.description.download_url)
+'''.format(to=job.description.mail, name=job.description.name, protocol=mapgen['protocol'] ,domain=mapgen['domain'], url=job.description.download_url)
 
             s = smtplib.SMTP(self.__mail_server)
             try:
