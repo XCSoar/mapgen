@@ -1,0 +1,18 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.1.0
+    hooks:
+    -   id: check-yaml
+    -   id: end-of-file-fixer
+    -   id: trailing-whitespace
+      #-   id: double-quote-string-fixer
+      #-   id: detect-private-key
+      #-   id: check-symlinks
+      #-   id: check-case-conflict
+      #-   id: check-added-large-files
+      #-   id: check-executables-have-shebangs
+    -   id: mixed-line-ending
+-   repo: https://github.com/psf/black
+    rev: 21.12b0
+    hooks:
+    -   id: black
