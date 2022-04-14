@@ -17,6 +17,7 @@ class Generator:
     def __init__(self, dir_data, dir_temp):
         """
         Constructor of the MapGenerator class
+
         @param dir_data: Path of the data folder
         @param dir_temp: Path of the temporary folder
         """
