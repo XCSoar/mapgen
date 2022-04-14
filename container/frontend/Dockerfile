@@ -16,7 +16,7 @@ COPY bin/ /opt/mapgen/bin/
 VOLUME /opt/mapgen/jobs
 
 # Nginx for reverse proxy
-COPY ./container/frontend/files/default /etc/nginx/sites-available/default 
+COPY ./container/frontend/files/default /etc/nginx/sites-available/default
 RUN ln -fs /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
 EXPOSE 9090
