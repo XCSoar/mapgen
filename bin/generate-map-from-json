@@ -7,48 +7,53 @@ import shutil
 import json
 import requests
 
-app_dir = os.path.abspath(__file__ + '/../..')
-sys.path.append(os.path.join(app_dir, 'lib'))
+app_dir = os.path.abspath(__file__ + "/../..")
+sys.path.append(os.path.join(app_dir, "lib"))
 
 from xcsoar.mapgen.generator import Generator
 from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.downloader import Downloader
 from xcsoar.mapgen.util import slurp
 
-def generate_map(name, bounds, dir_data, dir_temp, resolution = 9.0, level_of_detail = 3):
-    output_file = name + '.xcm'
-    if os.path.exists(output_file): 
+
+def generate_map(name, bounds, dir_data, dir_temp, resolution=9.0, level_of_detail=3):
+    output_file = name + ".xcm"
+    if os.path.exists(output_file):
         return
-    
-    left   = bounds[0]
+
+    left = bounds[0]
     bottom = bounds[1]
-    right  = bounds[2]
-    top    = bounds[3]
+    right = bounds[2]
+    top = bounds[3]
 
     print("Generating " + output_file + " ...")
-    generator = Generator(dir_data = dir_data, dir_temp = dir_temp)
+    generator = Generator(dir_data=dir_data, dir_temp=dir_temp)
     generator.set_bounds(GeoRect(left, right, top, bottom))
-    generator.add_information_file(output_file, author = 'the XCSoar team')
+    generator.add_information_file(output_file, author="the XCSoar team")
     generator.add_welt2000()
-    generator.add_topology(level_of_detail = level_of_detail)
+    generator.add_topology(level_of_detail=level_of_detail)
     generator.add_terrain(resolution)
     generator.create(output_file)
     generator.cleanup()
 
+
 def generate_maps(name, bounds, dir_data, dir_temp):
     generate_map(name, bounds, dir_data, dir_temp, 9.0, 3)
-    generate_map(name + '_HighRes', bounds, dir_data, dir_temp, 3.0, 3)
+    generate_map(name + "_HighRes", bounds, dir_data, dir_temp, 3.0, 3)
+
 
 def main():
-    dir_data = os.path.join(app_dir, 'data')
-    dir_temp = '/tmp/mapgen-{}'.format(os.getpid())
+    dir_data = os.path.join(app_dir, "data")
+    dir_temp = "/tmp/mapgen-{}".format(os.getpid())
     with open(sys.argv[1]) as f:
         mapfile = json.load(f)
         name = os.path.splitext(os.path.basename(sys.argv[1]))[0]
     try:
-            generate_maps(name, mapfile["bounding_box"], dir_data, dir_temp)
+        generate_maps(name, mapfile["bounding_box"], dir_data, dir_temp)
     finally:
-        if os.path.exists(dir_temp): shutil.rmtree(dir_temp)
+        if os.path.exists(dir_temp):
+            shutil.rmtree(dir_temp)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

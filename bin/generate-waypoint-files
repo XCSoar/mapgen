@@ -4,8 +4,8 @@ import os, sys, re
 import shutil
 import json
 
-app_dir = os.path.abspath(__file__ + '/../..')
-sys.path.append(os.path.join(app_dir, 'lib'))
+app_dir = os.path.abspath(__file__ + "/../..")
+sys.path.append(os.path.join(app_dir, "lib"))
 
 from xcsoar.mapgen.geopoint import GeoPoint
 from xcsoar.mapgen.waypoints.list import WaypointList
@@ -14,12 +14,13 @@ from xcsoar.mapgen.waypoints.seeyou_writer import write_seeyou_waypoints
 from xcsoar.mapgen.downloader import Downloader
 from xcsoar.mapgen.country_codes import get_country_name
 
+
 def main():
-    dir_data = os.path.join(app_dir, 'data')
-    
+    dir_data = os.path.join(app_dir, "data")
+
     print("Reading Welt2000 cup waypoint file ...")
     waypoints = welt2000cup.get_database(dir_data)
-    
+
     print("Building database ...")
     database = {}
     for waypoint in waypoints:
@@ -27,38 +28,41 @@ def main():
         if not country:
             print(("Country code not found: " + waypoint.country_code))
             continue
-        
-    	if country not in database:
-            database[country] = WaypointList() 
-    
+
+        if country not in database:
+            database[country] = WaypointList()
+
         database[country].append(waypoint)
-    
+
     json_all = {}
     json_compact = {}
     for country, waypoints in database.items():
         path = country + ".cup"
         print(("Writing " + country + ".cup (" + str(len(waypoints)) + " entries) ..."))
         write_seeyou_waypoints(waypoints, path)
-        
+
         average = GeoPoint(0, 0)
         for waypoint in waypoints:
             average.lat += waypoint.lat
             average.lon += waypoint.lon
         average.lat /= len(waypoints)
         average.lon /= len(waypoints)
-        
-        json_compact[country] = len(waypoints) 
-        json_all[country] = {'size': len(waypoints), 
-                             'average': [average.lat, average.lon]} 
-        
-    print("Creating JSON files ...")
-    with open('waypoints_compact.js', 'w') as f:
-        f.write('var WAYPOINTS = ')
-        json.dump(json_compact, f, indent = 0);
 
-    with open('waypoints.js', 'w') as f:
-        f.write('var WAYPOINTS = ')
-        json.dump(json_all, f);
-        
-if __name__ == '__main__':
+        json_compact[country] = len(waypoints)
+        json_all[country] = {
+            "size": len(waypoints),
+            "average": [average.lat, average.lon],
+        }
+
+    print("Creating JSON files ...")
+    with open("waypoints_compact.js", "w") as f:
+        f.write("var WAYPOINTS = ")
+        json.dump(json_compact, f, indent=0)
+
+    with open("waypoints.js", "w") as f:
+        f.write("var WAYPOINTS = ")
+        json.dump(json_all, f)
+
+
+if __name__ == "__main__":
     main()

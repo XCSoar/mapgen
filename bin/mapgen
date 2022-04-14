@@ -4,48 +4,85 @@ import sys, os
 import shutil
 import argparse
 
-app_dir = os.path.abspath(__file__ + '/../..')
-sys.path.append(os.path.join(app_dir, 'lib'))
+app_dir = os.path.abspath(__file__ + "/../..")
+sys.path.append(os.path.join(app_dir, "lib"))
 
 from xcsoar.mapgen.generator import Generator
 from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.waypoints.parser import parse_waypoint_file
 
-def main():
-    parser = argparse.ArgumentParser(description='Create a custom XCM map file for XCSoar')
-    
-    parser.add_argument('-r', metavar='resolution', dest='resolution', 
-                        type=float, default=9.0,
-                        help='resolution of the terrain in arcseconds per pixel')
-    parser.add_argument('-l', metavar='level_of_detail', dest='level_of_detail', 
-                        choices=[1,2,3], type=int, default=3,
-                        help='''1: only major topography, 
-                                2: medium level of detail,
-                                3: every tiny city name and road''')
-    parser.add_argument('-c', metavar='compressed', dest='compressed', 
-                        action='store_const', const=True, default=False,
-                        help='compress topology data for smaller file size but lower speed')
 
-    parser.add_argument('-w2', metavar='welt2000', dest='welt2000', 
-                        action='store_const', const=True, default=False,
-                        help='create embedded waypoint file from welt2000 database')
+def main():
+    parser = argparse.ArgumentParser(
+        description="Create a custom XCM map file for XCSoar"
+    )
+
+    parser.add_argument(
+        "-r",
+        metavar="resolution",
+        dest="resolution",
+        type=float,
+        default=9.0,
+        help="resolution of the terrain in arcseconds per pixel",
+    )
+    parser.add_argument(
+        "-l",
+        metavar="level_of_detail",
+        dest="level_of_detail",
+        choices=[1, 2, 3],
+        type=int,
+        default=3,
+        help="""1: only major topography,
+                                2: medium level of detail,
+                                3: every tiny city name and road""",
+    )
+    parser.add_argument(
+        "-c",
+        metavar="compressed",
+        dest="compressed",
+        action="store_const",
+        const=True,
+        default=False,
+        help="compress topology data for smaller file size but lower speed",
+    )
+
+    parser.add_argument(
+        "-w2",
+        metavar="welt2000",
+        dest="welt2000",
+        action="store_const",
+        const=True,
+        default=False,
+        help="create embedded waypoint file from welt2000 database",
+    )
 
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument('-b', metavar=('left', 'right', 'top', 'bottom'), dest='bounds', 
-                       type=float, nargs=4, help='boundaries of the map file')
-    group.add_argument('-w', metavar='waypoint_file', dest='waypoint_file',
-                       help='a waypoint file that should be included in the map file')
-    
-    parser.add_argument('output_file', help='filename of the output file')
-    
+    group.add_argument(
+        "-b",
+        metavar=("left", "right", "top", "bottom"),
+        dest="bounds",
+        type=float,
+        nargs=4,
+        help="boundaries of the map file",
+    )
+    group.add_argument(
+        "-w",
+        metavar="waypoint_file",
+        dest="waypoint_file",
+        help="a waypoint file that should be included in the map file",
+    )
+
+    parser.add_argument("output_file", help="filename of the output file")
+
     args = parser.parse_args()
 
-    dir_temp = '/tmp/mapgen-{}'.format(os.getpid())
+    dir_temp = "/tmp/mapgen-{}".format(os.getpid())
     try:
-        generator = Generator(dir_data=os.path.join(app_dir, 'data'),
-                              dir_temp=dir_temp)
+        generator = Generator(dir_data=os.path.join(app_dir, "data"), dir_temp=dir_temp)
         if args.bounds:
-            generator.set_bounds(GeoRect(args.bounds[0], args.bounds[1], args.bounds[2], args.bounds[3]))
+            generator.set_bounds(
+                GeoRect(args.bounds[0], args.bounds[1], args.bounds[2], args.bounds[3])
+            )
         elif args.waypoint_file:
             generator.set_bounds(parse_waypoint_file(args.waypoint_file).get_bounds())
         else:
@@ -55,14 +92,17 @@ def main():
             generator.add_welt2000()
         elif args.waypoint_file:
             generator.add_waypoint_file(args.waypoint_file)
-            
+
         generator.add_information_file(args.output_file)
-        generator.add_topology(compressed = args.compressed, level_of_detail = args.level_of_detail)
+        generator.add_topology(
+            compressed=args.compressed, level_of_detail=args.level_of_detail
+        )
         generator.add_terrain(args.resolution)
         generator.create(args.output_file)
         generator.cleanup()
     finally:
         shutil.rmtree(dir_temp)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
