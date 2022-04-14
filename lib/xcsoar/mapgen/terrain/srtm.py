@@ -84,8 +84,6 @@ def __retrieve_waterpolygons(downloader, dir_temp):
     """
     print("Retrieving water polygons...")
     water_file1 = downloader.retrieve("waterpolygons/water_polygons.dbf")
-    water_file2 = downloader.retrieve("waterpolygons/water_polygons.cpg")
-    water_file3 = downloader.retrieve("waterpolygons/water_polygons.shx")
     water_file = downloader.retrieve("waterpolygons/water_polygons.shp")
     return water_file
 
