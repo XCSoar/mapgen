@@ -2,16 +2,16 @@ version: '3'
 services:
   mapgen-frontend:
     build:
-      context: . 
+      context: .
       dockerfile: ./container/frontend/Dockerfile
     image: ghcr.io/xcsoar/mapgen-frontend
-    ports: 
+    ports:
       - "9090:9090"
     volumes:
       - mapgen-jobs:/opt/mapgen/jobs
   mapgen-worker:
     build:
-      context: . 
+      context: .
       dockerfile: ./container/worker/Dockerfile
     image: ghcr.io/xcsoar/mapgen-worker
     volumes:
