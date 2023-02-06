@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 __codes = {
     "AD": "ANDORRA",
     "AE": "UNITED ARAB EMIRATES",

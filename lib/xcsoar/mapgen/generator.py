@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os.path
 import shutil
 from zipfile import ZipFile, ZIP_DEFLATED, ZIP_STORED

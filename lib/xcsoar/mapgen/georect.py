@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import math
 from xcsoar.mapgen.geopoint import GeoPoint
 
