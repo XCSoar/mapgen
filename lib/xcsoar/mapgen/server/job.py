@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pickle
 import time
 import os
@@ -131,7 +132,7 @@ class Job:
             # Check if there is a running job which is expired
             if (
                 (dir.endswith(".locked") or dir.endswith(".working"))
-            ) and age > 60 ** 2:
+            ) and age > 60**2:
                 print(("Delete expired job {}".format(dir)))
                 shutil.rmtree(dir)
                 continue
