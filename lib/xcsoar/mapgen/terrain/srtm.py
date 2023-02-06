@@ -85,36 +85,37 @@ def __retrieve_waterpolygons(downloader, dir_temp):
     @param dir_temp: Temporary path
     """
     print("Retrieving water polygons...")
-    water_file1 = downloader.retrieve("waterpolygons/water_polygons.dbf")
     water_file = downloader.retrieve("waterpolygons/water_polygons.shp")
     return water_file
 
 
 def __create(dir_temp, tiles, arcseconds_per_pixel, bounds):
-    """
-    Merge tiles into big tif, Resample and Crop merged image
+"""
+ 2) Merge tiles into big tif, Resample and Crop merged image
+    gdalwarp
+    -r cubic
+        (Resampling method to use. Cubic resampling.)
+    -tr $degrees_per_pixel $degrees_per_pixel
+        (set output file resolution (in target georeferenced units))
+    -wt Int16
+        (Working pixel data type. The data type of pixels in the source
+         image and destination image buffers.)
+    -dstnodata -31744
+        (Set nodata values for output bands (different values can be supplied
+         for each band). If more than one value is supplied all values should
+         be quoted to keep them together as a single operating system argument.
+         New files will be initialized to this value and if possible the
+         nodata value will be recorded in the output file.)
+    -te $left $bottom $right $top
+        (set georeferenced extents of output file to be created (in target SRS))
+    a.tif b.tif c.tif ...
+        (Input files)
+    terrain.tif
+        (Output file)
+"""
 
-        gdalwarp
-        -r cubic
-            (Resampling method to use. Cubic resampling.)
-        -tr $degrees_per_pixel $degrees_per_pixel
-            (set output file resolution (in target georeferenced units))
-        -wt Int16
-            (Working pixel data type. The data type of pixels in the source
-             image and destination image buffers.)
-        -dstnodata -31744
-            (Set nodata values for output bands (different values can be supplied
-             for each band). If more than one value is supplied all values should
-             be quoted to keep them together as a single operating system argument.
-             New files will be initialized to this value and if possible the
-             nodata value will be recorded in the output file.)
-        -te $left $bottom $right $top
-            (set georeferenced extents of output file to be created (in target SRS))
-        a.tif b.tif c.tif ...
-            (Input files)
-        terrain.tif
-            (Output file)
-    """
+
+def __create(dir_temp, tiles, arcseconds_per_pixel, bounds):
     print("Resampling terrain...")
     output_file = os.path.join(dir_temp, "terrain.tif")
     degree_per_pixel = float(arcseconds_per_pixel) / 3600.0
