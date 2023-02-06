@@ -1,18 +1,33 @@
+---
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.1.0
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
     hooks:
-    -   id: check-yaml
-    -   id: end-of-file-fixer
-    -   id: trailing-whitespace
-      #-   id: double-quote-string-fixer
-      #-   id: detect-private-key
-      #-   id: check-symlinks
-      #-   id: check-case-conflict
-      #-   id: check-added-large-files
-      #-   id: check-executables-have-shebangs
-    -   id: mixed-line-ending
--   repo: https://github.com/psf/black
-    rev: 21.12b0
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: mixed-line-ending
+      - id: check-case-conflict
+      - id: check-executables-have-shebangs
+      - id: check-json
+      - id: check-xml
+      - id: pretty-format-json
+        args:
+          - --autofix
+      - id: check-symlinks
+      - id: fix-byte-order-marker
+      - id: fix-encoding-pragma
+      - id: requirements-txt-fixer
+      - id: sort-simple-yaml
+  - repo: https://github.com/psf/black
+    rev: 22.12.0
     hooks:
-    -   id: black
+      - id: black
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.4.2
+    hooks:
+      - id: forbid-crlf
+      - id: remove-crlf
+      - id: forbid-tabs
+      - id: remove-tabs
+        args: ["--whitespaces-count","2"]
