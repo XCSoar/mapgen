@@ -1,25 +1,36 @@
 #!/usr/bin/python3
+# -*- coding: utf-8 -*-
 
 import sys, os
 
-app_dir = os.path.abspath(__file__ + '/../..')
-sys.path.append(os.path.join(app_dir, 'lib'))
+app_dir = os.path.abspath(__file__ + "/../..")
+sys.path.append(os.path.join(app_dir, "lib"))
 
 import cherrypy
 from xcsoar.mapgen.server.server import Server
 
-def main():
-    cherrypy.config.update({
-        'tools.encode.on': True,
-        'tools.encode.encoding': 'UTF-8',
-        'tools.decode.on': True
-    })
-    cherrypy.quickstart(Server(dir_jobs=os.path.join(app_dir, 'jobs')), '/', {
-        '/static': {
-            'tools.staticdir.on': True,
-            'tools.staticdir.dir': os.path.join(app_dir, 'lib', 'xcsoar', 'mapgen', 'server', 'static'),
-        }
-    })
 
-if __name__ == '__main__':
+def main():
+    cherrypy.config.update(
+        {
+            "tools.encode.on": True,
+            "tools.encode.encoding": "UTF-8",
+            "tools.decode.on": True,
+        }
+    )
+    cherrypy.quickstart(
+        Server(dir_jobs=os.path.join(app_dir, "jobs")),
+        "/",
+        {
+            "/static": {
+                "tools.staticdir.on": True,
+                "tools.staticdir.dir": os.path.join(
+                    app_dir, "lib", "xcsoar", "mapgen", "server", "static"
+                ),
+            }
+        },
+    )
+
+
+if __name__ == "__main__":
     main()
