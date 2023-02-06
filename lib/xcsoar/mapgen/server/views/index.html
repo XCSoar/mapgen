@@ -7,64 +7,64 @@
   <body>
     <div>
       <ol>
-	<li>Choose a name for the map.</li>
-	<li>Enter your E-Mail address if you want to be informed when the map is ready.</li>
-	<li>Select the map options.</li>
-	<li>Select the map bounds and/or upload a waypoint file.</li>
+  <li>Choose a name for the map.</li>
+  <li>Enter your E-Mail address if you want to be informed when the map is ready.</li>
+  <li>Select the map options.</li>
+  <li>Select the map bounds and/or upload a waypoint file.</li>
       </ol>
     </div>
     <form action="/" method="post" enctype="multipart/form-data">
       <div>
-	<div py:if="defined('error')" class="error">${error}</div>
-	<label for="name">Map name:</label>
+  <div py:if="defined('error')" class="error">${error}</div>
+  <label for="name">Map name:</label>
         <input id="name" type="text" name="name" pattern="^[a-zA-Z0-9_\s]*$" title="Only Ascii (a-z) and numeric characters, spaces and dashes."/>
         <label for="mail">E-Mail:</label>
         <input id="mail" type="text" name="mail"/>
-	<label>Options:</label>
-	<div class="box">
-	  <input type="checkbox" name="welt2000" id="welt2000"/>
+  <label>Options:</label>
+  <div class="box">
+    <input type="checkbox" name="welt2000" id="welt2000"/>
     <label for="highres">Include the <a href="https://github.com/XCSoar/xcsoar-data-content/tree/master/waypoints">XCSoar Waypoint Database</a></label><br/>
-	  <input type="checkbox" name="highres" id="highres" value="1"/>
-	  <label for="highres">High resolution terrain (3 arcseconds per pixel instead of 9)</label><br/>
-	  <input type="checkbox" name="compressed" id="compressed"/>
-	  <label for="compressed">Compressed topography (smaller filesize, but slower)</label><br/>
-	  <hr/>
-	  <span style="font-size: 10pt;">Level of detail:</span><br/>
-	  <input type="radio" name="level_of_detail" value="3" id="radio_lod3" checked="checked"/>
-	  <label for="radio_bounds">3: Every little village and road that we know of.</label><br/>
-	  <input type="radio" name="level_of_detail" value="2" id="radio_lod2"/>
-	  <label for="radio_waypoint">2: No small villages or smaller roads.</label><br/>
-	  <input type="radio" name="level_of_detail" value="1" id="radio_lod1"/>
-	  <label for="radio_waypoint_bounds">1: Only major cities and roads, no railroads.</label><br/>
-	  <hr/>
-	  <input type="radio" name="selection" value="bounds" id="radio_bounds" checked="checked"/>
-	  <label for="radio_bounds">Select map bounds by hand.</label><br/>
-	  <input type="radio" name="selection" value="waypoint" id="radio_waypoint"/>
-	  <label for="radio_waypoint">Add waypoint file and compute map bounds automatically.</label><br/>
-	  <input type="radio" name="selection" value="waypoint_bounds" id="radio_waypoint_bounds"/>
-	  <label for="radio_waypoint_bounds">Add waypoint file and select map bounds by hand.</label><br/>
-	  <em style="font-size: 10pt;">Note: Waypoint files have to be in Cambridge/Winpilot (.DAT) or SeeYou (.CUP) format</em>
-	</div>
-	<div id="waypoint_file_box">
+    <input type="checkbox" name="highres" id="highres" value="1"/>
+    <label for="highres">High resolution terrain (3 arcseconds per pixel instead of 9)</label><br/>
+    <input type="checkbox" name="compressed" id="compressed"/>
+    <label for="compressed">Compressed topography (smaller filesize, but slower)</label><br/>
+    <hr/>
+    <span style="font-size: 10pt;">Level of detail:</span><br/>
+    <input type="radio" name="level_of_detail" value="3" id="radio_lod3" checked="checked"/>
+    <label for="radio_bounds">3: Every little village and road that we know of.</label><br/>
+    <input type="radio" name="level_of_detail" value="2" id="radio_lod2"/>
+    <label for="radio_waypoint">2: No small villages or smaller roads.</label><br/>
+    <input type="radio" name="level_of_detail" value="1" id="radio_lod1"/>
+    <label for="radio_waypoint_bounds">1: Only major cities and roads, no railroads.</label><br/>
+    <hr/>
+    <input type="radio" name="selection" value="bounds" id="radio_bounds" checked="checked"/>
+    <label for="radio_bounds">Select map bounds by hand.</label><br/>
+    <input type="radio" name="selection" value="waypoint" id="radio_waypoint"/>
+    <label for="radio_waypoint">Add waypoint file and compute map bounds automatically.</label><br/>
+    <input type="radio" name="selection" value="waypoint_bounds" id="radio_waypoint_bounds"/>
+    <label for="radio_waypoint_bounds">Add waypoint file and select map bounds by hand.</label><br/>
+    <em style="font-size: 10pt;">Note: Waypoint files have to be in Cambridge/Winpilot (.DAT) or SeeYou (.CUP) format</em>
+  </div>
+  <div id="waypoint_file_box">
           <label for="waypoint_file">Waypoint file:</label>
-	  <div class="box">
+    <div class="box">
             <input id="waypoint_file" type="file" name="waypoint_file"/>
-	  </div>
-	</div>
-	<div id="bounds_box">
+    </div>
+  </div>
+  <div id="bounds_box">
           <label>Bounds:</label>
-	  <div class="mapbox">
-	    <div id="map"/>
-	    <em class="note">Draw the map bounds rectangle by clicking in the map.</em>
-	    <hr/>
-	    <label class="left" for="left">Minimum Longitude:</label><input id="left" type="text" name="left"/><br/>
-	    <label class="left" for="right">Maximum Longitude:</label><input id="right" type="text" name="right"/><br/>
-	    <label class="left" for="bottom">Minimum Latitude:</label><input id="bottom" type="text" name="bottom"/><br/>
-	    <label class="left" for="top">Maximum Latitude:</label><input id="top" type="text" name="top"/><br/>
-	    <em class="note">Coordinates of the SW and NE corners can be entered or tweaked above. Coordinates are in float format.<br/>(e.g. Ulvade is at 29.211111,-99.74388, Wasserkuppe at 50.498056,9.937778 and Benalla at -36.552982,146.013408)</em>
-	  </div>
-	</div>
-	<button type="submit">Generate</button>
+    <div class="mapbox">
+      <div id="map"/>
+      <em class="note">Draw the map bounds rectangle by clicking in the map.</em>
+      <hr/>
+      <label class="left" for="left">Minimum Longitude:</label><input id="left" type="text" name="left"/><br/>
+      <label class="left" for="right">Maximum Longitude:</label><input id="right" type="text" name="right"/><br/>
+      <label class="left" for="bottom">Minimum Latitude:</label><input id="bottom" type="text" name="bottom"/><br/>
+      <label class="left" for="top">Maximum Latitude:</label><input id="top" type="text" name="top"/><br/>
+      <em class="note">Coordinates of the SW and NE corners can be entered or tweaked above. Coordinates are in float format.<br/>(e.g. Ulvade is at 29.211111,-99.74388, Wasserkuppe at 50.498056,9.937778 and Benalla at -36.552982,146.013408)</em>
+    </div>
+  </div>
+  <button type="submit">Generate</button>
       </div>
     </form>
     <script type="text/javascript" src="/static/jquery.js"/>
