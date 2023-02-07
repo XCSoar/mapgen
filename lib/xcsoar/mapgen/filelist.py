@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 class FileList:
     def __init__(self):
         self.__list = []

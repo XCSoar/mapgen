@@ -14,7 +14,7 @@ def __get_database_file(dir_data):
 
     # Download the current file
     # (only if server file is newer than local file)
-    url = 'http://download.xcsoar.org/content/waypoint/global/xcsoar_waypoints.cup'
+    url = 'https://download.xcsoar.org/content/waypoint/global/xcsoar_waypoints.cup'
     subprocess.check_call(['wget', '-N', '-P', os.path.dirname(path), url])
 
     # Check if download succeeded

@@ -22,7 +22,7 @@ jobs:
       - name: Login to Registry
         uses: docker/login-action@v2
         with:
-          registry: ghcr.io 
+          registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ github.token }}
       - id: string 
@@ -44,7 +44,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
-          context: ./ 
+          context: ./
           file: ./container/frontend/Dockerfile
           tags: ghcr.io/${{ steps.string.outputs.lowercase }}/mapgen-frontend:latest
           secrets: |

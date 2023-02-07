@@ -1,16 +1,21 @@
 #!/usr/bin/python3
+# -*- coding: utf-8 -*-
 
 import sys, os
 
-app_dir = os.path.abspath(__file__ + '/../..')
-sys.path.append(os.path.join(app_dir, 'lib'))
+app_dir = os.path.abspath(__file__ + "/../..")
+sys.path.append(os.path.join(app_dir, "lib"))
 
 from xcsoar.mapgen.server.worker import Worker
 
-def main():
-    Worker(dir_jobs=os.path.join(app_dir, 'jobs'),
-           dir_data=os.path.join(app_dir, 'data'),
-           mail_server='localhost').run()
 
-if __name__ == '__main__':
+def main():
+    Worker(
+        dir_jobs=os.path.join(app_dir, "jobs"),
+        dir_data=os.path.join(app_dir, "data"),
+        mail_server="localhost",
+    ).run()
+
+
+if __name__ == "__main__":
     main()

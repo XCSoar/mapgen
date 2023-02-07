@@ -10,17 +10,17 @@ function error {
     exit 1
   fi
 }
-function queued { 
+function queued {
   echo "Queued jobs: $(ls -d1 /opt/mapgen/jobs/*.queued  2> /dev/null| wc -l )"
 }
 function working {
   echo "Working jobs: $(ls -d1 /opt/mapgen/jobs/*.working  2> /dev/null| wc -l )"
 }
 
-case "$1" in 
+case "$1" in
   "-e")
   error
-  ;; 
+  ;;
   "-q")
   queued
   ;;
