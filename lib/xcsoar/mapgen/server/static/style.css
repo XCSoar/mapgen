@@ -18,7 +18,7 @@ body {
 #logo {
   font-size: 250%;
   text-decoration: none;
-  text-color: gray;
+  color: gray;
   padding: 0.5em 0.5em;
   text-align: center;
 }
@@ -48,7 +48,8 @@ label {
   width: 100%;
 }
 
-.box label, .box .note {
+.box label,
+.box .note {
   clear: left;
   font-size: 100%;
   margin: 0;
@@ -61,7 +62,10 @@ input {
   padding: 0.5em;
 }
 
-#name, #mail, .box, .error {
+#name,
+#mail,
+.box,
+.error {
   padding: 0.5em;
   border: 1px solid #dcdad4;
   border-radius: 10px;
@@ -89,7 +93,8 @@ input {
   margin: 0 auto;
 }
 
-button, .button {
+button,
+.button {
   display: block;
   width: 50%;
   margin: 2em auto;
