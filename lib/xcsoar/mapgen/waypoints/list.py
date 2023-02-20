@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from xcsoar.mapgen.waypoints.waypoint import Waypoint
 from xcsoar.mapgen.georect import GeoRect
 
