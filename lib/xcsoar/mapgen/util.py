@@ -29,7 +29,7 @@ __used_commands = {
 
 def check_commands():
     ret = True
-    for (cmd, help) in list(__used_commands.items()):
+    for cmd, help in list(__used_commands.items()):
         try:
             subprocess.check_output(["which", cmd], stderr=subprocess.STDOUT)
         except:
