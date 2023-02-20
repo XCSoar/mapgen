@@ -25,7 +25,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ github.token }}
-      - id: string 
+      - id: string
         uses: ASzc/change-string-case-action@v5
         with:
           string: XCSoar
