@@ -1,12 +1,12 @@
 #!/bin/bash
 
 function total {
-  echo "Total jobs: $(ls -d1 /opt/mapgen/jobs/*  2> /dev/null| wc -l )"
+  echo "MAPGEN_JOBS OK Total jobs: $(ls -d1 /opt/mapgen/jobs/*  2> /dev/null| wc -l )"
 }
 function error {
   NOJOBS=$(ls -d1 /opt/mapgen/jobs/*.error 2> /dev/null | wc -l )
   if [ "$NOJOBS" -gt 0 ]; then
-    echo "Error Jobs: $NOJOBS"
+    echo "MAPGEN_JOBS CRITICAL Error Jobs: $NOJOBS"
     exit 1
   fi
 }
@@ -18,6 +18,10 @@ function working {
 }
 
 case "$1" in
+  "-c")
+  error
+  total
+  ;;
   "-e")
   error
   ;;
