@@ -7,7 +7,7 @@ function error {
   NOJOBS=$(ls -d1 /opt/mapgen/jobs/*.error 2> /dev/null | wc -l )
   if [ "$NOJOBS" -gt 0 ]; then
     echo "MAPGEN_JOBS CRITICAL Error Jobs: $NOJOBS"
-    exit 1
+    exit
   fi
 }
 function queued {
