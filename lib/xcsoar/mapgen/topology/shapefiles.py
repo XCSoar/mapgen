@@ -87,7 +87,7 @@ def __create_index_file(dir_temp, index):
     file = open(os.path.join(dir_temp, "topology.tpl"), "w")
     try:
         file.write(
-            "* filename, range, icon, label_index, r, g, b, pen_width, label_range, label_important_range\n"
+            "* filename, range, icon, label_index, r, g, b, pen_width, label_range, label_important_range, alpha\n"
         )
         for layer in index:
             file.write(
@@ -104,6 +104,8 @@ def __create_index_file(dir_temp, index):
                 + str(layer.get("label_range", layer["range"]))
                 + ","
                 + str(layer.get("label_important_range", 0))
+                + ","
+                + str(layer.get("alpha", 255))
                 + "\n"
             )
     finally:
