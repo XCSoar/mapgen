@@ -29,19 +29,20 @@ Subject: XCSoar Map Generator - Download ready ({name}.xcm)
 
 The XCSoar Map Generator has finished your map: {name}
 It can be downloaded at {protocol}://{domain}{url}
-This link is valid for 7 days.
+This link is valid for {retentiondays} days.
 """.format(
                 to=job.description.mail,
                 name=job.description.name,
                 protocol=mapgen["protocol"],
                 domain=mapgen["domain"],
                 mailfrom=mapgen["mailfrom"],
+                retentiondays=mapgen["retentiondays"],
                 url=job.description.download_url,
             )
 
             s = smtplib.SMTP(self.__mail_server)
             try:
-                s.sendmail("no-reply@xcsoar.org", job.description.mail, msg)
+                s.sendmail(mapgen["mailfrom"], job.description.mail, msg)
             finally:
                 s.quit()
         except Exception as e:

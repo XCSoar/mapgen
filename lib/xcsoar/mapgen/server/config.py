@@ -3,4 +3,5 @@ mapgen = {
     "domain": "mapgen.xcsoar.org",
     "protocol": "http",
     "mailfrom": "no-reply@xcsoar.org",
+    "retentiondays": 7,
 }

@@ -6,6 +6,7 @@ import shutil
 import uuid
 
 from xcsoar.mapgen.util import slurp, spew
+from xcsoar.mapgen.server.config import mapgen
 
 
 class JobDescription:
@@ -142,7 +143,7 @@ class Job:
                 if ts < next_ts:
                     next_dir = dir
                     next_ts = ts
-            elif age > 24 * 7 * 60 * 60:
+            elif age > 24 * int(mapgen["retentiondays"]) * 60 * 60:
                 # Delete if download is expired
                 print(("Delete expired job {}".format(dir)))
                 shutil.rmtree(dir)
