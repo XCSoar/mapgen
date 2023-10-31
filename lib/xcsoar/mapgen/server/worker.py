@@ -23,7 +23,7 @@ class Worker:
         try:
             print(("Sending download mail to {} ...".format(job.description.mail)))
 
-            msg = """From: no-reply@xcsoar.org"
+            msg = """From: {mailfrom}
 To: {to}
 Subject: XCSoar Map Generator - Download ready ({name}.xcm)
 
@@ -35,6 +35,7 @@ This link is valid for 7 days.
                 name=job.description.name,
                 protocol=mapgen["protocol"],
                 domain=mapgen["domain"],
+                mailfrom=mapgen["mailfrom"],
                 url=job.description.download_url,
             )
 
