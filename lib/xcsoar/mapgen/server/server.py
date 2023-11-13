@@ -11,6 +11,7 @@ from xcsoar.mapgen.server.job import Job, JobDescription
 from xcsoar.mapgen.server import view
 from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.waypoints.parser import parse_waypoint_file
+from xcsoar.mapgen.server.config import mapgen
 
 
 class Server(object):

@@ -6,11 +6,12 @@ import subprocess
 import json
 
 from xcsoar.mapgen.util import slurp, spew
+from xcsoar.mapgen.server.config import mapgen
 
 
 class Downloader:
     def __init__(self, dir):
-        self.__base_url = "https://mapgen-data.sigkill.ch/"
+        self.__base_url = mapgen["dataurl"]
         self.__cmd_7zip = "7zr"
         self.__cmd_wget = "wget"
         self.__dir = os.path.abspath(dir)

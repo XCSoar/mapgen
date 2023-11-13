@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
 import os
 import subprocess
 
 from xcsoar.mapgen.waypoints.welt2000_reader import parse_welt2000_waypoints
 from xcsoar.mapgen.waypoints.seeyou_writer import write_seeyou_waypoints
 from xcsoar.mapgen.filelist import FileList
+from xcsoar.mapgen.server.config import mapgen
 
 
 def __get_database_file(dir_data):
@@ -15,7 +17,7 @@ def __get_database_file(dir_data):
 
     # Download the current file
     # (only if server file is newer than local file)
-    url = "https://mapgen-data.sigkill.ch/welt2000/WELT2000.TXT"
+    url = mapgen["dataurl"] + "/welt2000/WELT2000.TXT"
     subprocess.check_call(["wget", "-N", "-P", os.path.dirname(path), url])
 
     # Check if download succeeded

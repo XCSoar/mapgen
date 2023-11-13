@@ -4,4 +4,5 @@ mapgen = {
     "protocol": "http",
     "mailfrom": "no-reply@xcsoar.org",
     "retentiondays": 7,
+    "dataurl": "https://mapgen-data.sigkill.ch/",
 }
