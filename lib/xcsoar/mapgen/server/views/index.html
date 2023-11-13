@@ -16,9 +16,9 @@
     <form action="/" method="post" enctype="multipart/form-data">
       <div>
   <div py:if="defined('error')" class="error">${error}</div>
-  <label for="name">Map name:</label>
-        <input id="name" type="text" name="name" pattern="^[a-zA-Z0-9_\s]*$" title="Only Ascii (a-z) and numeric characters, spaces and dashes." required="required"/>
-        <label for="mail">E-Mail:</label>
+  <label for="name">Map name</label>
+        <input id="name" type="text" name="name" pattern="^[a-zA-Z0-9_\s]*$" title="Only Ascii (a-z) and numeric characters, spaces and dashes." required="required" placeholder="Enter a map name"/>
+        <label for="mail">E-Mail</label>
         <input id="mail" type="email" placeholder="Enter your email address" name="mail"/>
   <label>Options:</label>
   <div class="box">
