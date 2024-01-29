@@ -130,9 +130,7 @@ class Job:
             age = time.time() - ts
 
             # Check if there is a running job which is expired
-            if (
-                (dir.endswith(".locked") or dir.endswith(".working"))
-            ) and age > 60**2:
+            if ((dir.endswith(".locked") or dir.endswith(".working"))) and age > 60**2:
                 print(("Delete expired job {}".format(dir)))
                 shutil.rmtree(dir)
                 continue
