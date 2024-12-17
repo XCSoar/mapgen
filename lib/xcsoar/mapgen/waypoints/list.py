@@ -39,4 +39,5 @@ class WaypointList:
             rc.bottom = min(rc.bottom, wp.lat)
 
         rc.expand(offset_distance)
+
         return rc
