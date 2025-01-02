@@ -15,18 +15,6 @@ The Maps are layered out of a multitude of sources:
 
 ## Deployment and Development
 
-## Ansible
-
-To aid development and deployment an accompaning repositorty was created:
-[XCSoar Mapgen Ansible](https://github.com/xcsoar/xcsoar-mapgen-ansible)
-
-The ansible-role can be played back onto a Debian system in order to deploy
-mapgen. An alternative is the vagrantfile in that repository which allows you
-to download and install a vm, including provisioning of mapgen.
-![Docker](https://github.com/XCSoar/xcsoar-mapgen-container/workflows/Docker/badge.svg)
-
-## Container
-
 ### Frontend
 
 The frontend container contains the cherrypy based service and an nginx based
