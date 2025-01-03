@@ -76,26 +76,28 @@ def __parse_length(str):
 def parse_seeyou_waypoints(lines, bounds=None):
     waypoint_list = WaypointList()
 
-    first = True
-    for line in lines:
-        if first:
-            first = False
-            continue
+    header = "name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc"
 
-        line = line.strip()
-        if line == "name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc":
-            continue
+    wpnum = 0
+    for byteline in lines:
+        wpnum = wpnum + 1
+        line = byteline.decode("UTF-8")
 
+        # check for blank lines or comments
         if line == "" or line.startswith("*"):
             continue
+
+        if header in line:
+            continue  # skip to next line (first waypoint line)
 
         if line == "-----Related Tasks-----":
             break
 
         fields = []
-        line = __CSVLine(line)
-        while line.has_next():
-            fields.append(next(line))
+        CSVline = __CSVLine(line)
+
+        while CSVline.has_next():
+            fields.append(next(CSVline))
 
         if len(fields) < 6:
             continue
@@ -131,5 +133,7 @@ def parse_seeyou_waypoints(lines, bounds=None):
             wp.comment = fields[10].strip()
 
         waypoint_list.append(wp)
+
+    return waypoint_list
 
     return waypoint_list

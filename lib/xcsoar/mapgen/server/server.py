@@ -12,6 +12,14 @@ from xcsoar.mapgen.server import view
 from xcsoar.mapgen.georect import GeoRect
 from xcsoar.mapgen.waypoints.parser import parse_waypoint_file
 
+cherrypy.config.update(
+    {
+        "log.screen": True,  # Log to stdout
+        "log.error_file": "error.log",  # Log errors to a file
+        "log.access_file": "access.log",  # Log access to a file
+    }
+)
+
 
 class Server(object):
     def __init__(self, dir_jobs):
@@ -62,6 +70,7 @@ class Server(object):
             return view.render()
 
         name = params["name"].strip()
+
         if name == "":
             return view.render(error="No map name given!") | HTMLFormFiller(data=params)
 
@@ -75,6 +84,7 @@ class Server(object):
 
         selection = params["selection"]
         waypoint_file = params["waypoint_file"]
+
         if selection in ["waypoint", "waypoint_bounds"]:
             if not waypoint_file.file or not waypoint_file.filename:
                 return view.render(error="No waypoint file uploaded.") | HTMLFormFiller(
@@ -83,6 +93,7 @@ class Server(object):
 
             try:
                 filename = waypoint_file.filename.lower()
+
                 if not filename.endswith(".dat") and (
                     filename.endswith(".dat") or not filename.endswith(".cup")
                 ):
@@ -91,12 +102,26 @@ class Server(object):
                             waypoint_file.filename
                         )
                     )
+
+                # 241212 better way to write this boolean expression (filename already forced to lowercase)
+                if not filename.endswith(".dat") and not filename.endswith(".cup"):
+                    raise RuntimeError(
+                        "Waypoint file {} has an unsupported format.".format(
+                            waypoint_file.filename
+                        )
+                    )
+
                 desc.bounds = parse_waypoint_file(
                     waypoint_file.filename, waypoint_file.file
                 ).get_bounds()
                 desc.waypoint_file = (
                     "waypoints.cup" if filename.endswith(".cup") else "waypoints.dat"
                 )
+
+                return view.render(
+                    error=f"left: {desc.bounds.left:.3f}, right: {desc.bounds.right:.3f}, top: {desc.bounds.top:.3f}, bot {desc.bounds.bottom:.3f}"
+                ) | HTMLFormFiller(data=params)
+
             except:
                 return view.render(
                     error="Unsupported waypoint file " + waypoint_file.filename
@@ -134,6 +159,7 @@ class Server(object):
 
         if desc.waypoint_file:
             waypoint_file.file.seek(0)
+
             f = open(job.file_path(desc.waypoint_file), "w")
             try:
                 shutil.copyfileobj(fsrc=waypoint_file.file, fdst=f, length=1024 * 64)

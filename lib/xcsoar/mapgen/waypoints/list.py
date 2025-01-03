@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from xcsoar.mapgen.waypoints.waypoint import Waypoint
 from xcsoar.mapgen.georect import GeoRect
+import cherrypy
 
 
 class WaypointList:
@@ -33,10 +34,13 @@ class WaypointList:
     def get_bounds(self, offset_distance=15.0):
         rc = GeoRect(180, -180, -90, 90)
         for wp in self.__list:
+            # cherrypy.log(f'In list.py: {wp.name}, lat: {wp.lat:.3f}, lon: {wp.lon:.3f}')
             rc.left = min(rc.left, wp.lon)
             rc.right = max(rc.right, wp.lon)
             rc.top = max(rc.top, wp.lat)
             rc.bottom = min(rc.bottom, wp.lat)
 
         rc.expand(offset_distance)
+        # cherrypy.log(f'In list.py - final rc: left {rc.left:.3f}, right: {rc.right:.3f}, top: {rc.top:.3f}, bot {rc.bottom:.3f}')
+
         return rc

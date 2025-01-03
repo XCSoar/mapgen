@@ -10,35 +10,50 @@ def __parse_altitude(str):
         return int(str) * 0.3048
     else:
         str = str.rstrip("m")
-        return int(str)
+        float_alt = float(str)
+        int_alt = int(float_alt)
+
+    return int(int_alt)
 
 
+# Winpilot .DAT file lat/lon formats
+# Latitude, Longitude: in one of the following formats (ss=seconds, dd = decimals):
+# dd:mm:ss (for example: 36:15:20N)
+# dd:mm.d (for example: 36:15.3N)
+# dd:mm.dd (for example: 36:15.33N)
+# dd:mm.ddd (for example: 36:15.333N)
 def __parse_coordinate(str):
+
     str = str.lower()
     negative = str.endswith("s") or str.endswith("w")
     str = str.rstrip("sw") if negative else str.rstrip("ne")
 
-    str = str.split(":")
-    if len(str) < 2:
+    strsplit = str.split(":")
+    if len(strsplit) < 2:
         return None
 
-    if len(str) == 2:
+    if len(strsplit) == 2:
         # degrees + minutes / 60
-        a = int(str[0]) + float(str[1]) / 60
+        a = int(strsplit[0]) + float(strsplit[1]) / 60
 
-    if len(str) == 3:
+    if len(strsplit) == 3:
         # degrees + minutes / 60 + seconds / 3600
         a = int(str[0]) + float(str[1]) / 60 + float(str[2]) / 3600
 
     if negative:
         a *= -1
+
     return a
 
 
 def parse_winpilot_waypoints(lines):
-    waypoint_list = WaypointList()
 
-    for line in lines:
+    waypoint_list = WaypointList()
+    wpnum = 0
+    for byteline in lines:
+        wpnum += 1
+
+        line = byteline.decode("UTF-8")
         line = line.strip()
         if line == "" or line.startswith("*"):
             continue
