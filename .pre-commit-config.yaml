@@ -20,7 +20,7 @@ repos:
       - id: requirements-txt-fixer
       - id: sort-simple-yaml
   - repo: https://github.com/psf/black
-    rev: 24.10.0
+    rev: 25.1.0
     hooks:
       - id: black
   - repo: https://github.com/Lucas-C/pre-commit-hooks
