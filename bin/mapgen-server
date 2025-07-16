@@ -15,7 +15,8 @@ def main():
         {
             "tools.encode.on": True,
             "tools.encode.encoding": "UTF-8",
-            "tools.decode.on": True,
+            "server.socket_host": "0.0.0.0",
+            "server.socket_port": "9090",
         }
     )
     cherrypy.quickstart(
