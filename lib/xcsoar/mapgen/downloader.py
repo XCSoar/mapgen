@@ -117,7 +117,7 @@ class Downloader:
             url = self.__base_url + file
             if not os.path.exists(os.path.dirname(dest)):
                 os.makedirs(os.path.dirname(dest))
-            subprocess.check_call([self.__cmd_wget, "-O", dest, url])
+            subprocess.check_call([self.__cmd_wget, "-c", "-O", dest, url])
 
     def __remove(self, *files):
         for file in files:
