@@ -24,11 +24,11 @@ class Downloader:
                 "-N",
                 "-P",
                 self.__dir,
-                self.__base_url + "checksums",
+                self.__base_url + "checksums.sha256",
             ]
         )
         self.__checksums = {}
-        for line in slurp(os.path.join(self.__dir, "checksums")).split("\n"):
+        for line in slurp(os.path.join(self.__dir, "checksums.sha256")).split("\n"):
             line = line.strip()
             if line != "":
                 line = line.split(None, 1)
@@ -48,11 +48,11 @@ class Downloader:
         dest_file = os.path.join(self.__dir, file)
         dest_dir = os.path.splitext(dest_file)[0]
         if not self.__is_valid(file, dest_file):
-            self.__remove(dest_file, dest_file + ".md5", dest_dir)
+            self.__remove(dest_file, dest_file + ".sha256", dest_dir)
         if not os.path.exists(dest_dir):
             self.__download(file, dest_file)
             if not self.__is_valid(file, dest_file):
-                self.__remove(dest_file, dest_file + ".md5", dest_dir)
+                self.__remove(dest_file, dest_file + ".sha256", dest_dir)
                 raise RuntimeError("File is not valid after download " + dest_file)
             if file.endswith(".7z"):
                 print(("Decompressing file {} ...".format(dest_file)))
@@ -79,10 +79,10 @@ class Downloader:
         dest = os.path.join(self.__dir, file)
         if self.__is_valid(file, dest) and os.path.exists(dest):
             return dest
-        self.__remove(dest, dest + ".md5")
+        self.__remove(dest, dest + ".sha256")
         self.__download(file, dest)
         if not self.__is_valid(file, dest):
-            self.__remove(dest, dest + ".md5")
+            self.__remove(dest, dest + ".sha256")
             raise RuntimeError("File {} is not valid after download.".format(dest))
         return dest
 
@@ -91,24 +91,24 @@ class Downloader:
         return checksum and checksum == self.__checksums[file]
 
     def __get_local_checksum(self, file):
-        md5_path = file + ".md5"
-        if os.path.exists(md5_path):
-            return slurp(md5_path)
+        md5_path = file + ".sha256"
+        if os.path.exists(sha256_path):
+            return slurp(sha256_path)
         if not os.path.isfile(file):
             return None
-        md5 = hashlib.md5()
+        sha256 = hashlib.sha256()
         file = open(file, "rb")
         try:
             while True:
                 data = file.read(0xFFFF)
                 if not data:
                     break
-                md5.update(data)
+                sha256.update(data)
         finally:
             file.close()
-        md5 = md5.hexdigest()
-        spew(md5_path, md5)
-        return md5
+        sha256 = sha256.hexdigest()
+        spew(sha256_path, sha256)
+        return sha256
 
     def __download(self, file, dest):
         if not os.path.exists(dest):
