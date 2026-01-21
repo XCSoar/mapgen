@@ -1,5 +1,5 @@
 # Creates a mapgen-worker instance for building maps
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 ENV MAPWRK_PKGS="ca-certificates python3-jsonschema python3-requests p7zip gdal-bin mapserver-bin wget"
 ENV DEBIAN_FRONTEND=noninteractive
 

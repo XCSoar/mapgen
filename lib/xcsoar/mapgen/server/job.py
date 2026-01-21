@@ -66,8 +66,12 @@ class Job:
         self.__move(".error")
         try:
             os.unlink(self.__status_file())
-        except:
-            pass
+        except FileNotFoundError:
+            logging.warning("Status file not found, unable to delete.")
+        except PermissionError:
+            logging.error("Permission denied when trying to delete the status file.")
+        except Exception as e:
+            logging.error(f"An unexpected error occurred: {e}")
 
     def done(self):
         self.__move()
