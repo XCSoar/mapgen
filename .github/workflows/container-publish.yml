@@ -34,7 +34,7 @@ jobs:
           string: XCSoar
 
       - name: build and push
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
           context: ./
@@ -44,7 +44,7 @@ jobs:
             GIT_AUTH_TOKEN=${{ github.token }}
 
       - name: build and push
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
           context: ./
