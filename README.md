@@ -49,6 +49,24 @@ These are named volumes inside your docker service.
  This directory caches all the data from the data repository. WARNING: This
  volume can take up a lot of space (100GB).
 
+Note: To mount those volumes into a local directory to keep them if the containers are dropped, update the docker compose (change the path as needed):
+
+```bash
+volumes:
+  mapgen-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/user/xcsoar_mapgen/mapgen-data
+  mapgen-jobs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /home/user/xcsoar_mapgen/mapgen-jobs
+```
+
 ### Ports
 
 ```bash
@@ -82,4 +100,27 @@ docker-compose build \
 
 ```bash
 docker-compose up -d
+```
+
+### Mounting the source files into the containers
+
+To speed up the development process, it's possible to mount the folders with the Python sources into the container, which allow automatic reload by CherryPy.
+Update the docker-compose:
+
+```bash
+...
+services:
+  mapgen-frontend:
+...
+    volumes:
+      - mapgen-jobs:/opt/mapgen/jobs
+      - ./lib:/opt/mapgen/lib
+      - ./bin:/opt/mapgen/bin
+  mapgen-worker:
+    ...
+    volumes:
+      - mapgen-jobs:/opt/mapgen/jobs
+      - mapgen-data:/opt/mapgen/data
+      - ./lib:/opt/mapgen/lib
+      - ./bin:/opt/mapgen/bin
 ```

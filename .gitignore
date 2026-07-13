@@ -15,3 +15,6 @@ jobs
 bin/shptree
 bin/gdalwarp
 bin/ogr2ogr
+/lib/python3.12
+pyvenv.cfg
+lib64

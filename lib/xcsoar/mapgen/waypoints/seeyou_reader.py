@@ -76,59 +76,85 @@ def __parse_length(str):
 def parse_seeyou_waypoints(lines, bounds=None):
     waypoint_list = WaypointList()
 
-    first = True
-    for line in lines:
-        if first:
-            first = False
-            continue
+    header = None
+    columns = {}
 
-        line = line.strip()
-        if line == "name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc":
-            continue
+    for raw_line in lines:
+        if isinstance(raw_line, bytes):
+            try:
+                line = raw_line.decode("utf-8")
+            except UnicodeDecodeError:
+                line = raw_line.decode("windows-1252")
+            line = line.strip()
+        else:
+            line = raw_line.strip()
 
-        if line == "" or line.startswith("*"):
+        if not line or line.startswith("*"):
             continue
 
         if line == "-----Related Tasks-----":
             break
 
+        # Parse CSV
         fields = []
-        line = __CSVLine(line)
-        while line.has_next():
-            fields.append(next(line))
+        csv_line = __CSVLine(line)
+        while csv_line.has_next():
+            fields.append(next(csv_line))
 
-        if len(fields) < 6:
+        # First non-comment line is the header
+        if header is None:
+            header = [f.strip().lower() for f in fields]
+            columns = {name: idx for idx, name in enumerate(header)}
             continue
 
-        lat = __parse_coordinate(fields[3])
-        if bounds and (lat > bounds.top or lat < bounds.bottom):
+        def get(name, default=""):
+            idx = columns.get(name)
+            if idx is None or idx >= len(fields):
+                return default
+            return fields[idx]
+
+        try:
+            lat = __parse_coordinate(get("lat"))
+            lon = __parse_coordinate(get("lon"))
+        except Exception:
             continue
 
-        lon = __parse_coordinate(fields[4])
-        if bounds and (lon > bounds.right or lon < bounds.left):
-            continue
+        if bounds:
+            if lat > bounds.top or lat < bounds.bottom:
+                continue
+            if lon > bounds.right or lon < bounds.left:
+                continue
 
         wp = Waypoint()
         wp.lat = lat
         wp.lon = lon
-        wp.altitude = __parse_altitude(fields[5])
-        wp.name = fields[0].strip()
-        wp.country_code = fields[2].strip()
 
-        if len(fields) > 6 and len(fields[6]) > 0:
-            wp.cup_type = int(fields[6])
+        wp.name = get("name").strip()
+        wp.country_code = get("country").strip()
 
-        if len(fields) > 7 and len(fields[7]) > 0:
-            wp.runway_dir = int(fields[7])
+        elev = get("elev")
+        if elev:
+            wp.altitude = __parse_altitude(elev)
 
-        if len(fields) > 8 and len(fields[8]) > 0:
-            wp.runway_len = __parse_length(fields[8])
+        style = get("style")
+        if style:
+            wp.cup_type = int(style)
 
-        if len(fields) > 9 and len(fields[9]) > 0:
-            wp.freq = float(fields[9])
+        rwdir = get("rwdir")
+        if rwdir:
+            wp.runway_dir = int(rwdir)
 
-        if len(fields) > 10 and len(fields[10]) > 0:
-            wp.comment = fields[10].strip()
+        rwlen = get("rwlen")
+        if rwlen:
+            wp.runway_len = __parse_length(rwlen)
+
+        freq = get("freq")
+        if freq:
+            wp.freq = float(freq)
+
+        desc = get("desc")
+        if desc:
+            wp.comment = desc.strip()
 
         waypoint_list.append(wp)
 

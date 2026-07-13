@@ -83,21 +83,23 @@ class Server(object):
 
             try:
                 filename = waypoint_file.filename.lower()
-                if not filename.endswith(".dat") and (
-                    filename.endswith(".dat") or not filename.endswith(".cup")
-                ):
+
+                if not (filename.endswith(".dat") or filename.endswith(".cup")):
                     raise RuntimeError(
                         "Waypoint file {} has an unsupported format.".format(
                             waypoint_file.filename
                         )
                     )
+
+                waypoint_file.file.seek(0)
+
                 desc.bounds = parse_waypoint_file(
                     waypoint_file.filename, waypoint_file.file
                 ).get_bounds()
                 desc.waypoint_file = (
                     "waypoints.cup" if filename.endswith(".cup") else "waypoints.dat"
                 )
-            except:
+            except Exception as e:
                 return view.render(
                     error="Unsupported waypoint file " + waypoint_file.filename
                 ) | HTMLFormFiller(data=params)
@@ -134,7 +136,7 @@ class Server(object):
 
         if desc.waypoint_file:
             waypoint_file.file.seek(0)
-            f = open(job.file_path(desc.waypoint_file), "w")
+            f = open(job.file_path(desc.waypoint_file), "wb")
             try:
                 shutil.copyfileobj(fsrc=waypoint_file.file, fdst=f, length=1024 * 64)
             finally:
